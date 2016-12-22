@@ -1,0 +1,13 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+
+node_modules/
+
+logs
+*.logs
+
+._*
+
+.Spotlight-V100
+.Trashes
