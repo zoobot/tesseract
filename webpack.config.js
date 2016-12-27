@@ -5,7 +5,7 @@ const path= require ('path');
 
 module.exports = {
     entry: {
-      entry: './client/client.js',
+      // entry: './client/client.js',
     },
     output: {
       path: path.resolve('dist'),
