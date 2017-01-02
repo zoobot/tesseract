@@ -13,7 +13,7 @@
       <!-- Markdown editor -->
       <!-- Doesn't really compile markdown yet -->
       <div id="editor">
-        <textarea :value="input"
+        <textarea v-model="input"
         id="content"
         @input="update" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
       </div>
@@ -30,46 +30,52 @@
   import Utils from '../js/utils.js'
 
   export default {
+
+
     created() {
       // Starts listening on page load
-      var channel, conn;
-      var content = $("#content");
+
         // Use the vue-resource $http client to fetch data from the /tasks route
       this.$http.get('/getUrl').then(function(response) {
-        console.log('getUrl datas!:', response);
-        channel = response;
-        console.log(channel)
-        conn = new WebSocket('ws://' + window.location.host + '/ws/' + channel);
-        console.log('conn',conn)
-        this.mychan = conn
+        this.channel = response.body;
+        console.log('this.channel',this.channel);
+        this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + this.channel);
+        console.log(this.ws);
         // Textarea is editable only when socket is opened.
-        conn.onopen = function(e) {
+        this.ws.onopen = function(e) {
           console.log('onopen',e);
-          content.attr("disabled", false);
         };
 
-        conn.onclose = function(e) {
+        this.ws.onclose = function(e) {
           console.log('onclose',e);
-          content.attr("disabled", true);
         };
 
         // Whenever we receive a message, update textarea
-        conn.onmessage = function(e) {
-          console.log('in conn.onmessage',e.data)
-          if (e.data != content.val()) {
-            console.log('in if',e.data)
-            content.val(e.data);
+        this.ws.onmessage = e => {
+          console.log('in this.ws.onmessage',e.data)
+          if (e.data != this.input) {
+
+            this.input = e.data;
+            console.log('this.input',this.input)
           }
-      //fetchChannel(channelSetup)
-    };
-        // this.onMessage(e);
+        };
+
 
       });
-
+      //fetchChannel(update)
+      //this.onMessage(e);
 
     },
-    data: {input: null, count: null},
-    mychan: null,
+    data() {
+      return {
+        ws: null,
+        input: 'doccotexteorooni',
+        channel: '',
+        count: 0
+      }
+    },
+
+
     components: {
       ToolBar
     },
