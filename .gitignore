@@ -11,3 +11,5 @@ logs
 
 .Spotlight-V100
 .Trashes
+
+client/dist/
