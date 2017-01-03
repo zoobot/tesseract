@@ -1,6 +1,6 @@
 FROM golang
 
-ADD . /go/src/github/internev/tesis
+ADD . /go/src/github.com/internev/tesis
 
 RUN apt-get update
 
@@ -15,7 +15,7 @@ WORKDIR /tmp
 COPY package.json /tmp/
 RUN npm config set registry http://registry.npmjs.org/ && npm install
 
-WORKDIR /go/src/github.com/internev/tesis/editor
+WORKDIR /go/src/github.com/internev/tesis
 
 RUN go get github.com/dchest/uniuri
 RUN go get github.com/gorilla/mux
