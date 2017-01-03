@@ -1,13 +1,12 @@
 package main
 
 import (
-  "fmt"
+  // "fmt"
   "log"
   "net/http"
   "time"
   "github.com/gorilla/websocket"
   "github.com/gorilla/mux"
-  // "github.com/dchest/uniuri"
 )
 
 // client.go handles read/write of messages to the websocket channel.
@@ -79,7 +78,7 @@ func (s *subscription) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
-			fmt.Println("Writepump: client has fired message", message)
+			// fmt.Println("Writepump: client has fired message", message)
 			if !ok {
 				c.write(websocket.CloseMessage, []byte{})
 				return
