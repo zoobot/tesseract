@@ -6,9 +6,10 @@ module.exports = {
   // Function adds each charactor to input
   update(e) {
     this.input = e.target.value
+  },
+  wsSend() {
     this.ws.send(this.input);
   },
-
   // On each keyup counts amount of words on document
   wordCounter() {
     let splitIt = this.input.split(' ');
