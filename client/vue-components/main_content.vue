@@ -35,13 +35,13 @@
     created() {
       // Starts listening on page load
 
-        // Use the vue-resource $http client to fetch data from the /tasks route
+      // get Unique URL.
       this.$http.get('/getUrl').then(function(response) {
         this.channel = response.body;
         console.log('this.channel',this.channel);
         this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + this.channel);
         console.log(this.ws);
-        // Textarea is editable only when socket is opened.
+        
         this.ws.onopen = function(e) {
           console.log('onopen',e);
         };
