@@ -36,7 +36,7 @@
         this.channel = response.body;
         console.log('this.channel',this.channel);
         this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + this.channel);
-        // console.log(this.ws);
+        console.log(this.ws);
         this.ws.onopen = e => {
           // console.log('onopen',e);
         };
