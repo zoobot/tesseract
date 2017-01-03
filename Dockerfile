@@ -9,12 +9,10 @@ RUN apt-get install -y nodejs
 
 RUN npm install webpack -g
 
-RUN mkdir -p /tmp
-WORKDIR /tmp
-COPY package.json /tmp/
-RUN npm config set registry http://registry.npmjs.org/ && npm install
 
 WORKDIR /go/src/github.com/tesis-lab/tesis
+RUN npm config set registry http://registry.npmjs.org/ && npm install
+
 
 RUN go get github.com/dchest/uniuri
 RUN go get github.com/gorilla/mux
