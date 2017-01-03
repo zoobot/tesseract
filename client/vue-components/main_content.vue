@@ -36,7 +36,7 @@
         this.channel = response.body;
         console.log('this.channel',this.channel);
         this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + this.channel);
-        console.log(this.ws);
+        // console.log(this.ws);
         this.ws.onopen = e => {
           // console.log('onopen',e);
         };
@@ -49,6 +49,8 @@
           if (e.data !== this.input) {
             this.input = e.data;
             // console.log('this.input',this.input)
+            // Needs to be called here as well in order to update word count.
+            this.wordCounter();
           }
         };
       });
