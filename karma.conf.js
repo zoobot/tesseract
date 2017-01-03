@@ -5,11 +5,10 @@ webpackConfig.entry = {};
 module.exports = (config) => {
   config.set({
     basePath: '',
-    port: 9876,
     autoWatch: true,
     singleRun: false,
     autoWatchBatchDelay: 300,
-    browsers: ['PhantomJS', 'Chrome'],
+    browsers: ['Chrome'],
     frameworks: ['jasmine'],
     files: ['./test/index.js'],
     preprocessors: {

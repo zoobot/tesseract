@@ -13,9 +13,7 @@
       <!-- Markdown editor -->
       <!-- Doesn't really compile markdown yet -->
       <div id="editor">
-        <textarea v-model="input"
-        id="content"
-        @input="update" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
+        <textarea id="content" :value="input" @input="update" @input.ws-send="wsSend" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
       </div>
       <!-- end editor -->
     </div>
@@ -31,47 +29,37 @@
 
   export default {
 
-
     created() {
       // Starts listening on page load
-
       // get Unique URL.
-      this.$http.get('/getUrl').then(function(response) {
+      Utils.fetchChannel((response) => {
         this.channel = response.body;
         console.log('this.channel',this.channel);
         this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + this.channel);
-        console.log(this.ws);
-        
-        this.ws.onopen = function(e) {
-          console.log('onopen',e);
+        // console.log(this.ws);
+        this.ws.onopen = e => {
+          // console.log('onopen',e);
         };
-
-        this.ws.onclose = function(e) {
-          console.log('onclose',e);
+        this.ws.onclose = e => {
+          // console.log('onclose',e);
         };
-
         // Whenever we receive a message, update textarea
         this.ws.onmessage = e => {
-          console.log('in this.ws.onmessage',e.data)
-          if (e.data != this.input) {
-
+          // console.log('in this.ws.onmessage',e.data)
+          if (e.data !== this.input) {
             this.input = e.data;
-            console.log('this.input',this.input)
+            // console.log('this.input',this.input)
           }
         };
-
-
       });
-      //fetchChannel(update)
-      //this.onMessage(e);
-
     },
     data() {
       return {
         ws: null,
-        input: 'doccotexteorooni',
+        input: '',
         channel: '',
-        count: 0
+        count: 0,
+        channel: ''
       }
     },
 
