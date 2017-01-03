@@ -1,12 +1,11 @@
 FROM golang
 
-ADD . /go/src/github.com/internev/tesis
+ADD . /go/src/github.com/tesis-lab/tesis
 
 RUN apt-get update
 
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 RUN apt-get install -y nodejs
-
 
 RUN npm install webpack -g
 
@@ -15,12 +14,12 @@ WORKDIR /tmp
 COPY package.json /tmp/
 RUN npm config set registry http://registry.npmjs.org/ && npm install
 
-WORKDIR /go/src/github.com/internev/tesis
+WORKDIR /go/src/github.com/tesis-lab/tesis
 
 RUN go get github.com/dchest/uniuri
 RUN go get github.com/gorilla/mux
 RUN go get github.com/gorilla/websocket
-RUN go install github.com/internev/tesis/editor
+RUN go install github.com/tesis-lab/tesis/editor
 
 RUN webpack
 
