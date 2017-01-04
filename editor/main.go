@@ -37,10 +37,12 @@ func main() {
   r.HandleFunc("/ws/{channel}", serveWS)
 
   /* ======>API<====== */
+
   r.HandleFunc("/db", CreateUser).Methods("POST")
   r.HandleFunc("/db", GetUser).Methods("GET")
   r.HandleFunc("/db", DeleteUser).Methods("PUT")
   r.HandleFunc("/db", UpdateUser).Methods("DELETE")
+
   /* <======end API======> */
 
   // Serve static files (make sure index has /client at start, so paths match)
