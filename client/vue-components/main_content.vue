@@ -1,6 +1,7 @@
 <!-- Created by Duncan on 12.28.2016 -->
 <template>
   <div class="main-content">
+    <navbar></navbar>
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
@@ -22,17 +23,20 @@
 </template>
 
 <script>
+  import Navbar from './navbar.vue'
   import ToolBar from './tool_bar.vue'
   import Methods from '../js/main_content.js'
   // HTTP calls ect.
   import Utils from '../js/utils.js'
 
   export default {
-
     created() {
-      // Starts listening on page load
-      // get Unique URL.
-      this.shareChannel();
+      // Url entered in browser.
+      let path = window.location.href.split('#');
+      this.shareChannel((url) => {
+        this.channel = url;
+        window.history.pushState(path[0], '/', this.channel);
+      });
     },
     data() {
       return {
@@ -44,7 +48,8 @@
       }
     },
     components: {
-      ToolBar
+      ToolBar,
+      Navbar
     },
     // Methods are located in js directory
     methods: Methods

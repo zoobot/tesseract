@@ -18,27 +18,18 @@ module.exports = {
     this.count = splitIt.filter(val => val !== '').length;
   },
   // Function opens websocket with unique ID
-  shareChannel() {
+  shareChannel(cb) {
     Utils.fetchChannel((response) => {
-      this.channel = response.body;
-      console.log('this.channel',this.channel);
-      this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + this.channel);
-      // console.log(this.ws);
-      this.ws.onopen = e => {
-        // console.log('onopen',e);
-      };
-      this.ws.onclose = e => {
-        // console.log('onclose',e);
-      };
+      this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + response.body);
       // Whenever we receive a message, update textarea
       this.ws.onmessage = e => {
         // console.log('in this.ws.onmessage',e.data)
         if (e.data !== this.input) {
           this.input = e.data;
-          // console.log('this.input',this.input)
-          // Needs to be called here as well in order to update word count.
           this.wordCounter();
         }
+        // Callback changes the url in the browser
+        cb(response.body);
       };
     });
   }
