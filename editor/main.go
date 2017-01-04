@@ -18,10 +18,12 @@ func main() {
 
   r.HandleFunc("/ws/{channel}", serveWS)
 
-  // db methods, for when db implemented.
-  // r.HandleFunc("/db", saveDoc).Methods("POST")
-  // r.HandleFunc("/db", retrieveDoc).Methods("GET")
-  // r.HandleFunc("/db", updateDoc).Methods("UPDATE")
+  /* ======>API<====== */
+  r.HandleFunc("/db", saveDoc).Methods("POST")
+  r.HandleFunc("/db", retrieveDoc).Methods("GET")
+  r.HandleFunc("/db", updateDoc).Methods("PUT")
+  r.HandleFunc("/db", deleteDoc).Methods("DELETE")
+  /* <======end API======> */
 
   // This is a terrible regex, mux does not support lots of regex stuff :(
   // Matches 5 char unique url if provided.

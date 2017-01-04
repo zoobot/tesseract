@@ -8,7 +8,7 @@ import (
   "encoding/json"
 )
 
-// urls.go handles unique url assignment. 
+// urls.go handles unique url assignment.
 
 var clientUrl string
 var customChannelSet bool
