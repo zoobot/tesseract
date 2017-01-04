@@ -22,7 +22,6 @@ const (
 // func hander(w http.ResponseWriter, r *http.Request) {
 //   fmt.Fprintf(w, "Hi there mover and shaker!")
 // }
-
 // handles routing
 func main() {
   fmt.Println("Go server, go! (8k)")
@@ -37,16 +36,10 @@ func main() {
   r.HandleFunc("/ws/{channel}", serveWS)
 
   /* ======>API<====== */
-  // People table
-  r.HandleFunc("/db/user", CreateUser).Methods("POST")
-  r.HandleFunc("/db/user", GetUser).Methods("GET")
-  r.HandleFunc("/db/user", UpdateUser).Methods("PUT")
-  r.HandleFunc("/db/user", DeleteUser).Methods("DELETE")
-  // Documents table
-  r.HandleFunc("/db/docs", AddDoc).Methods("POST")
-  r.HandleFunc("/db/docs", GetDoc).Methods("GET")
-  r.HandleFunc("/db/docs", UpdateDoc).Methods("PUT")
-  r.HandleFunc("/db/docs", DeleteDoc).Methods("DELETE")
+  r.HandleFunc("/db", saveDoc).Methods("POST")
+  r.HandleFunc("/db", retrieveDoc).Methods("GET")
+  r.HandleFunc("/db", updateDoc).Methods("PUT")
+  r.HandleFunc("/db", deleteDoc).Methods("DELETE")
   /* <======end API======> */
 
   // Serve static files (make sure index has /client at start, so paths match)
@@ -65,4 +58,3 @@ func main() {
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
 }
-
