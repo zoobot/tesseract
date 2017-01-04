@@ -32,28 +32,7 @@
     created() {
       // Starts listening on page load
       // get Unique URL.
-      Utils.fetchChannel((response) => {
-        this.channel = response.body;
-        console.log('this.channel',this.channel);
-        this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + this.channel);
-        // console.log(this.ws);
-        this.ws.onopen = e => {
-          // console.log('onopen',e);
-        };
-        this.ws.onclose = e => {
-          // console.log('onclose',e);
-        };
-        // Whenever we receive a message, update textarea
-        this.ws.onmessage = e => {
-          // console.log('in this.ws.onmessage',e.data)
-          if (e.data !== this.input) {
-            this.input = e.data;
-            // console.log('this.input',this.input)
-            // Needs to be called here as well in order to update word count.
-            this.wordCounter();
-          }
-        };
-      });
+      this.shareChannel();
     },
     data() {
       return {
@@ -64,8 +43,6 @@
         channel: ''
       }
     },
-
-
     components: {
       ToolBar
     },
