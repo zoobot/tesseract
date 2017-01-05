@@ -21,10 +21,10 @@ func main() {
   r.HandleFunc("/ws/{channel}", serveWS)
 
   /* ======>API<====== */
-  r.HandleFunc("/db", saveDoc).Methods("POST")
-  r.HandleFunc("/db", retrieveDoc).Methods("GET")
-  r.HandleFunc("/db", updateDoc).Methods("PUT")
-  r.HandleFunc("/db", deleteDoc).Methods("DELETE")
+  r.HandleFunc("/db", CreateUser).Methods("POST")
+  r.HandleFunc("/db", GetUser).Methods("GET")
+  r.HandleFunc("/db", DeleteUser).Methods("PUT")
+  r.HandleFunc("/db", UpdateUser).Methods("DELETE")
   /* <======end API======> */
 
   // Serve static files (make sure index has /client at start, so paths match)
@@ -42,3 +42,4 @@ func main() {
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
 }
+
