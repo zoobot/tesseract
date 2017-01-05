@@ -61,6 +61,3 @@ func main() {
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
 }
-
-
-
