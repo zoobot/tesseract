@@ -10,7 +10,7 @@ let router = new VueRouter({
   mode: 'history',
   routes: [
     {
-      path: '/',
+      path: '/:channel?',
       name: 'mainContent',
       component: MainContent
     }
@@ -25,7 +25,3 @@ new Vue({
     </div>
   `
 }).$mount('#app');
-
-
-
-

@@ -1,6 +1,6 @@
 <!-- Created by Duncan on 12.28.2016 -->
 <template>
-  <nav class="navbar navbar-fixed-top">
+  <nav class="navbar navbar-static-top">
     <div class="left-nav">
     </div>
     <div class="title">

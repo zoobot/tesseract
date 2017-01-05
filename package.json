@@ -47,6 +47,7 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "bootstrap": "^3.3.7",
+    "chance": "^1.0.4",
     "http": "0.0.0",
     "morgan": "^1.7.0",
     "path": "^0.12.7",

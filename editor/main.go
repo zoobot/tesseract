@@ -25,13 +25,21 @@ func main() {
 
   // This is a terrible regex, mux does not support lots of regex stuff :(
   // Matches 5 char unique url if provided.
-  r.HandleFunc("/{channel:[0-9A-Za-z][0-9A-Za-z][0-9A-Za-z][0-9A-Za-z][0-9A-Za-z]}", customChannelHandler)
+  // r.HandleFunc("/{channel:[0-9A-Za-z][0-9A-Za-z][0-9A-Za-z][0-9A-Za-z][0-9A-Za-z]}", customChannelHandler)
 
   // special route for new connection, must ask /getUrl for unique url identifier for channel.
-  r.HandleFunc("/getUrl", urlHandler).Methods("GET")
+  // r.HandleFunc("/getUrl", urlHandler).Methods("GET")
 
   // Serve static files - nb: this is dependent on run location (ie: it's set up to be run from root)
-  r.PathPrefix("/").Handler(http.FileServer(http.Dir("client")))
+  s := http.StripPrefix("/client", http.FileServer(http.Dir("client")))
+  r.PathPrefix("/client").Handler(s)
+
+  r.HandleFunc("/", serveIndex)
+  r.NotFoundHandler = http.HandlerFunc(serveIndex)
 
   log.Fatal(http.ListenAndServe(":8000", r))
+}
+
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+  http.ServeFile(w, r, "client/index.html")
 }
