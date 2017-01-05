@@ -18,7 +18,7 @@
       </div>
       <!-- end editor -->
     </div>
-    <!-- end text feild -->
+    <!-- end text field -->
   </div>
 </template>
 
@@ -28,15 +28,29 @@
   import Methods from '../js/main_content.js'
   // HTTP calls ect.
   import Utils from '../js/utils.js'
+  import Chance from 'chance'
+  const chance = new Chance()
 
   export default {
     created() {
+      let URI = chance.word({length: 5})
+      this.ws = new WebSocket(`ws://${window.location.host}/ws/${URI}`)
+      console.log('websocket:', this.ws);
+      // Whenever we receive a message, update textarea
+      this.ws.onmessage = e => {
+        // console.log('in this.ws.onmessage',e.data)
+        if (e.data !== this.input) {
+          this.input = e.data;
+          // this.wordCounter();
+        }
+      }
       // Url entered in browser.
-      let path = window.location.href.split('#');
-      this.shareChannel((url) => {
-        this.channel = url;
-        window.history.pushState(path[0], '/', this.channel);
-      });
+      // console.log("route params:", $route.params.channel)
+      // let path = window.location.href.split('#');
+      // this.shareChannel((url) => {
+      //   this.channel = url;
+      //   window.history.pushState(path[0], '/', this.channel);
+      // });
     },
     data() {
       return {
