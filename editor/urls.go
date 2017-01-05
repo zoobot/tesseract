@@ -8,7 +8,7 @@ import (
   "encoding/json"
 )
 
-// urls.go handles unique url assignment. 
+// urls.go handles unique url assignment.
 
 var clientUrl string
 var customChannelSet bool
@@ -18,11 +18,13 @@ func customChannelHandler(w http.ResponseWriter, r *http.Request) {
   muxedReq := mux.Vars(r)
   clientUrl = muxedReq["channel"]
   customChannelSet = true
+  fmt.Println("customreq, clientUrl:", clientUrl, "customChannelSet", customChannelSet)
   http.Redirect(w, r, "/", 301)
 }
 
 // responds to client url request to use correct websocket channel.
 func urlHandler(w http.ResponseWriter, r *http.Request) {
+  fmt.Println("urlHandler, clientUrl at the moment is:", clientUrl, "Set:", customChannelSet)
   if !customChannelSet {
     clientUrl = uniuri.NewLen(5)
   }
