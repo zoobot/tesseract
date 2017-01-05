@@ -13,3 +13,6 @@ logs
 .Trashes
 
 client/dist/
+
+.floo
+.flooignore

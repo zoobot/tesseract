@@ -18,7 +18,6 @@
   import Methods from '../js/navbar.js'
   // HTTP calls ect.
   import Utils from '../js/utils.js'
-
   export default {
     created() {},
     components: { Avatar },
@@ -36,7 +35,6 @@
     width: 100vw;
     border: transparent;
   }
-
   .title{
     display: table-cell;
     height: 100%;
@@ -63,5 +61,4 @@
     height: 100%;
     width: 30vw;
   }
-
 </style>
