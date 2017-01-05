@@ -1,6 +1,6 @@
 <!-- Created by Duncan on 12.28.2016 -->
 <template>
-  <nav class="navbar navbar-static-top">
+  <nav class="navbar navbar-fixed-top">
     <div class="left-nav">
     </div>
     <div class="title">
@@ -18,7 +18,6 @@
   import Methods from '../js/navbar.js'
   // HTTP calls ect.
   import Utils from '../js/utils.js'
-
   export default {
     created() {},
     components: { Avatar },
@@ -36,7 +35,6 @@
     width: 100vw;
     border: transparent;
   }
-
   .title{
     display: table-cell;
     height: 100%;
@@ -63,5 +61,4 @@
     height: 100%;
     width: 30vw;
   }
-
 </style>

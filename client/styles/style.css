@@ -8,3 +8,14 @@ html, body{
 body{
   padding-top: 8em;
 }
+
+.float-l {
+  float: left;
+}
+
+.float-r {
+  float: right;
+}
+.pad-top-8 {
+  padding-top: 8em;
+}

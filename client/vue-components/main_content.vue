@@ -37,7 +37,7 @@
     created() {
       // get params from URL (if provided)
       let c = this.$route.params.channel;
-      
+
       // set URI to params or generated 5 char unique.
       let URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5});
 
@@ -51,7 +51,7 @@
       this.ws.onmessage = e => {
         if (e.data !== this.input) {
           this.input = e.data;
-          // this.wordCounter();
+          this.wordCounter();
         }
       }
 
