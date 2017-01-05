@@ -36,10 +36,12 @@ func main() {
   // websocket endpoint
   r.HandleFunc("/ws/{channel}", serveWS)
 
-  // db methods, for when db implemented.
-  // r.HandleFunc("/db", saveDoc).Methods("POST")
-  // r.HandleFunc("/db", retrieveDoc).Methods("GET")
-  // r.HandleFunc("/db", updateDoc).Methods("UPDATE")
+  /* ======>API<====== */
+  r.HandleFunc("/db", CreateUser).Methods("POST")
+  r.HandleFunc("/db", GetUser).Methods("GET")
+  r.HandleFunc("/db", DeleteUser).Methods("PUT")
+  r.HandleFunc("/db", UpdateUser).Methods("DELETE")
+  /* <======end API======> */
 
   // Serve static files (make sure index has /client at start, so paths match)
   s := http.StripPrefix("/client", http.FileServer(http.Dir("client")))
@@ -57,3 +59,6 @@ func main() {
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
 }
+
+
+
