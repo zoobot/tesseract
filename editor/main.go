@@ -19,10 +19,10 @@ func main() {
   r.HandleFunc("/ws/{channel}", serveWS)
 
   /* ======>API<====== */
-  r.HandleFunc("/db", saveDoc).Methods("POST")
-  r.HandleFunc("/db", retrieveDoc).Methods("GET")
-  r.HandleFunc("/db", updateDoc).Methods("PUT")
-  r.HandleFunc("/db", deleteDoc).Methods("DELETE")
+  r.HandleFunc("/db", CreateUser).Methods("POST")
+  r.HandleFunc("/db", GetUser).Methods("GET")
+  r.HandleFunc("/db", DeleteUser).Methods("PUT")
+  r.HandleFunc("/db", UpdateUser).Methods("DELETE")
   /* <======end API======> */
 
   // This is a terrible regex, mux does not support lots of regex stuff :(
@@ -37,3 +37,6 @@ func main() {
 
   log.Fatal(http.ListenAndServe(":8000", r))
 }
+
+
+
