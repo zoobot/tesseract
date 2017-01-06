@@ -3,84 +3,123 @@ package main
 import (
   "fmt"
   "net/http"
+  "encoding/json"
   "gopkg.in/mgo.v2"
   "gopkg.in/mgo.v2/bson"
 )
 /* ======>User Schema<====== */
-type User struct {
-  id       bson.ObjectId `bson:"_id,omitempty"`
-  userName string
-  password string
-}
-
-var (
-  IsDrop = true
+type(
+  User struct {
+    Id bson.ObjectId `json:"id" bson:"_id,omitempty"`
+    UserName string `json:"username" bson:"username"`
+    Password string `json:"password" bson:"password"`
+    Saved string `json:"saved" bson:"saved"`
+  }
 )
 /* ======>Database Handlers<====== */
+// CreateUser creates a new user resource
 func CreateUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    panic(err)
+    w.WriteHeader(404)
+    return
+  }
+  defer session.Close()
+
+  // Stub a user to be populated from the body
+  u := User{}
+
+  // Populate the user data
+  if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+    w.WriteHeader(404)
+    return
   }
 
-  c := session.DB("tesis").C("users")
+  // Add an id
+  u.Id = bson.NewObjectId()
 
-  err = c.Insert(&User{userName: "Ale", password: "1234"},
-    &User{userName: "Cla", password: "1234"})
-  if err != nil {
-    panic(err)
-  }
+  session.DB("tesis").C("people").Insert(u)
 
-  result := User{}
+  // Make response into json
+  uj, _ := json.Marshal(u)
 
-  // err = c.Find(bson.M{}).All(&result)
-  // if err != nil {
-  //   panic(err)
-  // }
-
+  w.Header().Set("Content-Type", "application/json")
   w.WriteHeader(201)
-  fmt.Fprintf(w, "POST request added, %s! ", result)
+  // Return id for storage in session
+  fmt.Fprintf(w, "%s", uj)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    panic(err)
+    w.WriteHeader(404)
+    return
   }
+  defer session.Close()
 
   var results []User
-  c := session.DB("tesis").C("users")
-  err = c.Find(bson.M{}).Sort("-timestamp").All(&results)
 
+  c := session.DB("tesis").C("people")
+  err = c.Find(bson.M{}).Sort("-timestamp").All(&results)
   if err != nil {
-    panic(err)
+    w.WriteHeader(404)
+    return
   }
 
+  uj, _ := json.Marshal(results)
+
+  w.Header().Set("Content-Type", "application/json")
   w.WriteHeader(200)
-  fmt.Fprintf(w, "GET request response, %s! ", results)
+  fmt.Fprintf(w, "GET request, %s! ", uj)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    panic(err)
+    w.WriteHeader(404)
+    return
   }
+  defer session.Close()
 
-  c := session.DB("tesis").C("users")
-  err = c.RemoveAll(bson.M{})
-  if err != nil {
-    panic(err)
-  }
+  session.DB("tesis").C("people").RemoveAll(bson.M{})
 
-  w.WriteHeader(200)
-  fmt.Fprintf(w, "DELETE successful")
+  // Make response into json
+  uj, _ := json.Marshal("done")
+
+  w.Header().Set("Content-Type", "application/json")
+  w.WriteHeader(201)
+  // Return id for storage in session
+  fmt.Fprintf(w, "%s", uj)
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
+  session, err := mgo.Dial("mongodb://localhost:27017")
+  if err != nil {
+    w.WriteHeader(404)
+    return
+  }
+  defer session.Close()
 
-  w.WriteHeader(200)
-  fmt.Fprintf(w, "This is a PUT request too, /%s! ", r.URL.Path[1:])
+  // Stub a user to be populated from the body
+  u := User{}
+
+  // Populate the user data
+  if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+    w.WriteHeader(404)
+    return
+  }
+
+  var g float64
+
+  session.DB("tesis").C("people").Find(bson.M{"username": "1111111111"}).One(&g)
+
+  // Make response into json
+  uj, _ := json.Marshal(g)
+
+  w.Header().Set("Content-Type", "application/json")
+  w.WriteHeader(201)
+  // Return id for storage in session
+  fmt.Fprintf(w, "%s", uj)
 }
 /* <=======end Database Handlers======> */
