@@ -40,8 +40,8 @@ func main() {
 
   r.HandleFunc("/db", CreateUser).Methods("POST")
   r.HandleFunc("/db", GetUser).Methods("GET")
-  r.HandleFunc("/db", DeleteUser).Methods("PUT")
-  r.HandleFunc("/db", UpdateUser).Methods("DELETE")
+  r.HandleFunc("/db", UpdateUser).Methods("PUT")
+  r.HandleFunc("/db", DeleteUser).Methods("DELETE")
 
   /* <======end API======> */
 
