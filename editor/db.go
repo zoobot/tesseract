@@ -53,6 +53,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
+
     w.WriteHeader(404)
     return
   }

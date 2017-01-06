@@ -38,7 +38,6 @@ func main() {
   // start 'er up.
   log.Fatal(http.ListenAndServe(":8000", r))
 }
-
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
 }
