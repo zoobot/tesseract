@@ -14,8 +14,10 @@ func main() {
   // run the hub to start websockets
   go h.run()
 
+  // gorilla router
   r := mux.NewRouter()
 
+  // websocket endpoint
   r.HandleFunc("/ws/{channel}", serveWS)
 
   // db methods, for when db implemented.
@@ -23,20 +25,15 @@ func main() {
   // r.HandleFunc("/db", retrieveDoc).Methods("GET")
   // r.HandleFunc("/db", updateDoc).Methods("UPDATE")
 
-  // This is a terrible regex, mux does not support lots of regex stuff :(
-  // Matches 5 char unique url if provided.
-  // r.HandleFunc("/{channel:[0-9A-Za-z][0-9A-Za-z][0-9A-Za-z][0-9A-Za-z][0-9A-Za-z]}", customChannelHandler)
-
-  // special route for new connection, must ask /getUrl for unique url identifier for channel.
-  // r.HandleFunc("/getUrl", urlHandler).Methods("GET")
-
-  // Serve static files - nb: this is dependent on run location (ie: it's set up to be run from root)
+  // Serve static files (make sure index has /client at start, so paths match)
   s := http.StripPrefix("/client", http.FileServer(http.Dir("client")))
   r.PathPrefix("/client").Handler(s)
 
+  // serve index.html to root, or any path we don't recognise.
   r.HandleFunc("/", serveIndex)
   r.NotFoundHandler = http.HandlerFunc(serveIndex)
 
+  // start 'er up.
   log.Fatal(http.ListenAndServe(":8000", r))
 }
 
