@@ -26,10 +26,13 @@
   import Methods from '../js/webrtc.js'
   export default {
     created() {
+    this.server = new WebSocket(this.serverConnection);
     },
     props: ['ws'],
     data() {
         return {
+          server: '',
+          serverConnection: this.ws.url + 'rtc',
           localStream:'',
           localVideo:'',
           userStreamOn: false,
@@ -40,7 +43,6 @@
     methods: {
     //eventually we can port all these methods into a js file
       start() {
-        console.log('this is our channel!', this.ws)
         this.userStreamOn = !this.userStreamOn;
         if (this.userStreamOn) {
         //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
@@ -76,8 +78,7 @@
         peerConnection.addStream(this.localStream)
         if(isCaller) {
             peerConnection.createOffer()
-           .then(offer => {peerConnection.setLocalDescription(offer);console.log('this is the offer', offer)})
-           .then(offer => {this.ws.send(JSON.stringify({'sdp': offer}))})
+           .then(offer => {peerConnection.setLocalDescription(offer);this.server.send(JSON.stringify({'sdp': offer}));console.log('this is our offer', offer)})
            .catch(e => { console.log('err', e);})
          }
       },
@@ -93,9 +94,12 @@
      //       peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice));
      //   }
      // },
+
+
       gotIceCandidate(event) {
         if(event.candidate != null) {
-          this.ws.send(JSON.stringify({'ice': event.candidate}));
+         // console.log('this is our ice candidate', event.candidate)
+          this.server.send(JSON.stringify({'ice': event.candidate}));
         }
       },
       gotRemoteStream(event) {

@@ -94,6 +94,7 @@ func (s *subscription) writePump() {
 	}
 }
 
+
 // upgrades http connection, starts read/write pumps.
 func serveWS(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)

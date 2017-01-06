@@ -1,6 +1,6 @@
 package main
 
-// import "fmt"
+ import "fmt"
 
 // hub handles registering/unregistering of clients to channels
 // and broadcast of messages to all clients in each channel.
@@ -29,7 +29,7 @@ var h = hub{
   broadcast:  make(chan message),
   register:   make(chan subscription),
   unregister: make(chan subscription),
-  channels:   make(map[string]map[*client]bool),
+  channels:  make(map[string]map[*client]bool),
 }
 
 // handles register/unregister/broadcast on channel by channel basis.
@@ -63,7 +63,7 @@ func (h *hub) run() {
       }
     case m := <- h.broadcast:
       clients := h.channels[m.channel]
-      // fmt.Println("broadcasting message to ", clients, "data is: ", m.data)
+       fmt.Println("broadcasting message to ", clients, "data is: ", m.data)
 	    for c := range clients {
         select {
         case c.send <- m.data:

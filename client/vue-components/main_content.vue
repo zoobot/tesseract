@@ -46,6 +46,9 @@
       // create websocket with unique address.
       this.ws = new WebSocket(`ws://${window.location.host}/ws/${URI}`);
 
+      //create RTC websocket
+      this.wsRTC = new WebSocket(`ws://${window.location.host}/ws/${URI}rtc`);
+
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', URI);
 
@@ -56,11 +59,26 @@
           this.wordCounter();
         }
       }
-
+      // Whenever we receive a signal from the RTC websocket...
+      this.wsRTC.onmessage = e => {
+        let peerConnection = new RTCPeerConnection({'iceServers': [{'url': 'stun:stun.services.mozilla.com'}, {'url': 'stun:stun.l.google.com:19302'}]});
+        let signal = JSON.parse(e.data);
+          if(signal.sdp) {
+            peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function() {
+              peerConnection.createAnswer()
+              .then(answer => {peerConnection.setLocalDescription(answer);console.log('here is your answer', answer)
+              //working until here...figure out how to grab this answer out of this scope to pass it back to vid component!
+              })
+            })
+          }
+       }
     },
+
     data() {
       return {
         ws: null,
+        wsRTC: null,
+        answer:'',
         input: '',
         channel: '',
         count: 0,
