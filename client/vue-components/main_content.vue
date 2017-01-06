@@ -6,6 +6,7 @@
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
+      <VideoComponent id="video" :ws="ws"></VideoComponent>
       <p>This area is for live data about text</p>
       <p>To see tools hover over tools or far left on screen</p>
     </div>
@@ -28,6 +29,7 @@
   import Navbar from './navbar.vue'
   import ToolBar from './tool_bar.vue'
   import Methods from '../js/main_content.js'
+  import VideoComponent from './video_component.vue'
   // HTTP calls ect.
   import Utils from '../js/utils.js'
   import Chance from 'chance'
@@ -67,7 +69,8 @@
     },
     components: {
       ToolBar,
-      Navbar
+      Navbar,
+      VideoComponent
     },
     // Methods are located in js directory
     methods: Methods

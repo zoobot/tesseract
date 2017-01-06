@@ -27,7 +27,7 @@
   export default {
     created() {
     },
-    props: ['ws','signal'],
+    props: ['ws'],
     data() {
         return {
           localStream:'',
@@ -68,7 +68,6 @@
         this.localStream = stream;
       },
       call(isCaller) {
-        console.log('this is the signal', this.signal)
         // instantiate new peer connection
         let peerConnection = new RTCPeerConnection(this.peerConnectionConfig);
         // // set methods on new peer connection object
@@ -77,7 +76,7 @@
         peerConnection.addStream(this.localStream)
         if(isCaller) {
             peerConnection.createOffer()
-           .then(offer => {peerConnection.setLocalDescription(offer)})
+           .then(offer => {peerConnection.setLocalDescription(offer);console.log('this is the offer', offer)})
            .then(offer => {this.ws.send(JSON.stringify({'sdp': offer}))})
            .catch(e => { console.log('err', e);})
          }
