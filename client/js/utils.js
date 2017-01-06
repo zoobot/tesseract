@@ -15,17 +15,17 @@ Vue.use(VueResource);
 // Get(fetch) takes no query receives all data
 // **send an empty object to delete to delete all data**
 
-const url = 'http://127.0.0.1:1337';
+const url = 'http://127.0.0.1:8000';
 
 module.exports = {
-  fetchChannel(cb) {
-    Vue.http.get('/getUrl')
-    .then((res) => {
-      cb(res)
-    }).catch((res) => {
-      throw res;
-    });
-  },
+  // fetchChannel(cb) {
+  //   Vue.http.get('/getUrl')
+  //   .then((res) => {
+  //     cb(res)
+  //   }).catch((res) => {
+  //     throw res;
+  //   });
+  // },
   // Fetches data from database
   fetch(cb) {
     Vue.http.get(url + '/db')

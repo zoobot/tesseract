@@ -54,7 +54,6 @@
           this.wordCounter();
         }
       }
-
     },
     data() {
       return {
