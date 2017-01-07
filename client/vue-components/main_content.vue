@@ -6,12 +6,13 @@
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
-      <VideoComponent id="video" :ws="ws"></VideoComponent>
+
       <p>This area is for live data about text</p>
       <p>To see tools hover over tools or far left on screen</p>
+      <VideoComponent id="video" :wsRTC="wsRTC" :ws="ws" :answer="answer"></VideoComponent>
     </div>
     <!-- end live data area -->
-    <!-- text feild -->
+    <!-- text field -->
     <div class="content-right">
       <!-- Markdown editor -->
       <!-- Doesn't really compile markdown yet -->
@@ -59,23 +60,20 @@
           this.wordCounter();
         }
       }
-      // Whenever we receive a signal from the RTC websocket...
-      this.wsRTC.onmessage = e => {
-        let peerConnection = new RTCPeerConnection({'iceServers': [{'url': 'stun:stun.services.mozilla.com'}, {'url': 'stun:stun.l.google.com:19302'}]});
-        let signal = JSON.parse(e.data);
-          if(signal.sdp) {
-            peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function() {
-              peerConnection.createAnswer()
-              .then(answer => {peerConnection.setLocalDescription(answer);console.log('here is your answer', answer)
-              //working until here...figure out how to grab this answer out of this scope to pass it back to vid component!
-              })
-            })
-          }
-       }
+
+      // onMessage((data) => {
+      //   // Do something with data
+      //   this.whatever = data;
+      // })
+      // let onMessage = (cb) => {
+        // Whenever we receive a signal from the RTC websocket...
+
+
     },
 
     data() {
       return {
+        // URI: c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5}),
         ws: null,
         wsRTC: null,
         answer:'',
@@ -91,7 +89,7 @@
       VideoComponent
     },
     // Methods are located in js directory
-    methods: Methods
+    methods: Methods,
   }
 </script>
 

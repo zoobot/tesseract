@@ -1,12 +1,12 @@
 <template>
 
     <div>
-        <video id="localVideo" autoplay></video>
-        <video id="remoteVideo" autoplay></video>
-        <button @click="start" id="startButton">Start</button>
 
+        <button @click="start" id="startButton">Start</button>
         <button @click="call(true)" id="callButton">Call</button>
         <button @click="stop" id="stopButton">Stop</button>
+        <video id="localVideo" autoplay></video>
+        <video id="remoteVideo" autoplay></video>
     </div>
     <!--need to set remote videos to append to document to accomodate for multiple callers (maybe later feature?)-->
     <!--<div v-el="remoteVideo" id="remoteVideo">-->
@@ -25,21 +25,64 @@
   import Utils from '../js/utils.js'
   import Methods from '../js/webrtc.js'
   export default {
+
     created() {
-    this.server = new WebSocket(this.serverConnection);
+
+      console.log(this.wsRTC)
+      console.log('this is the localpeerConnection', this.peerConnectionLocal)
+      this.wsRTC.onmessage = e => {
+          let peerConnection = new RTCPeerConnection({'iceServers': [{'url': 'stun:stun.services.mozilla.com'}, {'url': 'stun:stun.l.google.com:19302'}]});
+          let signal = JSON.parse(e.data);
+          //console.log('here is the signal you are sending!', signal)
+            if(signal.sdp) {
+              peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp),
+                () => {
+                //console.log('peerConnection 1', peerConnection)
+                peerConnection.createAnswer()
+                .then(answer => {
+                  //console.log('SECOND sdp fired off!', answer, this);
+                  peerConnection.setLocalDescription(answer);
+                  this.wsRTC.send(JSON.stringify({'sdp': answer}));
+                  this.peerConnectionBill = peerConnection;
+                  // console.log('peerConnectionBill', this.peerConnectionBill);
+                  // console.log('peerConnection 2', peerConnection);
+                })
+                .catch(e => { console.log('err answer this.wsRTC.send', e);})
+              })
+            } else if (signal.ice) {
+              // console.log('in ice', signal.ice)
+              let candidate = new RTCIceCandidate(signal.ice);
+              this.peerConnectionBill.addIceCandidate(candidate)
+              .then(() => {
+                console.log('success!!');
+                this.remoteVideo = this.peerConnectionBill.getRemoteStreams();
+                let billsVideo = document.getElementById('remoteVideo');
+                console.log('got remote stream', this.remoteVideo[0]);
+                billsVideo.srcObject = this.remoteVideo[0];
+                //window.remoteStream = billsVideo.srcObject = this.remoteVideo[0];
+                console.log('this is bill', billsVideo)
+              })
+            }
+        }
     },
-    props: ['ws'],
+
+    props: ['ws', 'wsRTC'],
+
     data() {
         return {
+          // wsRTC: null,
           server: '',
           serverConnection: this.ws.url + 'rtc',
           localStream:'',
           localVideo:'',
+          remoteVideo:'',
           userStreamOn: false,
+          peerConnectionBill:'',
           peerConnectionConfig: {'iceServers': [{'url': 'stun:stun.services.mozilla.com'}, {'url': 'stun:stun.l.google.com:19302'}]},
           constraints: { audio: false, video: true }
         }
     },
+
     methods: {
     //eventually we can port all these methods into a js file
       start() {
@@ -63,49 +106,38 @@
       gotStream(stream) {
         this.localVideo = document.getElementById('localVideo');
         //NOTE: refer back to global scope data object here!!
-        console.log ('Received local stream');
+        console.log ('Received local stream', stream);
         //set source of localVideo element to the stream captures from getUserMedia
         this.localVideo.srcObject = stream;
+        console.log ('this.localVideo.srcObject',this.localVideo.srcObject);
         // set localStream equal to this stream
         this.localStream = stream;
       },
+
       call(isCaller) {
         // instantiate new peer connection
         let peerConnection = new RTCPeerConnection(this.peerConnectionConfig);
+        this.peerConnectionLocal = peerConnection;
         // // set methods on new peer connection object
         peerConnection.onicecandidate = this.gotIceCandidate;
-        peerConnection.onaddstream = this.gotRemoteStream;
+        // peerConnectionBill.onaddstream = this.gotRemoteStream;
         peerConnection.addStream(this.localStream)
         if(isCaller) {
             peerConnection.createOffer()
-           .then(offer => {peerConnection.setLocalDescription(offer);this.server.send(JSON.stringify({'sdp': offer}));console.log('this is our offer', offer)})
+           .then(offer => {
+           peerConnection.setLocalDescription(offer);
+           this.wsRTC.send(JSON.stringify({'sdp': offer}));
+           console.log('this is our offer', offer)})
            .catch(e => { console.log('err', e);})
          }
       },
-     // serverConnection.onmessage(message) {
-     //   console.log('received message from server!');
-     //    if(!peerConnection) start(false);
-     //    var signal = JSON.parse(message.data);
-     //    if(signal.sdp) {
-     //      peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function() {
-     //        peerConnection.createAnswer(gotDescription, createAnswerError);
-     //    });
-     //    } else if(signal.ice) {
-     //       peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice));
-     //   }
-     // },
 
-
-      gotIceCandidate(event) {
+      gotIceCandidate(e) {
         if(event.candidate != null) {
-         // console.log('this is our ice candidate', event.candidate)
-          this.server.send(JSON.stringify({'ice': event.candidate}));
+          this.wsRTC.send(JSON.stringify({'ice': e.candidate}));
         }
-      },
-      gotRemoteStream(event) {
-        console.log("got remote stream");
-        remoteVideo.src = window.URL.createObjectURL(event.stream);
       }
+
     }
   }
 </script>
