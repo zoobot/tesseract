@@ -54,7 +54,7 @@
       start() {
         //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
         //which is then used in the success callback on the MediaStream object that contains the media stream
-          navigator.mediaDevices.getUserMedia({ audio: false, video: true})
+          navigator.mediaDevices.getUserMedia({ audio: true, video: true})
           .then(this.gotStream)
           .catch(e => { console.log('getUserMedia() error: ' + e.name);});
       },
