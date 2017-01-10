@@ -9,13 +9,14 @@ Vue.use(VueResource);
   {
     userName: 'Sally',
     email: 'sally@me.com',
-    projects: [some.txt, that.txt]
+    password: '1234435wefdsgg',
+    saved: [some.txt, that.txt]
   }
 */
 // Get(fetch) takes no query receives all data
 // **send an empty object to delete to delete all data**
 
-const url = 'http://127.0.0.1:8000';
+const url = 'http://127.0.0.1:2727';
 
 module.exports = {
   // fetchChannel(cb) {
@@ -27,8 +28,11 @@ module.exports = {
   //   });
   // },
   // Fetches data from database
-  fetch(cb) {
-    Vue.http.get(url + '/db')
+  fetch(param, cb) {
+    // Searches based on params passed in, param is an array --> ex ['_id', '12345']. Empty array will return entire database.
+    // Can search for any valid property.
+    // If found response will be all user data and response code 200.
+    Vue.http.get(url + '/db?' + param.join('='))
     .then((res) => {
       cb(res);
     }).catch((res) => {
@@ -36,7 +40,10 @@ module.exports = {
     });
   },
   send(data, cb) {
-    Vue.http.post(url + '/db', data)
+    // Send full body (like above), will search for userName before adding.
+    // If user is found will respond with all user data and status code 200.
+    // If not found will add user and respond with user id to add to session or cookie and status code 201.
+    Vue.http.post(url + '/db', JSON.stringify(data))
     .then((res) => {
       cb(res);
     }).catch((res) => {
@@ -44,7 +51,9 @@ module.exports = {
     });
   },
   update(data, cb) {
-    Vue.http.put(url + '/db', data)
+    // Send full body with new data plus an _id property with id stored in cookie or session.
+    // Will resond with updated data and response code 201.
+    Vue.http.put(url + '/db', JSON.stringify(data))
     .then((res) => {
       cb(res);
     }).catch((res) => {
@@ -52,7 +61,10 @@ module.exports = {
     });
   },
   remove(data, cb) {
-    Vue.http.delete(url + '/db', data)
+    // Send body with at least _id property to delete a single user.
+    // Response will be a status code of 201.
+    // Be warned an empty body object will delete whole db, this is like this just for development purposes, will remove before the end.
+    Vue.http.delete(url + '/db', JSON.stringify(data))
     .then((res) => {
       cb(res);
     }).catch((res) => {
