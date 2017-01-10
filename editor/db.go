@@ -72,7 +72,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetUser gets a user resource
-func GetUserById(w http.ResponseWriter, r *http.Request) {
+func GetUser(w http.ResponseWriter, r *http.Request) {
 // finds by id :o
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
