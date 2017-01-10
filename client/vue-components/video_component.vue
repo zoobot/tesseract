@@ -79,7 +79,6 @@
           localStream:'',
           localVideo:'',
           remoteVideo:'',
-          userStreamOn: false,
           peerConnectionConfig: {'iceServers': [{'url': 'stun:stun.l.google.com:19305'}, {'url': 'stun:stun.services.mozilla.com'}]},
           constraints: { audio: true, video: true }
         }
@@ -88,21 +87,11 @@
     methods: {
     //eventually we can port all these methods into a js file
       start() {
-        this.userStreamOn = !this.userStreamOn;
-        if (this.userStreamOn) {
         //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
         //which is then used in the success callback on the MediaStream object that contains the media stream
-          navigator.mediaDevices.getUserMedia({ audio: false,
-            video: {
-              mandatory: {
-                "minWidth": 640,
-                "minHeight": 480
-              }
-            }
-          })
+          navigator.mediaDevices.getUserMedia({ audio: true, video: true})
           .then(this.gotStream)
           .catch(e => { console.log('getUserMedia() error: ' + e.name);});
-        }
       },
 
       gotStream(stream) {
