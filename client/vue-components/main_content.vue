@@ -6,7 +6,7 @@
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
-      <VideoComponent id="video" :wsRTC="wsRTC" :ws="ws" :answer="answer"></VideoComponent>
+      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
     </div>
     <!-- end live data area -->
     <!-- text field -->
@@ -57,14 +57,6 @@
           this.wordCounter();
         }
       }
-
-      // onMessage((data) => {
-      //   // Do something with data
-      //   this.whatever = data;
-      // })
-      // let onMessage = (cb) => {
-        // Whenever we receive a signal from the RTC websocket...
-
 
     },
 
