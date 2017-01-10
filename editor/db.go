@@ -18,7 +18,7 @@ type(
     Email string `json:"email" bson:"email"`
     Password string `json:"password" bson:"password"`
     Avatar string `json:"avatar" bson:"avatar"`
-    // Saved []Saved `json:"saved", bson:"saved"`
+    Saved []Saved `json:"saved", bson:"saved"`
   }
 )
 /* ======>Database Handlers<====== */
@@ -73,7 +73,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 // GetUser gets a user resource
 func GetUser(w http.ResponseWriter, r *http.Request) {
-// finds by id :o
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
 
