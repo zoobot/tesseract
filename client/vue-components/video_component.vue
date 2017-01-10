@@ -2,11 +2,11 @@
 
     <div>
 
-        <button @click="start" id="startButton">Start</button>
-        <button @click="call(true)" id="callButton">Call</button>
-        <button @click="stop" id="stopButton">Stop</button>
-        <video id="localVideo" autoplay></video>
-        <video id="remoteVideo" autoplay></video>
+        <!-- <button @click="start" id="startButton">Start</button> -->
+        <div><button @click="call()" id="callButton" >Call</button></div>
+        <!-- <button @click="stop" id="stopButton">Stop</button> -->
+        <div><video id="localVideo" autoplay muted="true"></video></div><br><br>
+        <div><video id="remoteVideo" autoplay></video></div>
     </div>
     <!--need to set remote videos to append to document to accomodate for multiple callers (maybe later feature?)-->
     <!--<div v-el="remoteVideo" id="remoteVideo">-->
@@ -18,7 +18,9 @@
   video {
     display: inline-block;
     max-width: 100%;
-    width: 150px
+  }
+  button {
+    width: 100%
   }
 </style>
 <script>
@@ -26,60 +28,60 @@
   import Methods from '../js/webrtc.js'
   export default {
 
-    created() {
-
-      console.log(this.wsRTC)
-      console.log('this is the localpeerConnection', this.peerConnectionLocal)
+    mounted() {
+      this.start();
       this.wsRTC.onmessage = e => {
-          let peerConnection = new RTCPeerConnection({'iceServers': [{'url': 'stun:stun.services.mozilla.com'}, {'url': 'stun:stun.l.google.com:19302'}]});
+
           let signal = JSON.parse(e.data);
-          //console.log('here is the signal you are sending!', signal)
-            if(signal.sdp) {
-              peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp),
-                () => {
-                //console.log('peerConnection 1', peerConnection)
-                peerConnection.createAnswer()
-                .then(answer => {
-                  //console.log('SECOND sdp fired off!', answer, this);
-                  peerConnection.setLocalDescription(answer);
-                  this.wsRTC.send(JSON.stringify({'sdp': answer}));
-                  this.peerConnectionBill = peerConnection;
-                  // console.log('peerConnectionBill', this.peerConnectionBill);
-                  // console.log('peerConnection 2', peerConnection);
-                })
-                .catch(e => { console.log('err answer this.wsRTC.send', e);})
-              })
-            } else if (signal.ice) {
-              // console.log('in ice', signal.ice)
-              let candidate = new RTCIceCandidate(signal.ice);
-              this.peerConnectionBill.addIceCandidate(candidate)
+
+            if (signal.sdp && signal.sdp.type === 'offer' && signal.sdp !== this.peerConnectionLocal.localDescription) {
+              this.peerConnectionLocal.setRemoteDescription(signal.sdp)
+              .then(() => this.peerConnectionLocal.addStream(this.localStream))
+              .then(() => this.peerConnectionLocal.createAnswer())
+              .then(answer => {this.ourAnswer = answer; this.peerConnectionLocal.setLocalDescription(answer)})
               .then(() => {
-                console.log('success!!');
-                this.remoteVideo = this.peerConnectionBill.getRemoteStreams();
-                let billsVideo = document.getElementById('remoteVideo');
-                console.log('got remote stream', this.remoteVideo[0]);
-                billsVideo.srcObject = this.remoteVideo[0];
-                //window.remoteStream = billsVideo.srcObject = this.remoteVideo[0];
-                console.log('this is bill', billsVideo)
+                this.wsRTC.send(JSON.stringify({ 'sdp': this.ourAnswer }));
+                //console.log('this is the peerConnection', this.peerConnectionLocal)
               })
-            }
-        }
+              .catch(e => { console.log('err ice candidate fail', e);})
+
+           }
+
+          if (signal.ice) {
+              this.iceCandidates.push(signal.ice)
+           }
+
+          if (signal.sdp && signal.sdp.type === 'answer' && signal.sdp !== this.peerConnectionLocal.localDescription) {
+            console.log('peerConnection at answer!', this.peerConnectionLocal)
+            this.peerConnectionLocal.setRemoteDescription(signal.sdp)
+            .then(() => {
+              //console.log('your ice candidates',this.iceCandidates)
+              if (this.peerConnectionLocal.remoteDescription && this.iceCandidates.length > 0)
+              for (var i = 0; i < this.iceCandidates.length; i++) {
+              this.peerConnectionLocal.addIceCandidate(this.iceCandidates[i]
+              )}
+            })
+            .catch(e => { console.log('err at answer', e)})
+            //console.log('now our peerConnection looks like this!', this.peerConnectionLocal)
+           }
+         }
+
     },
 
     props: ['ws', 'wsRTC'],
 
     data() {
         return {
-          // wsRTC: null,
-          server: '',
-          serverConnection: this.ws.url + 'rtc',
+          ourAnswer:'',
+          otherSDP:'',
+          iceCandidates:[],
+          peerConnectionLocal: null,
           localStream:'',
           localVideo:'',
           remoteVideo:'',
           userStreamOn: false,
-          peerConnectionBill:'',
-          peerConnectionConfig: {'iceServers': [{'url': 'stun:stun.services.mozilla.com'}, {'url': 'stun:stun.l.google.com:19302'}]},
-          constraints: { audio: false, video: true }
+          peerConnectionConfig: {'iceServers': [{'url': 'stun:stun.l.google.com:19305'}, {'url': 'stun:stun.services.mozilla.com'}]},
+          constraints: { audio: true, video: true }
         }
     },
 
@@ -90,54 +92,55 @@
         if (this.userStreamOn) {
         //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
         //which is then used in the success callback on the MediaStream object that contains the media stream
-          navigator.mediaDevices.getUserMedia({ audio: false,video: true })
+          navigator.mediaDevices.getUserMedia({ audio: false,
+            video: {
+              mandatory: {
+                "minWidth": 640,
+                "minHeight": 480
+              }
+            }
+          })
           .then(this.gotStream)
           .catch(e => { console.log('getUserMedia() error: ' + e.name);});
         }
       },
-      stop(stream) {
-        //for (let track of stream.getTracks()) {
-          //track.stop();
-      //  }
-        // this.userStreamOn = !this.userStreamOn;
-        // mediaStream.stop();
-        // localMediaStream.stop()
-      },
+
       gotStream(stream) {
         this.localVideo = document.getElementById('localVideo');
-        //NOTE: refer back to global scope data object here!!
-        console.log ('Received local stream', stream);
         //set source of localVideo element to the stream captures from getUserMedia
-        this.localVideo.srcObject = stream;
-        console.log ('this.localVideo.srcObject',this.localVideo.srcObject);
+        this.localVideo.src = window.URL.createObjectURL(stream);
         // set localStream equal to this stream
         this.localStream = stream;
+        // instantiate new peer connection
+        this.peerConnectionLocal = new RTCPeerConnection(this.peerConnectionConfig);
+        // set methods on new peer connection object
+        this.peerConnectionLocal.addStream(this.localStream)
+        this.peerConnectionLocal.onaddstream = e => {
+            this.remoteVideo = document.getElementById('remoteVideo');
+            this.remoteVideo.src = window.URL.createObjectURL(e.stream);
+            //console.log('remote video', this.remoteVideo)
+            //console.log('local video', this.localVideo)
+        }
+        this.peerConnectionLocal.onicecandidate = this.gotIceCandidate;
+        //console.log('here we are', this.peerConnectionLocal);
       },
 
-      call(isCaller) {
-        // instantiate new peer connection
-        let peerConnection = new RTCPeerConnection(this.peerConnectionConfig);
-        this.peerConnectionLocal = peerConnection;
-        // // set methods on new peer connection object
-        peerConnection.onicecandidate = this.gotIceCandidate;
-        // peerConnectionBill.onaddstream = this.gotRemoteStream;
-        peerConnection.addStream(this.localStream)
-        if(isCaller) {
-            peerConnection.createOffer()
-           .then(offer => {
-           peerConnection.setLocalDescription(offer);
-           this.wsRTC.send(JSON.stringify({'sdp': offer}));
-           console.log('this is our offer', offer)})
+      call() {
+        this.peerConnectionLocal.createOffer()
+        .then(offer => {
+          this.peerConnectionLocal.setLocalDescription(offer);
+           this.wsRTC.send(JSON.stringify({'sdp': offer}))
+           //console.log('this is our offer', offer, this.peerConnectionLocal)
+           })
            .catch(e => { console.log('err', e);})
-         }
       },
 
       gotIceCandidate(e) {
-        if(event.candidate != null) {
+
+        if(e.candidate != null) {
           this.wsRTC.send(JSON.stringify({'ice': e.candidate}));
         }
       }
-
     }
   }
 </script>

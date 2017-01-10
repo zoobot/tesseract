@@ -45,7 +45,7 @@ func (h *hub) run() {
       }
       h.channels[s.channel][s.client] = true
       //send the latest data for room (empty string if new room)
-      s.client.send <- []byte(contents[s.channel])
+      //s.client.send <- []byte(contents[s.channel])
     case s := <- h.unregister:
       clients := h.channels[s.channel]
       if clients != nil {
@@ -64,7 +64,7 @@ func (h *hub) run() {
     case m := <- h.broadcast:
       clients := h.channels[m.channel]
        fmt.Println("broadcasting message to ", clients, "data is: ", m.data)
-	    for c := range clients {
+      for c := range clients {
         select {
         case c.send <- m.data:
         contents[m.channel] = string(m.data)

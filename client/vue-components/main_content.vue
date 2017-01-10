@@ -6,9 +6,6 @@
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
-
-      <p>This area is for live data about text</p>
-      <p>To see tools hover over tools or far left on screen</p>
       <VideoComponent id="video" :wsRTC="wsRTC" :ws="ws" :answer="answer"></VideoComponent>
     </div>
     <!-- end live data area -->
@@ -45,10 +42,10 @@
       let URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5});
 
       // create websocket with unique address.
-      this.ws = new WebSocket(`ws://${window.location.host}/ws/${URI}`);
+      this.ws = new WebSocket(`wss://${window.location.host}/ws/${URI}`);
 
       //create RTC websocket
-      this.wsRTC = new WebSocket(`ws://${window.location.host}/ws/${URI}rtc`);
+      this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${URI}rtc`);
 
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', URI);
