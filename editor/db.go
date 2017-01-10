@@ -2,6 +2,7 @@ package main
 
 import (
   "fmt"
+  // "io/ioutil"
   "net/http"
   "encoding/json"
   "gopkg.in/mgo.v2"
@@ -9,19 +10,17 @@ import (
 )
 /* ======>User Schema<====== */
 type(
-  Saved struct {
-    File string `json: "file" bson:"file"`
-  }
   User struct {
     Id bson.ObjectId `json:"id" bson:"id,omitempty"`
     UserName string `json:"username" bson:"username"`
     Email string `json:"email" bson:"email"`
     Password string `json:"password" bson:"password"`
     Avatar string `json:"avatar" bson:"avatar"`
-    Saved []Saved `json:"saved", bson:"saved"`
+    Saved []string `json:"saved", bson:"saved"`
   }
 )
 /* ======>Database Handlers<====== */
+
 // CreateUser creates a new user resource
 func CreateUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
@@ -30,7 +29,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
     return
   }
   defer session.Close()
-
   session.SetMode(mgo.Monotonic, true)
   c := session.DB("tesis").C("people")
   // Stub a user to be populated from the body
@@ -39,7 +37,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
   u.Id = bson.NewObjectId()
   // Populate the user data
   if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
-    fmt.Println(u)
     w.WriteHeader(401)
     return
   }
@@ -69,6 +66,41 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Content-Type", "application/json")
   // Return id for storage in session
   fmt.Fprintf(w, "%s", uj)
+  fmt.Fprintf(w, "%s", "User added Successfully!")
+}
+
+// AddFile adds a file to a Users saved array
+func AddFile(w http.ResponseWriter, r *http.Request) {
+  session, err := mgo.Dial("mongodb://localhost:27017")
+  if err != nil {
+    w.WriteHeader(401)
+    return
+  }
+  defer session.Close()
+  session.SetMode(mgo.Monotonic, true)
+  c := session.DB("tesis").C("people")
+
+  var data struct{
+    Id string
+    UserName string
+    File string
+  }
+
+  if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+    w.WriteHeader(404)
+    return
+  }
+
+  err = c.Update(bson.M{"id": bson.ObjectIdHex(data.Id)}, bson.M{"$push" : bson.M{"saved": data.File}})
+  if err != nil {
+    w.WriteHeader(401)
+    return
+  }
+
+  w.WriteHeader(201)
+  // Write content-type, statuscode, payload
+  w.Header().Set("Content-Type", "application/json")
+  fmt.Fprintf(w, "%s", "Filed Added Successfully!")
 }
 
 // GetUser gets a user resource
@@ -125,6 +157,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
   }
 }
 
+
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
@@ -144,6 +177,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "%s", uj)
 }
 
+// UpdateUser updates users personal information
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
@@ -152,25 +186,45 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
   }
   defer session.Close()
 
-  // Stub a user to be populated from the body
-  u := User{}
+  var data struct{
+    Id string
+    UserName string
+    Email string
+    Password string
+    Avatar string
+    File string
+  }
 
-  // Populate the user data
-  if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
-    w.WriteHeader(404)
+  if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+    w.WriteHeader(401)
     return
   }
 
-  var g float64
+  c := session.DB("tesis").C("people")
 
-  session.DB("tesis").C("people").Find(bson.M{"username": "1111111111"}).One(&g)
+  c.Update(bson.M{"id": bson.ObjectIdHex(data.Id)}, bson.M{
+    "id": bson.ObjectIdHex(data.Id),
+    "username": data.UserName,
+    "email": data.Email,
+    "password": data.Password,
+    "avatar": data.Avatar,
+  })
 
-  // Make response into json
-  uj, _ := json.Marshal(g)
+  c.Update(bson.M{"id": bson.ObjectIdHex(data.Id)}, bson.M{"$addToSet" : bson.M{"saved": data.File}})
 
   w.Header().Set("Content-Type", "application/json")
   w.WriteHeader(201)
-  // Return id for storage in session
-  fmt.Fprintf(w, "%s", uj)
+  fmt.Fprintf(w, "%s", "User updated Successfully!")
 }
 /* <=======end Database Handlers======> */
+
+
+
+
+
+
+
+
+
+
+
