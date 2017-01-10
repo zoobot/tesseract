@@ -18,8 +18,11 @@ client/dist/
 .floo
 .flooignore
 
+<<<<<<< HEAD
 editor/editor
 
 cert.pem
 certMaker
 key.pem
+
+editor/editor
