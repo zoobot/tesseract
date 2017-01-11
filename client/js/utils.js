@@ -61,7 +61,11 @@ module.exports = {
       throw res;
     });
   },
+<<<<<<< HEAD
   deleteFile(data, cb) {
+=======
+  addFile(data, cb) {
+>>>>>>> Updated http calls on front end. Wasn't able to test them yet due to server issues.
     /* data -
       {
         "id": "234567543214",
