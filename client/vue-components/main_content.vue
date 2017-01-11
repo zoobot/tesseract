@@ -2,23 +2,11 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
-<<<<<<< HEAD
-    <div class="content">
-
-    <div class="content-left">
-      <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
-
-      <div class="doc-info" v-if="count > 0">
-        <div>{{ count }} words</div>
-        <div>{{ time }} read</div>
-      </div>
-=======
     <div>
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left"  v-if="duncanisnoton">
       <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
->>>>>>> Prepped for rebase
     </div>
 
     <div class="content-right">
