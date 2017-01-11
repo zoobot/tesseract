@@ -5,7 +5,6 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource);
 
 const url = 'https://127.0.0.1:8443';
-
 module.exports = {
   // fetchChannel(cb) {
   //   Vue.http.get('/getUrl')
