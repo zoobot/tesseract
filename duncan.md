@@ -140,12 +140,7 @@
 
 ###Data Base###
   1. POST
-    i. "/db"
-      * `code`
-
-    ii. "/db/addfile"
-
-    iii. "/db/deletefile"
+    * `code()`
 
 
 
