@@ -3,8 +3,9 @@ import Vue from 'vue'
 import VueResource from 'vue-resource'
 
 Vue.use(VueResource);
-<<<<<<< HEAD
+
 const url = 'https://127.0.0.1:8443';
+
 module.exports = {
   // fetchChannel(cb) {
   //   Vue.http.get('/getUrl')
@@ -60,7 +61,11 @@ module.exports = {
       throw res;
     });
   },
+<<<<<<< HEAD
   deleteFile(data, cb) {
+=======
+  addFile(data, cb) {
+>>>>>>> Updated http calls on front end. Wasn't able to test them yet due to server issues.
     /* data -
       {
         "id": "234567543214",
@@ -112,4 +117,8 @@ module.exports = {
     });
   }
 /*<======= end Database Calls =========>*/
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Updated http calls on front end. Wasn't able to test them yet due to server issues.
