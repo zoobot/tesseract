@@ -9,21 +9,6 @@ module.exports = {
     this.input = e.target.value
   },
   wsSend() {
-      // get params from URL (if provided)
-      let c = this.$route.params.channel;
-      // set URI to params or generated 5 char unique.
-      let URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5});
-      // create websocket with unique address.
-      this.ws = new WebSocket(`ws://${window.location.host}/ws/${URI}`);
-      // update URL display. I still think we can do this with router somehow :S
-      window.history.pushState(window.location.origin, '/', URI);
-      // Whenever we receive a message, update textarea
-      this.ws.onmessage = e => {
-        if (e.data !== this.input) {
-          this.input = e.data;
-          this.wordCounter();
-        }
-      }
   },
   // On each keyup counts amount of words on document
   wordCounter() {

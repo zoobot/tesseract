@@ -35,6 +35,7 @@
 
   export default {
     created() {
+<<<<<<< HEAD
       // get params from URL (if provided)
       let c = this.$route.params.channel;
 
@@ -49,7 +50,6 @@
 
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', URI);
-
       // Whenever we receive a message, update textarea
       this.ws.onmessage = e => {
         if (e.data !== this.input) {
