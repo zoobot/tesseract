@@ -74,7 +74,7 @@ There are three POST requests, each with different paths and body data.
 
 *   body -
     *   {
-    *   "id": "Sally",
+    *   "id": "12334567898765",
     *   "file": "sallys.txt"
     *   }
 
@@ -91,7 +91,7 @@ There are three POST requests, each with different paths and body data.
 
 *   body -
     *   {
-    *   "id": "Sally",
+    *   "id": "324563743567",
     *   "file": "sallys.txt"
     *   }
 
@@ -127,7 +127,7 @@ No parameters will return the entire "people" table.
         *   "email": "sally@me.com",
         *   "password": "1234435wefdsgg",
         *   "avatar": "whaereve.jpg"
-        *   "saved": ["text.txt"]
+        *   "saved": ["text.txt", "text.txt(2)"]
         *   }
 
 *   response -
