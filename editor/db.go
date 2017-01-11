@@ -155,6 +155,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
   // Removes if parameter is "id"
   if _, ok := r.Form["id"]; ok {
+    // ?id=Sally123!
     fmt.Println(r.Form)
     err = c.Find(bson.M{"id": bson.ObjectIdHex(r.Form.Get("id"))}).All(&results)
     if err != nil {
@@ -238,7 +239,6 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
     Email string
     Password string
     Avatar string
-    File string
   }
 
   if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
