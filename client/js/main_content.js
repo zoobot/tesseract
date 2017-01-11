@@ -9,6 +9,7 @@ module.exports = {
     this.input = e.target.value
   },
   wsSend() {
+    this.ws.send(this.input);
   },
   // On each keyup counts amount of words on document
   wordCounter() {
