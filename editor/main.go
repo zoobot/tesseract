@@ -55,7 +55,7 @@ func main() {
 
   // start 'er up.
   log.Fatal(http.ListenAndServeTLS(PORTSSL, PUBLIC_KEY, PRIV_KEY, r))
-  // log.Fatal(http.ListenAndServe(":8000", http.HandlerFunc(redirectToHttps)))
+  // log.Fatal(http.ListenAndServe(PORTREG, r))
 }
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
