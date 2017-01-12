@@ -40,148 +40,101 @@
 
 ### Data Base
 
-#### POST
+#### People
 
-There are three POST requests, each with different paths and body data.
+*   Path - "/db/user"
+    * POST --> Add a user resource to People table
+        * body -
+            *   {
+            *   "username": "Sally",
+            *   "email": "sally@me.com",
+            *   "password": "1234435wefdsgg",
+            *   "avatar": "whaereve.jpg"
+            *   }
 
-"/db" is for adding new users and for authentication. If the user exists already in the db the response will be the users data from the db with a code of 200\. If the user is not found they will be added and the response will include the added data with a code of 201.
+            *   Response -
+                *   New entry -
 
-"/db/addfile" is for adding saved documents to the users profile. Currently files can be duplicated, I plan to handle this on the front end by adding (2) to the file if there is a duplicate.
+                *   Code 201 --> If user not in database, user will be added.
+                *   User data will be returned with Id
 
-"/db/deletefile" is for removing individual documents based on the name of the document.
+                *   Existing user -
 
-*   Path - "/db"
+                *   Code 200 --> If user already in database, user will not be added.
+                *   User data will be returned with Id
 
-*   body -
-    *   {
-    *   "userName": "Sally",
-    *   "email": "sally@me.com",
-    *   "password": "1234435wefdsgg",
-    *   "avatar": "whaereve.jpg"
-    *   }
-*   response -
-    *   New entry -
+    * GET --> Get a user resource from the People table
+        *   Query strings-
+            *   ?id=58758a6a42f5bf588cb1bc1f --> returns user resource
+            *   ?username=Sally --> returns users resource
+            *   No parameters --> returns all user resources
 
-    *   Code 201
-    *   Users entered data
+        *   Response -
+            *   code 200
+            *   User resource
 
-    *   Existing user -
+    * PUT --> Alter a user resource from the People table
+        *   body -
+            *   {
+            *   "id": "23lw,.,n213eqwljd",
+            *   "username": "Sally",
+            *   "email": "sally@me.com",
+            *   "password": "1234435wefdsgg",
+            *   "avatar": "whaereve.jpg"
+            *   }
+        *   Response -
+            *   code 201
+            *   Updated user resouces.
+    * DELETE --> Delete a user resource from the People table
+        *   body -
+            *   {
+            *   "id": "243rewfgfrd!3erf"
+            *   }
+        *   Response -
+            *   code 201
 
-    *   Code 200
-    *   User data from Database
+*   Path - "/db/docs"
+    * POST --> Add a document to the Documents table
+        * body -
+            *   {
+            *   "username": "Sally",
+            *   "email": "sally@me.com",
+            *   }
 
-*   Path - "/db/addfile"
+            *   Response -
+                *   Code 201
+                *   Document data will be returned with id
 
-*   body -
-    *   {
-    *   "id": "12334567898765",
-    *   "file": "sallys.txt"
-    *   }
+    * GET --> Get a document from the Documents table
+        *   Query strings-
+            *   ?id=58758a6a42f5bf588cb1bc1f --> finds a specific document
+            *   ?username=Sally --> finds all documents associated with this user
+            *   No parameters --> returns all documents in table
 
-*   response -
-    *   Successful -
+        *   Response -
+            *   code 200
+            *   Document resource
 
-    *   Code 201
-
-    *   Failed -
-
-    *   Code 401
-
-*   Path - "/db/deletefile"
-
-*   body -
-    *   {
-    *   "id": "324563743567",
-    *   "file": "sallys.txt"
-    *   }
-
-*   response -
-    *   Successful -
-
-    *   Code 200
-
-    *   Failed -
-
-    *   Code 401
-
-#### GET
-
-"/db" get request can take three different types of parameters
-
-"?id=58758a6a42f5bf588cb1bc1f" will find the user with the associated id. The response will include all the users data, inluding all saved documents.
-
-"?username=Sally" will find the user with the associated username. The response will include all the users data, inluding all saved documents.
-
-No parameters will return the entire "people" table.
-
-*   Path - "/db"
-
-*   parameters -
-    *   ?id=58758a6a42f5bf588cb1bc1f --> returns all data associated with this id
-    *   ?username=Sally --> returns all data associated with this username
-    *   No parameters --> returns all users
-    *   Returned data -
-        *   {
-        *   "id": "58758a7f42f5bf588cb1bc20",
-        *   "userName": "Sally",
-        *   "email": "sally@me.com",
-        *   "password": "1234435wefdsgg",
-        *   "avatar": "whaereve.jpg"
-        *   "saved": ["text.txt", "text.txt(2)"]
-        *   }
-
-*   response -
-    *   Successful -
-
-    *   Code 200
-
-    *   Failed -
-
-    *   Code 401
-
-#### PUT
-
-"/db" put request will change alter the user data associated with the id. It is important to send the entire body for each put request.
-
-*   Path - "/db"
-
-*   body -
-    *   {
-    *   "id": "58758a7f42f5bf588cb1bc20",
-    *   "userName": "Sally",
-    *   "email": "sally@me.com",
-    *   "password": "1234435wefdsgg",
-    *   "avatar": "whaereve.jpg"
-    *   }
-
-*   response -
-    *   Successful -
-
-    *   Code 201
-
-    *   Failed -
-
-    *   Code 401
-
-#### DELETE
-
-"/db" delete will delete the user data associated with the id.
-
-*   Path - "/db"
-
-*   body -
-    *   {
-    *   "id": "58758a7f42f5bf588cb1bc20",
-    *   "userName": "Sally",
-    *   }
-
-*   response -
-    *   Successful -
-
-    *   Code 200
-
-    *   Failed -
-
-    *   Code 401
+    * PUT --> Alter a document in the Documents table
+        *   body -
+            *   {
+            *   "id": "58772de442f5bf80370c1389",
+            *   "username": "sally",
+            *   "doc": "ddddddd"
+            *   }
+        *   Response -
+            *   code 201
+            *   Updated document resource
+    * DELETE --> Remove a document from the Documents table
+        *   body -
+            *   {
+            *   "id": "243rewfgfrd!3erf"
+            *   }
+        *   Response -
+            *   code 201
 
 * * *
+
+
+
+

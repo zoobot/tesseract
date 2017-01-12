@@ -18,3 +18,7 @@ client/dist/
 .flooignore
 
 editor/editor
+
+cert.pem
+certMaker
+key.pem
