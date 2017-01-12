@@ -35,7 +35,6 @@
 
   export default {
     created() {
-<<<<<<< HEAD
       // get params from URL (if provided)
       let c = this.$route.params.channel;
 
@@ -44,10 +43,8 @@
 
       // create websocket with unique address.
       this.ws = new WebSocket(`wss://${window.location.host}/ws/${URI}`);
-
       //create RTC websocket
       this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${URI}rtc`);
-
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', URI);
       // Whenever we receive a message, update textarea
