@@ -39,7 +39,6 @@
       this.URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
       //create RTC websocket
       this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${this.URI}rtc`);
-
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', this.URI);
     },
