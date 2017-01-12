@@ -38,7 +38,8 @@ func main() {
   r.NotFoundHandler = http.HandlerFunc(serveIndex)
 
   // start 'er up.
-  log.Fatal(http.ListenAndServe(":8000", r))
+  log.Fatal(http.ListenAndServeTLS(PORTSSL, PUBLIC_KEY, PRIV_KEY, r))
+  // log.Fatal(http.ListenAndServe(PORTREG, r))
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {
