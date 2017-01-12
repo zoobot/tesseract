@@ -60,7 +60,7 @@ module.exports = {
       throw res;
     });
   },
-  addFile(data, cb) {
+  deleteFile(data, cb) {
     /* data -
       {
         "id": "234567543214",
