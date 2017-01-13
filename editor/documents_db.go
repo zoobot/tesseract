@@ -57,7 +57,7 @@ func GetDoc(w http.ResponseWriter, r *http.Request) {
   if err != nil {
     return
   }
-  if _, ok := r.Form["doc"]; ok {
+  if _, ok := r.Form["id"]; ok {
     // ?id=123rfvg5432edwc --> finds a specific doc by id
     err = c.Find(bson.M{"id": bson.ObjectIdHex(r.Form.Get("id"))}).All(&results)
     if err != nil {
@@ -143,5 +143,5 @@ func DeleteDoc(w http.ResponseWriter, r *http.Request) {
   }
   w.WriteHeader(200)
   w.Header().Set("Content-Type", "application/json")
-  fmt.Fprintf(w, "%s", "User removed Successfully!")
+  fmt.Fprintf(w, "%s", "Doc removed Successfully!")
 }
