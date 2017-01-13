@@ -17,7 +17,7 @@ const (
 // func redirectToHttps(w http.ResponseWriter, r *http.Request) {
 //   // Redirect to https 127.0.0.1:8443 will only work locally
 //   http.Redirect(w,r, "https://127.0.0.1:"+PORTSSL+r.RequestURI, http.StatusMovedPermanently)
-// }
+//
 
 // func hander(w http.ResponseWriter, r *http.Request) {
 //   fmt.Fprintf(w, "Hi there mover and shaker!")
