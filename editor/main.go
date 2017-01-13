@@ -7,6 +7,21 @@ import (
   "github.com/gorilla/mux"
 )
 
+const (
+    PORTSSL       = ":8443"
+    PORTREG       = ":8000"
+    PUBLIC_KEY = "./cert.pem"
+    PRIV_KEY = "./key.pem"
+)
+
+// func redirectToHttps(w http.ResponseWriter, r *http.Request) {
+//   // Redirect to https 127.0.0.1:8443 will only work locally
+//   http.Redirect(w,r, "https://127.0.0.1:"+PORTSSL+r.RequestURI, http.StatusMovedPermanently)
+//
+
+// func hander(w http.ResponseWriter, r *http.Request) {
+//   fmt.Fprintf(w, "Hi there mover and shaker!")
+// }
 // handles routing
 func main() {
   fmt.Println("Go server, go! (8k)")

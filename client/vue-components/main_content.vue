@@ -5,7 +5,7 @@
     <div>
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
-    <div class="content-left">
+    <div class="content-left"  v-if="duncanisnoton">
       <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
     </div>
     <!-- end live data area -->
@@ -65,7 +65,8 @@
         input: '',
         channel: '',
         count: 0,
-        channel: ''
+        channel: '',
+        duncanisnoton: false
       }
     },
     components: {
