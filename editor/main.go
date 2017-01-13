@@ -22,6 +22,7 @@ const (
 // func hander(w http.ResponseWriter, r *http.Request) {
 //   fmt.Fprintf(w, "Hi there mover and shaker!")
 // }
+
 // handles routing
 func main() {
   fmt.Println("Go server, go! (8k)")
@@ -36,12 +37,16 @@ func main() {
   r.HandleFunc("/ws/{channel}", serveWS)
 
   /* ======>API<====== */
-  r.HandleFunc("/db", CreateUser).Methods("POST")
-  r.HandleFunc("/db/addfile", AddFile).Methods("POST")
-  r.HandleFunc("/db/deletefile", DeleteFile).Methods("POST")
-  r.HandleFunc("/db", GetUser).Methods("GET")
-  r.HandleFunc("/db", UpdateUser).Methods("PUT")
-  r.HandleFunc("/db", DeleteUser).Methods("DELETE")
+  // People table
+  r.HandleFunc("/db/user", CreateUser).Methods("POST")
+  r.HandleFunc("/db/user", GetUser).Methods("GET")
+  r.HandleFunc("/db/user", UpdateUser).Methods("PUT")
+  r.HandleFunc("/db/user", DeleteUser).Methods("DELETE")
+  // Documents table
+  r.HandleFunc("/db/docs", AddDoc).Methods("POST")
+  r.HandleFunc("/db/docs", GetDoc).Methods("GET")
+  r.HandleFunc("/db/docs", UpdateDoc).Methods("PUT")
+  r.HandleFunc("/db/docs", DeleteDoc).Methods("DELETE")
   /* <======end API======> */
 
   // Serve static files (make sure index has /client at start, so paths match)
@@ -56,8 +61,6 @@ func main() {
   log.Fatal(http.ListenAndServeTLS(PORTSSL, PUBLIC_KEY, PRIV_KEY, r))
   // log.Fatal(http.ListenAndServe(PORTREG, r))
 }
-
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
 }
-
