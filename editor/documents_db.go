@@ -143,9 +143,5 @@ func DeleteDoc(w http.ResponseWriter, r *http.Request) {
   }
   w.WriteHeader(200)
   w.Header().Set("Content-Type", "application/json")
-<<<<<<< HEAD
   fmt.Fprintf(w, "%s", "Doc removed Successfully!")
-=======
-  fmt.Fprintf(w, "%s", "User removed Successfully!")
->>>>>>> d2618d87f5ba0c8b54ae9c743a49141e3f7d8209
 }
