@@ -2,23 +2,29 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
+    <div>
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
       <p>This area is for live data about text</p>
-      <p>To see tools hover over tools or far left on screen</p>
     </div>
     <!-- end live data area -->
-    <!-- text feild -->
-    <div class="content-right">
-      <!-- Markdown editor -->
-      <!-- Doesn't really compile markdown yet -->
+    <!-- text field -->
+    <div class="content-right float-r">
       <div id="editor">
-        <textarea id="content" :value="input" @input="update" @input.ws-send="wsSend" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
+        <textarea id="content"
+        :value="input"
+        @input="update"
+        @input.ws-send="wsSend"
+        @keyup.delete="wordCounter"
+        @keyup.space="wordCounter"
+        @keyup.enter="wordCounter(true)">
+      </textarea>
       </div>
       <!-- end editor -->
     </div>
     <!-- end text field -->
+  </div>
   </div>
 </template>
 
@@ -26,31 +32,28 @@
   import Navbar from './navbar.vue'
   import ToolBar from './tool_bar.vue'
   import Methods from '../js/main_content.js'
-  // HTTP calls ect.
   import Utils from '../js/utils.js'
   import Chance from 'chance'
   const chance = new Chance()
 
   export default {
     created() {
-      let URI = chance.word({length: 5})
-      this.ws = new WebSocket(`ws://${window.location.host}/ws/${URI}`)
-      console.log('websocket:', this.ws);
+      // get params from URL (if provided)
+      let c = this.$route.params.channel;
+      // set URI to params or generated 5 char unique.
+      let URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5});
+      // create websocket with unique address.
+      this.ws = new WebSocket(`ws://${window.location.host}/ws/${URI}`);
+      // update URL display. I still think we can do this with router somehow :S
+      window.history.pushState(window.location.origin, '/', URI);
       // Whenever we receive a message, update textarea
       this.ws.onmessage = e => {
-        // console.log('in this.ws.onmessage',e.data)
         if (e.data !== this.input) {
           this.input = e.data;
-          // this.wordCounter();
+          this.wordCounter();
         }
       }
-      // Url entered in browser.
-      // console.log("route params:", $route.params.channel)
-      // let path = window.location.href.split('#');
-      // this.shareChannel((url) => {
-      //   this.channel = url;
-      //   window.history.pushState(path[0], '/', this.channel);
-      // });
+
     },
     data() {
       return {
@@ -75,36 +78,32 @@
     width: 100vw;
   }
   .content-right{
-    border: 1px solid transparent;
-    margin-left: 30vw;
     width: 70vw;
-    height: 100vh;
+    height: 87vh;
   }
   .content-left{
     position: fixed;
     width: 30vw;
   }
-  html, body, #editor {
+  html, body{
     margin: 0;
-    height: 100%;
     color: #333;
     font-family: 'Monaco', courier, monospace;
   }
+  #editor {
+    height: 100%
+  }
   textarea, #editor div {
-    display: inline-block;
     width: 100%;
     height: 100%;
     vertical-align: top;
-    box-sizing: border-box;
     padding: 0 20px;
   }
   textarea {
     border: none;
-    border-right: 1px solid #ccc;
     resize: none;
     outline: none;
-    background-color: #f6f6f6;
-    font-size: 14px;
+    font-size: 1em;
     padding: 20px;
   }
   code {

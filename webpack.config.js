@@ -15,7 +15,7 @@ module.exports = {
     // publicPath: 'dist/',
     path: './client/dist',
     publicPath: 'client/dist/',
-    filename:'build.js',
+    filename: 'build.js',
   },
   resolve: {
     // NPM by default installs Runtime Only version, which will not compile html templates
