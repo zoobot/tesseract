@@ -24,6 +24,6 @@ function startServer() {
     backend.listen(stream)
   })
 
-  server.listen(8080)
-  console.log('Listening on 80\u00B2')
+  server.listen(3000)
+  console.log('Listening on 3K')
 }
