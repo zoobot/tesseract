@@ -6,11 +6,21 @@
     <ToolBar :word-count="count"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
+<<<<<<< HEAD
       <p>This area is for live data about text</p>
     </div>
     <!-- end live data area -->
     <!-- text field -->
     <div class="content-right float-r">
+=======
+      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
+    </div>
+    <!-- end live data area -->
+    <!-- text field -->
+    <div class="content-right">
+      <!-- Markdown editor -->
+      <!-- Doesn't really compile markdown yet -->
+>>>>>>> d18605cce8f35fc3b8f68f53381b6ac4d2abe005
       <div id="editor">
         <textarea id="content"
         :value="input"
@@ -32,6 +42,11 @@
   import Navbar from './navbar.vue'
   import ToolBar from './tool_bar.vue'
   import Methods from '../js/main_content.js'
+<<<<<<< HEAD
+=======
+  import VideoComponent from './video_component.vue'
+  // HTTP calls ect.
+>>>>>>> d18605cce8f35fc3b8f68f53381b6ac4d2abe005
   import Utils from '../js/utils.js'
   import Chance from 'chance'
   const chance = new Chance()
@@ -40,12 +55,28 @@
     created() {
       // get params from URL (if provided)
       let c = this.$route.params.channel;
+<<<<<<< HEAD
       // set URI to params or generated 5 char unique.
       let URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5});
       // create websocket with unique address.
       this.ws = new WebSocket(`ws://${window.location.host}/ws/${URI}`);
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', URI);
+=======
+
+      // set URI to params or generated 5 char unique.
+      let URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5});
+
+      // create websocket with unique address.
+      this.ws = new WebSocket(`wss://${window.location.host}/ws/${URI}`);
+
+      //create RTC websocket
+      this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${URI}rtc`);
+
+      // update URL display. I still think we can do this with router somehow :S
+      window.history.pushState(window.location.origin, '/', URI);
+
+>>>>>>> d18605cce8f35fc3b8f68f53381b6ac4d2abe005
       // Whenever we receive a message, update textarea
       this.ws.onmessage = e => {
         if (e.data !== this.input) {
@@ -55,9 +86,13 @@
       }
 
     },
+
     data() {
       return {
+        // URI: c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5}),
         ws: null,
+        wsRTC: null,
+        answer:'',
         input: '',
         channel: '',
         count: 0,
@@ -66,10 +101,11 @@
     },
     components: {
       ToolBar,
-      Navbar
+      Navbar,
+      VideoComponent
     },
     // Methods are located in js directory
-    methods: Methods
+    methods: Methods,
   }
 </script>
 

@@ -50,4 +50,13 @@
   .glyphicon{
     color: rgb(255, 255, 255);
   }
+<<<<<<< HEAD
+=======
+  .left-nav{
+    position: relative;
+    display: table-cell;
+    height: 100%;
+    width: 30vw;
+  }
+>>>>>>> d18605cce8f35fc3b8f68f53381b6ac4d2abe005
 </style>

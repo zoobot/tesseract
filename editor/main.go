@@ -7,6 +7,22 @@ import (
   "github.com/gorilla/mux"
 )
 
+const (
+    PORTSSL       = ":8443"
+    PORTREG       = ":8000"
+    PUBLIC_KEY = "./cert.pem"
+    PRIV_KEY = "./key.pem"
+)
+
+// func redirectToHttps(w http.ResponseWriter, r *http.Request) {
+//   // Redirect to https 127.0.0.1:8443 will only work locally
+//   http.Redirect(w,r, "https://127.0.0.1:"+PORTSSL+r.RequestURI, http.StatusMovedPermanently)
+// }
+
+// func hander(w http.ResponseWriter, r *http.Request) {
+//   fmt.Fprintf(w, "Hi there mover and shaker!")
+// }
+
 // handles routing
 func main() {
   fmt.Println("Go server, go! (8k)")
@@ -32,9 +48,20 @@ func main() {
   // serve index.html to root, or any path we don't recognise.
   r.HandleFunc("/", serveIndex)
   r.NotFoundHandler = http.HandlerFunc(serveIndex)
+<<<<<<< HEAD
 
   // start 'er up.
   log.Fatal(http.ListenAndServe(":8000", r))
+=======
+
+  // start 'er up.
+  log.Fatal(http.ListenAndServeTLS(PORTSSL, PUBLIC_KEY, PRIV_KEY, r))
+  // log.Fatal(http.ListenAndServe(":8000", http.HandlerFunc(redirectToHttps)))
+}
+
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+  http.ServeFile(w, r, "client/index.html")
+>>>>>>> d18605cce8f35fc3b8f68f53381b6ac4d2abe005
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {

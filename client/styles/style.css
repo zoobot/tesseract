@@ -19,3 +19,14 @@ body{
 .float-r {
   float: right;
 }
+
+.float-l {
+  float: left;
+}
+
+.float-r {
+  float: right;
+}
+.pad-top-8 {
+  padding-top: 8em;
+}
