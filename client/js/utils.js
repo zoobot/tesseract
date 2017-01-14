@@ -1,4 +1,3 @@
-// Created by Duncan on 12.29.2016
 import Vue from 'vue'
 import VueResource from 'vue-resource'
 

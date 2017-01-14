@@ -14,23 +14,25 @@ type People struct {
   Email string `json:"email" bson:"email"`
   Password string `json:"password" bson:"password"`
   Avatar string `json:"avatar" bson:"avatar"`
+  MemberSince int64 `json:"membersince" bson:"membersince"`
 }
 
 // CreateUser creates a new user resource
 func CreateUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   defer session.Close()
   session.SetMode(mgo.Monotonic, true)
   c := session.DB("tesis").C("people")
+
   var u People
   u.Id = bson.NewObjectId()
   err = json.NewDecoder(r.Body).Decode(&u)
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   index := mgo.Index{
@@ -56,11 +58,41 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "%s", uj)
 }
 
+// AuthUser checks if user resource exists and if user is legit
+func AuthUser(w http.ResponseWriter, r *http.Request) {
+  session, err := mgo.Dial("mongodb://localhost:27017")
+  if err != nil {
+    w.WriteHeader(404)
+    return
+  }
+  defer session.Close()
+  session.SetMode(mgo.Monotonic, true)
+  c := session.DB("tesis").C("people")
+
+  u := People{}
+
+  err = json.NewDecoder(r.Body).Decode(&u)
+  if err != nil {
+    w.WriteHeader(404)
+    return
+  }
+
+  err = c.Find(bson.M{"username": u.UserName, "password": u.Password}).One(&u)
+  if err != nil {
+    w.WriteHeader(404)
+    return
+  } else {
+    w.WriteHeader(201)
+  }
+  uj, _ := json.Marshal(u)
+  w.Header().Set("Content-Type", "application/json")
+  fmt.Fprintf(w, "%s", uj)
+}
+
 // GetUser gets a user resource
 func GetUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-
     w.WriteHeader(404)
     return
   }
@@ -76,7 +108,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
     fmt.Println(r.Form)
     err = c.Find(bson.M{"id": bson.ObjectIdHex(r.Form.Get("id"))}).All(&results)
     if err != nil {
-      w.WriteHeader(401)
+      w.WriteHeader(404)
       return
     }
     uj, _ := json.Marshal(results)
@@ -88,7 +120,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
   // Params -->  ?username=Sally123!
     err = c.Find(bson.M{"username": r.Form.Get("username")}).All(&results)
     if err != nil {
-      w.WriteHeader(401)
+      w.WriteHeader(404)
       return
     }
     uj, _ := json.Marshal(results)
@@ -115,7 +147,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   defer session.Close()
@@ -124,12 +156,12 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
   var d People
   err = json.NewDecoder(r.Body).Decode(&d)
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   err = c.Update(bson.M{"id": d.Id}, bson.M{"id": d.Id, "username": d.UserName, "email": d.Email, "password": d.Password, "avatar": d.Avatar})
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   uj, _ := json.Marshal(d)
@@ -142,7 +174,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   defer session.Close()
@@ -155,7 +187,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
   }
   err = c.Remove(bson.M{"id": d.Id})
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   w.WriteHeader(200)

@@ -18,7 +18,7 @@ type Documents struct {
 func AddDoc(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   defer session.Close()
@@ -28,12 +28,12 @@ func AddDoc(w http.ResponseWriter, r *http.Request) {
   d.Id = bson.NewObjectId()
   err = json.NewDecoder(r.Body).Decode(&d)
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   err = c.Insert(d)
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   uj, _ := json.Marshal(d)
@@ -61,7 +61,7 @@ func GetDoc(w http.ResponseWriter, r *http.Request) {
     // ?id=123rfvg5432edwc --> finds a specific doc by id
     err = c.Find(bson.M{"id": bson.ObjectIdHex(r.Form.Get("id"))}).All(&results)
     if err != nil {
-      w.WriteHeader(401)
+      w.WriteHeader(404)
       return
     }
     uj, _ := json.Marshal(results)
@@ -72,7 +72,7 @@ func GetDoc(w http.ResponseWriter, r *http.Request) {
     // ?username=Sally123! --> finds all docs with username
     err = c.Find(bson.M{"username": r.Form.Get("username")}).All(&results)
     if err != nil {
-      w.WriteHeader(401)
+      w.WriteHeader(404)
       return
     }
     uj, _ := json.Marshal(results)
@@ -83,7 +83,7 @@ func GetDoc(w http.ResponseWriter, r *http.Request) {
     // no parameters returns entire collection
     err = c.Find(bson.M{}).All(&results)
     if err != nil {
-      w.WriteHeader(401)
+      w.WriteHeader(404)
       return
     }
     uj, _ := json.Marshal(results)
@@ -97,7 +97,7 @@ func GetDoc(w http.ResponseWriter, r *http.Request) {
 func UpdateDoc(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   defer session.Close()
@@ -106,12 +106,12 @@ func UpdateDoc(w http.ResponseWriter, r *http.Request) {
   var d Documents
   err = json.NewDecoder(r.Body).Decode(&d)
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   err = c.Update(bson.M{"id": d.Id}, bson.M{"id": d.Id, "username": d.UserName, "doc": d.Doc})
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   uj, _ := json.Marshal(d)
@@ -124,7 +124,7 @@ func UpdateDoc(w http.ResponseWriter, r *http.Request) {
 func DeleteDoc(w http.ResponseWriter, r *http.Request) {
   session, err := mgo.Dial("mongodb://localhost:27017")
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   defer session.Close()
@@ -133,12 +133,12 @@ func DeleteDoc(w http.ResponseWriter, r *http.Request) {
   var d Documents
   err = json.NewDecoder(r.Body).Decode(&d)
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   err = c.Remove(bson.M{"id": d.Id})
   if err != nil {
-    w.WriteHeader(401)
+    w.WriteHeader(404)
     return
   }
   w.WriteHeader(200)

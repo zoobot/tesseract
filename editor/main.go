@@ -38,7 +38,8 @@ func main() {
 
   /* ======>API<====== */
   // People table
-  r.HandleFunc("/db/user", CreateUser).Methods("POST")
+  r.HandleFunc("/db/user/signup", CreateUser).Methods("POST")
+  r.HandleFunc("/db/user/signin", AuthUser).Methods("POST")
   r.HandleFunc("/db/user", GetUser).Methods("GET")
   r.HandleFunc("/db/user", UpdateUser).Methods("PUT")
   r.HandleFunc("/db/user", DeleteUser).Methods("DELETE")
@@ -47,6 +48,10 @@ func main() {
   r.HandleFunc("/db/docs", GetDoc).Methods("GET")
   r.HandleFunc("/db/docs", UpdateDoc).Methods("PUT")
   r.HandleFunc("/db/docs", DeleteDoc).Methods("DELETE")
+  // Sessions table
+  r.HandleFunc("/db/sessions/createsession", CreateSession).Methods("POST")
+  r.HandleFunc("/db/sessions/findsession", FindSession).Methods("POST")
+  r.HandleFunc("/db/sessions", GetSessions).Methods("GET")
   /* <======end API======> */
 
   // Serve static files (make sure index has /client at start, so paths match)
