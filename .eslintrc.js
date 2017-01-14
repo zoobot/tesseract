@@ -15,7 +15,6 @@ module.exports = {
     'camelcase': 2,
     'curly': 2,
     'eqeqeq': [2, 'smart'],
-    'semi': 2,
     'no-extra-semi': 2,
     'brace-style': [2, '1tbs', { 'allowSingleLine': true }],
     'semi-spacing': 1,
