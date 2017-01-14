@@ -13,7 +13,7 @@ module.exports = {
     'no-mixed-spaces-and-tabs': 2,
     'indent': [2, 2],
     'camelcase': 2,
-    'curly': 2,
+    'curly': [2, 'multi-line'],
     'eqeqeq': [2, 'smart'],
     'no-extra-semi': 2,
     'brace-style': [2, '1tbs', { 'allowSingleLine': true }],
