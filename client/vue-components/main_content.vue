@@ -6,7 +6,7 @@
 
     <div class="content-left">
       <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
-      <div class="word-count" v-if="count > 0">
+      <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
       </div>
@@ -26,6 +26,9 @@
   import VideoComponent from './video_component.vue'
   import Utils from '../js/utils.js'
   import {textStats, docSubscribe} from '../js/editor.js'
+  import sharedb from 'sharedb/lib/client'
+  import richText from 'rich-text'
+  import Quill from 'quill'
   import Chance from 'chance'
 
   export default {
@@ -35,14 +38,14 @@
       this.URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
 
       //create RTC websocket
-      this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${URI}rtc`);
+      this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${this.URI}rtc`);
 
       // update URL display. I still think we can do this with router somehow :S
-      window.history.pushState(window.location.origin, '/', URI);
+      window.history.pushState(window.location.origin, '/', this.URI);
     },
     mounted() {
       sharedb.types.register(richText.type)
-      let socket = new WebSocket(`ws://${window.location.host}`)
+      let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.URI}`)
       const connection = new sharedb.Connection(socket)
       // For testing reconnection
       window.disconnect = function() {
@@ -52,7 +55,7 @@
         let socket = new WebSocket(`ws://${window.location.host}`);
         connection.bindToSocket(socket);
       }
-      const doc = connection.get('docs', 'richtext');
+      const doc = connection.get('docs', this.URI);
       this.quill = new Quill('#editor', {
         placeholder: 'Filthy animals.',
         theme: 'bubble'
@@ -73,7 +76,8 @@
         channel: '',
         count: 0,
         time: '',
-        quill: ''
+        quill: '',
+        URI: ''
       }
     },
     components: {
@@ -103,7 +107,7 @@
   justify-content: center;
   align-items: flex-end;
 }
-.word-count{
+.doc-info{
   font-size: 0.95em;
   font-weight: 600;
   margin: 0.75em;
