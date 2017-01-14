@@ -1,15 +1,15 @@
 // Created by Duncan on 12.29.2016
-// Methods for main_content.vue
-import Utils from '../js/utils.js';
-import _ from 'underscore';
+// Methods for main_content.vu
+// HTTP calls ect.
+import Utils from '../js/utils.js'
 
 module.exports = {
   // Function adds each charactor to input
   update(e) {
-    this.input = e.target.value;
+    this.input = e.target.value
   },
   wsSend() {
-    _.debounce(() => { this.ws.send(this.input) }, 500)();
+    this.ws.send(this.input);
   },
   // On each keyup counts amount of words on document
   wordCounter() {

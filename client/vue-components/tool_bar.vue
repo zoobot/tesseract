@@ -42,7 +42,7 @@
     position: fixed;
     display: table-cell;
     z-index: 10;
-    top: 15vh;
+    top: 8em;
     background-color: rgb(54, 54, 54);
     display: table-cell;
     margin: 0;

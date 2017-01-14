@@ -1,13 +1,14 @@
 <!-- Created by Duncan on 12.28.2016 -->
 <template>
   <nav class="navbar navbar-fixed-top">
-    <div class="nav-left">
+    <div class="left-nav">
     </div>
     <div class="title">
-      <span>Untitled</span>
+      <p>Untitled</p>
     </div>
     <div class="avatar-area">
-
+      <!-- can change fullname to image.//size throws an error however it is working?! -->
+      <avatar fullname="Duncan Nevin" color="rgb(0, 0, 0)" size="20"></avatar>
     </div>
   </nav>
 </template>
@@ -26,37 +27,38 @@
 </script>
 
 <style>
-  .navbar {
-    display: inline-flex;
+  .navbar{
+    display: table;
+    z-index: 0;
     background-color: rgb(24, 24, 24);
-    height: 13vh;
-    margin: 0;
-    border: none;
-  }
-  .nav-left {
-    display: flex;
-    width: 30vw;
+    height: 8em;
+    width: 100vw;
+    border: transparent;
   }
   .title{
-    display: flex;
-    width: 50vw;
-    color: #FFF;
-    align-items: center;
-    justify-content: center;
+    display: table-cell;
+    height: 100%;
+    color: rgb(255, 255, 255);
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
   }
   .avatar-area{
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
     padding-right: 2em;
+  }
+  .avatar{
+    cursor: pointer;
   }
   .glyphicon{
     color: rgb(255, 255, 255);
   }
-<<<<<<< HEAD
-=======
   .left-nav{
     position: relative;
     display: table-cell;
     height: 100%;
     width: 30vw;
   }
->>>>>>> d18605cce8f35fc3b8f68f53381b6ac4d2abe005
 </style>
