@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+/*<!-- Created by Duncan on 12.28.2016 -->*/
+>>>>>>> 724d88a4db4f68b65bf4c6f5fb1500c7b15dd56b
 *, *::before, *::after {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -9,4 +13,24 @@ html, body{
 }
 body{
   padding-top: 13vh;
+<<<<<<< HEAD
+=======
+}
+.float-l {
+  float: left;
+}
+.float-r {
+  float: right;
+}
+
+.float-l {
+  float: left;
+}
+
+.float-r {
+  float: right;
+}
+.pad-top-8 {
+  padding-top: 8em;
+>>>>>>> 724d88a4db4f68b65bf4c6f5fb1500c7b15dd56b
 }

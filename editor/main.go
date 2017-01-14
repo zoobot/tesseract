@@ -48,10 +48,20 @@ func main() {
   // serve index.html to root, or any path we don't recognise.
   r.HandleFunc("/", serveIndex)
   r.NotFoundHandler = http.HandlerFunc(serveIndex)
+<<<<<<< HEAD
+
+  // start 'er up.
+  log.Fatal(http.ListenAndServe(":8000", r))
+=======
 
   // start 'er up.
   log.Fatal(http.ListenAndServeTLS(PORTSSL, PUBLIC_KEY, PRIV_KEY, r))
   // log.Fatal(http.ListenAndServe(":8000", http.HandlerFunc(redirectToHttps)))
+}
+
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+  http.ServeFile(w, r, "client/index.html")
+>>>>>>> d18605cce8f35fc3b8f68f53381b6ac4d2abe005
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {
