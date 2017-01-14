@@ -28,7 +28,7 @@ import (
 )
 
 var (
-  host       = flag.String("host", "104.236.11.110:8443, 127.0.0.1:8443", "Comma-separated hostnames and IPs to generate a certificate for")
+  host       = flag.String("host", "127.0.0.1:8443", "Comma-separated hostnames and IPs to generate a certificate for")
   validFrom  = flag.String("start-date", "Mon Jan 6 23:54:57 2017", "Mon Jan 6 15:04:05 2016")
   validFor   = flag.Duration("duration", 365*24*time.Hour, "Duration that certificate is valid for")
   isCA       = flag.Bool("ca", true, "whether this cert should be its own Certificate Authority")
