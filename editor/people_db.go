@@ -82,7 +82,7 @@ func AuthUser(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(404)
     return
   } else {
-    w.WriteHeader(201)
+    w.WriteHeader(200)
   }
   uj, _ := json.Marshal(u)
   w.Header().Set("Content-Type", "application/json")
@@ -105,7 +105,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
   }
   if _, ok := r.Form["id"]; ok {
     // ?id=1234567ythgfd!
-    fmt.Println(r.Form)
     err = c.Find(bson.M{"id": bson.ObjectIdHex(r.Form.Get("id"))}).All(&results)
     if err != nil {
       w.WriteHeader(404)

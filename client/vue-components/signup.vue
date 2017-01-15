@@ -54,7 +54,7 @@
         //   alert('Password must be 8 characters with least 1 Alphabet, 1 Number and 1 Special Character')
         // }
         auth.signup(this, credentials, (status) => {
-          console.log(status);
+          console.log('signup ->>', status);
           this.showNone();
         });
       }

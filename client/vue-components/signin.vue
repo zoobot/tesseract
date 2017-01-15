@@ -22,8 +22,7 @@
           username: '',
           password: ''
         },
-        error: '',
-        loggingin: true
+        error: ''
       }
     },
     methods: {
@@ -35,20 +34,19 @@
           timestamp: Date.now()
         };
         auth.signin(this, credentials, (data) => {
-          if (data === 404) {
-
-          } else {
-            let token = {
-              userid: data.id,
-              logintime: Date.now(),
-              // id_token: 'whatisup' + data.username// Temp!!!
-            }
-            auth.setjwt(this, JSON.stringify(token));
-          }
+          console.log('signin -->>', data);
+          let token = {
+            userid: data.id,
+            logintime: Date.now(),
+            // id_token: 'whatisup' + data.username// Temp!!!
+          };
+          auth.jwt(this, token, (data) => {
+            console.log('signin jwt ->>', data);
+          });
         });
       },
     },
-    props: ['isLoginShowing', 'isSignupShowing', 'showNone'] 
+    props: ['isLoginShowing', 'isSignupShowing', 'showNone', 'loggedIn'] 
   }
 </script>
 

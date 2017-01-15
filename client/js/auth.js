@@ -35,7 +35,11 @@ export default {
         let status = JSON.parse(res.status);
         if (status === 404) {
           cb(status);
-        } else if (status === 201) {
+        } else if (status === 200) {
+          this.user.data = data;
+          // Sets token in local storage, this is the only place that
+          // can set a token, this ensures a falty token can't be set.
+          localStorage.setItem('id_token', data.id);
           cb(data);
         }
       })
@@ -44,11 +48,46 @@ export default {
       });
   },
 
-  setjwt(context, creds) {
+  jwt(context, creds, cb) {
     context.$http.post(`https://127.0.0.1:8443/db/sessions/createsession`, creds)
       .then((res) => {
+        let status = JSON.parse(res.status);
         let data = JSON.parse(res.body);
-        localStorage.setItem('id_token', data.userid);
+        if (status === 201) {
+          this.user.authenticated = true;
+          cb(status, data);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  },
+
+  getJwt(context, query, cb) {
+    context.$http.get(`https://127.0.0.1:8443/db/sessions`, {params: {'userid': query}})
+      .then((res) => {
+        let status = JSON.parse(res.status);
+        let data = JSON.parse(res.body);
+        if (res.status === 200) {
+          this.user.authenticated = true;
+          this.user.data = data;
+          cb(status, data);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      })
+  },
+
+  getUser(context, query, cb) {
+    context.$http.get(`${USER_URL}`, {params: {'id': query}})
+      .then((res) => {
+        let data = JSON.parse(res.body);
+        let status = JSON.parse(res.status);
+        if (status === 200) {
+          this.user.data = data;
+          cb(data);
+        }
       })
       .catch((err) => {
         throw err;
@@ -60,14 +99,19 @@ export default {
     this.user.authenticated = false;
   },
 
-  // The object to be passed as a heade for authentication requests
+  // The object to be passed as a body for authentication requests
   getAuthHeader() {
     return {
-      'Authorization': 'Bearer' + localStorage.getItem('id_token')
+      UserId: this.getToken(),
+      logintime: Date.now()
     }
   },
 
-  // Helpers
+  getToken() {
+    return localStorage.getItem('id_token');
+  },
+
+  // Helpers,
   verifyEmail(email) {
     // Only checking format currently. Will implement confirmation email later.
     return eValidate.validate(email);

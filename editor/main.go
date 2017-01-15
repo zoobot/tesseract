@@ -50,7 +50,6 @@ func main() {
   r.HandleFunc("/db/docs", DeleteDoc).Methods("DELETE")
   // Sessions table
   r.HandleFunc("/db/sessions/createsession", CreateSession).Methods("POST")
-  r.HandleFunc("/db/sessions/findsession", FindSession).Methods("POST")
   r.HandleFunc("/db/sessions", GetSessions).Methods("GET")
   /* <======end API======> */
 

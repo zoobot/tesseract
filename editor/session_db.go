@@ -43,41 +43,11 @@ func CreateSession(w http.ResponseWriter, r *http.Request) {
   if err != nil {
     return
   }
-  fmt.Println(u)
+
   err = c.Insert(u)
   if err != nil {
     c.Find(bson.M{"userid": u.UserId}).One(&u)
     w.WriteHeader(200)
-  } else {
-    w.WriteHeader(201)
-  }
-  uj, _ := json.Marshal(u)
-  w.Header().Set("Content-Type", "application/json")
-  fmt.Fprintf(w, "%s", uj)
-}
-
-func FindSession(w http.ResponseWriter, r *http.Request) {
-  session, err := mgo.Dial("mongodb://localhost:27017")
-  if err != nil {
-    w.WriteHeader(404)
-    return
-  }
-  defer session.Close()
-  session.SetMode(mgo.Monotonic, true)
-  c := session.DB("tesis").C("sessions")
-  var hold struct {
-    UserName string
-    Password string
-  }
-  err = json.NewDecoder(r.Body).Decode(&hold)
-  if err != nil {
-    w.WriteHeader(404)
-    return
-  }
-  u := People{}
-  err = c.Find(bson.M{"username": hold.UserName, "password": hold.Password}).One(&u)
-  if err != nil {
-    w.WriteHeader(404)
   } else {
     w.WriteHeader(201)
   }
@@ -100,15 +70,30 @@ func GetSessions(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  // No params
-  err = c.Find(bson.M{}).Sort("-timestamp").All(&results)
-  if err != nil {
-    w.WriteHeader(404)
+  if _, ok := r.Form["userid"]; ok {
+    // ?id=1234567ythgfd!
+    err = c.Find(bson.M{"userid": r.Form.Get("userid")}).All(&results)
+    if err != nil {
+      w.WriteHeader(404)
+      return
+    }
+    uj, _ := json.Marshal(results)
+    w.WriteHeader(200)
+    w.Header().Set("Content-Type", "application/json")
+    fmt.Fprintf(w, "%s", uj)
+    return
+  } else {
+    // No params
+    err = c.Find(bson.M{}).Sort("-timestamp").All(&results)
+    if err != nil {
+      w.WriteHeader(404)
+      return
+    }
+    uj, _ := json.Marshal(results)
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(200)
+    fmt.Fprintf(w, "%s", uj)
     return
   }
-  uj, _ := json.Marshal(results)
-  w.Header().Set("Content-Type", "application/json")
-  w.WriteHeader(200)
-  fmt.Fprintf(w, "%s", uj)
-  return
+
 }

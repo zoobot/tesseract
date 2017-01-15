@@ -1,9 +1,9 @@
 <!-- Created by Duncan on 12.28.2016 -->
 <template>
   <div class="main-content">
-    <navbar></navbar>
+    <navbar :user-data="userData" :user-logged-in="loggedIn"></navbar>
     <div>
-    <ToolBar :word-count="count"></ToolBar>
+    <ToolBar :word-count="count" :user-data="userData" :user-logged-in="loggedIn"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left"  v-if="duncanisnoton">
       <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
@@ -28,9 +28,9 @@
   import ToolBar from './tool_bar.vue'
   import Methods from '../js/main_content.js'
   import VideoComponent from './video_component.vue'
-  // HTTP calls ect.
-  import Utils from '../js/utils.js'
+  import auth from '../js/auth.js'
   import Chance from 'chance'
+
   const chance = new Chance()
 
   export default {
@@ -51,7 +51,29 @@
           this.input = e.data;
           this.wordCounter();
         }
+      };
+      let token = auth.getToken();
+      // If token exists
+      if (token) {
+        // Checks if token in computer is valid
+        auth.getJwt(this, token, (status, data) => {
+          if (status === 200) {
+            // Gets user data
+            auth.getUser(this, data[0].userid, (data) => {
+              console.log('jwt get ->>', data[0]);
+              this.userData = data;
+              this.loggedIn = true;
+              this.$emit('authenticated')
+            });
+          }
+        });
       }
+    },
+
+    mounted() {
+      this.$on('authenticated', () => {
+        console.log('main-content heard!')
+      });
     },
 
     data() {
@@ -64,7 +86,9 @@
         channel: '',
         count: 0,
         channel: '',
-        duncanisnoton: false
+        duncanisnoton: false,
+        userData: {},
+        loggedIn: false
       }
     },
     components: {

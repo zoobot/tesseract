@@ -6,14 +6,14 @@
       <p>Untitled</p>
     </div>
     <div class="auth-area">
-      <Signin v-if="isLoginShowing" :show-none="showNone" :is-login-showing="isLoginShowing" :is-signup-showing="isSignupShowing"></Signin>
+      <Signin v-if="isLoginShowing" :show-none="showNone" :is-login-showing="isLoginShowing" :is-signup-showing="isSignupShowing" :logged-in="loggedIn"></Signin>
       <Signup v-if="isSignupShowing" :show-none="showNone" :is-login-showing="isLoginShowing" :is-signup-showing="isSignupShowing"></Signup>
     </div>
     <div class="right-nav">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
       <transition>
-        <avatar class="user-details" v-bind:fullname="userName" color="rgb(0, 0, 0)" size="20" v-if="loggedIn"></avatar>
-        <div class="user-details auth-options"><a @click="showSignin()">Signin</a>/<a @click="showSignup()">Signup</a></div>
+        <avatar class="user-details" v-bind:fullname="userData.username" color="rgb(0, 0, 0)" size="20" v-if="loggedIn"></avatar>
+        <div class="user-details auth-options" v-if="!loggedIn"><a @click="showSignin()">Signin</a>/<a @click="showSignup()">Signup</a></div>
       </transition>
     </div>
   </nav>
@@ -24,17 +24,21 @@
   import Signin from './signin.vue'
   import Signup from './signup.vue'
   import Methods from '../js/navbar.js'
+  import auth from '../js/auth.js'
 
   // HTTP calls ect.
   import Utils from '../js/utils.js'
   export default {
-    created() {},
+    created() {
+      this.$on('authenticated', () => {
+        console.log('navbar heard!')
+      });
+    },
     data() {
       return {
         isLoginShowing: false,
         isSignupShowing: false,
-        loggedIn: false,
-        userName: ''
+        loggedIn: false
       }
     },
     components: {
