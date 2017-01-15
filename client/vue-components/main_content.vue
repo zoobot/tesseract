@@ -5,7 +5,8 @@
     <div class="content">
 
     <div class="content-left">
-      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
+      <videocomponent id="video" :wsRTC="wsRTC" :URI="URI"></videocomponent>
+
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
@@ -23,7 +24,7 @@
 <script>
   import Navbar from './navbar.vue'
   import Methods from '../js/main_content.js'
-  import VideoComponent from './video_component.vue'
+  import Videocomponent from './video_component.vue'
   import Utils from '../js/utils.js'
   import {textStats, docSubscribe} from '../js/editor.js'
   import sharedb from 'sharedb/lib/client'
@@ -36,9 +37,9 @@
       let chance = new Chance()
       let c = this.$route.params.channel
       this.URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
-
       //create RTC websocket
       this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${this.URI}rtc`);
+
 
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', this.URI);
@@ -72,7 +73,7 @@
       return {
         ws: null,
         wsRTC: null,
-        answer:'',
+        wsScreen: null,
         channel: '',
         count: 0,
         time: '',
@@ -82,7 +83,7 @@
     },
     components: {
       Navbar,
-      VideoComponent
+      Videocomponent
     },
     // Methods are located in js directory
     methods: Methods,

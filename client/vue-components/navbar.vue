@@ -8,7 +8,7 @@
     </div>
     <div class="avatar-area">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
-      <avatar fullname="Duncan Nevin" color="rgb(0, 0, 0)" size="20"></avatar>
+      <avatar fullname="Duncan Nevin" color="rgb(0, 0, 0)" size=20></avatar>
     </div>
   </nav>
 </template>
