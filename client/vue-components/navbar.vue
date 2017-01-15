@@ -5,46 +5,54 @@
     <div class="title">
       <p>Untitled</p>
     </div>
-    <div class="auth-area">
-      <Signin v-if="isLoginShowing" :show-none="showNone" :is-login-showing="isLoginShowing" :is-signup-showing="isSignupShowing" :logged-in="loggedIn"></Signin>
-      <Signup v-if="isSignupShowing" :show-none="showNone" :is-login-showing="isLoginShowing" :is-signup-showing="isSignupShowing"></Signup>
-    </div>
-    <div class="right-nav">
+    <div class="right-nav" v-if="this.user.authenticated">
+
       <!-- can change fullname to image.//size throws an error however it is working?! -->
-      <transition>
-        <avatar class="user-details" v-bind:fullname="userData.username" color="rgb(0, 0, 0)" size="20" v-if="loggedIn"></avatar>
-        <div class="user-details auth-options" v-if="!loggedIn"><a @click="showSignin()">Signin</a>/<a @click="showSignup()">Signup</a></div>
-      </transition>
+      <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size="40"></avatar>
+
+      <div class="user-stuff panel-body">
+
+        <div class="signout-container panel-heading">
+          <button class="signout fixed-top" @click="logout()">Signout</button>
+        </div>
+
+        <div class="saved">
+          <div class="saved-docs">
+            <p>duncan1</p>
+            <p>duncan2</p>
+            <p>duncan3</p>
+            <p>duncan4</p>
+            <p>duncan5</p>
+            <p>duncan6</p>
+            <p>duncan7</p>
+            <p>duncan8</p>
+            <p>duncan9</p>
+            <p>duncan10</p>
+            <p>duncan11</p>
+            <p>duncan12</p>
+            <p>duncan13</p>
+          </div>
+        </div>
+      </div>
     </div>
   </nav>
 </template>
 
 <script>
   import Avatar from 'vue-avatar-component'
-  import Signin from './signin.vue'
-  import Signup from './signup.vue'
   import Methods from '../js/navbar.js'
   import auth from '../js/auth.js'
 
-  // HTTP calls ect.
-  import Utils from '../js/utils.js'
   export default {
     created() {
-      this.$on('authenticated', () => {
-        console.log('navbar heard!')
-      });
     },
     data() {
       return {
-        isLoginShowing: false,
-        isSignupShowing: false,
-        loggedIn: false
+        user: auth.user,
       }
     },
     components: {
-      Avatar,
-      Signin,
-      Signup
+      Avatar
     },
     // Methods are located in js directory
     methods: Methods
@@ -79,29 +87,33 @@
   .user-details{
     float: right;
   }
-  .auth-area{
-    position: fixed;
-    width: 25vw;
-    height: 4em;
-    right: 0;
-    top: 0.5em;
-    text-align: center;
-    text-align: right;
-  }
   .avatar{
     cursor: pointer;
   }
   .glyphicon{
     color: rgb(255, 255, 255);
   }
-  .auth-options a{
-    color: white;
-    text-decoration: none;
+  .user-stuff{border: 1px solid white;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 30vw;
+    height: 8em;
+    background-color: transparent;
+    overflow: auto;
   }
-  .auth-options a:hover{
-    cursor: pointer;
-    -moz-box-shadow: 0 0 60px rgb(246, 246, 246);
-    -webkit-box-shadow: 0 0 60px rgb(246, 246, 246);
-    box-shadow: 0 0 60px rgb(246, 246, 246);
+  .saved{border: 1px solid white;
+    width: 100%;
+    padding-top: 3em;
+    min-height: 100%;
+    overflow: scroll;
+  }
+  .signout-container{
+    position: fixed;
+    top: 0;
+    width: 30vw;
+  }
+  .signout{
+    background-color: rgb(24, 24, 24);
   }
 </style>

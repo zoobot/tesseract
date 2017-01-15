@@ -1,12 +1,22 @@
 <!-- Created by Duncan on 12.28.2016 -->
 <template>
   <div class="main-content">
-    <navbar :user-data="userData" :user-logged-in="loggedIn"></navbar>
+    <navbar :user-data="user" :user-logged-in="user.authenticated"></navbar>
     <div>
-    <ToolBar :word-count="count" :user-data="userData" :user-logged-in="loggedIn"></ToolBar>
+
+    <div class="auth-area" v-if="!this.user.authenticated">
+      <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
+      <Signup v-if="isSignupShowing" :show-none="showNone"></Signup>
+      <div class="signup-signin">
+        <button class="signup" @click="showSignup()">Signup</button><button class="signin" @click="showSignin()">Signin
+        </button>
+      </div>
+    </div>
+
+    <ToolBar :word-count="count" :user="user" :user-logged-in="user.authenticated"></ToolBar>
     <!-- area to add live data as text is being added -->
-    <div class="content-left"  v-if="duncanisnoton">
-      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
+    <div class="content-left">
+      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer" v-if="duncanisnoton"></VideoComponent>
     </div>
     <!-- end live data area -->
     <!-- text field -->
@@ -20,7 +30,6 @@
     </div>
     <!-- end text field -->
   </div>
-  </div>
 </template>
 
 <script>
@@ -28,6 +37,8 @@
   import ToolBar from './tool_bar.vue'
   import Methods from '../js/main_content.js'
   import VideoComponent from './video_component.vue'
+  import Signin from './signin.vue'
+  import Signup from './signup.vue'
   import auth from '../js/auth.js'
   import Chance from 'chance'
 
@@ -55,27 +66,10 @@
       let token = auth.getToken();
       // If token exists
       if (token) {
-        // Checks if token in computer is valid
-        auth.getJwt(this, token, (status, data) => {
-          if (status === 200) {
-            // Gets user data
-            auth.getUser(this, data[0].userid, (data) => {
-              console.log('jwt get ->>', data[0]);
-              this.userData = data;
-              this.loggedIn = true;
-              this.$emit('authenticated')
-            });
-          }
-        });
+        // Checks if token in computer is valid then gets user resource
+        auth.getJwt(this, token, userid => auth.getUser(this, userid));
       }
     },
-
-    mounted() {
-      this.$on('authenticated', () => {
-        console.log('main-content heard!')
-      });
-    },
-
     data() {
       return {
         // URI: c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5}),
@@ -87,14 +81,17 @@
         count: 0,
         channel: '',
         duncanisnoton: false,
-        userData: {},
-        loggedIn: false
+        user: auth.user,
+        isLoginShowing: false,
+        isSignupShowing: false,
       }
     },
     components: {
       ToolBar,
       Navbar,
-      VideoComponent
+      VideoComponent,
+      Signin,
+      Signup
     },
     // Methods are located in js directory
     methods: Methods,
@@ -103,6 +100,7 @@
 
 <style>
   .main-content{
+    position: relative;
     width: 100vw;
   }
   .content-right{
@@ -114,6 +112,37 @@
   .content-left{
     position: fixed;
     width: 30vw;
+  }
+  .signup-signin{
+    width: 100%;
+    display: table;
+    position: absolute;
+    top: 2.25em;
+  }
+  .signup, .signin{
+    width: 50%;
+    display: table-cell;
+    background-color: rgb(24, 24, 24);
+    border: none;
+    color: rgb(255, 255, 255);
+    outline: none;
+  }
+  .signup-signin button{
+    color: white;
+    text-decoration: none;
+  }
+  .signup-signin button:hover{
+    cursor: pointer;
+    -moz-box-shadow: 0 0 60px rgb(246, 246, 246);
+    -webkit-box-shadow: 0 0 60px rgb(246, 246, 246);
+    box-shadow: 0 0 60px rgb(246, 246, 246);
+  }
+  .auth-area{
+    position: fixed;
+    width: 25vw;
+    height: 4em;
+    right: 0;
+    top: 0.5em;
   }
   html, body, #editor {
     margin: 0;

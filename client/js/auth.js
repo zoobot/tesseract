@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
 
+Vue.use(VueResource);
+
 const USER_URL = 'https://127.0.0.1:8443/db/user';
 const eValidate = require('email-validator');
 
@@ -24,7 +26,7 @@ export default {
         }
       })
       .catch((err) => {
-        throw err;
+        context.error = 'Oops something went wrong!';
       });
   },
 
@@ -37,6 +39,7 @@ export default {
           cb(status);
         } else if (status === 200) {
           this.user.data = data;
+          this.user.authenticated = true;
           // Sets token in local storage, this is the only place that
           // can set a token, this ensures a falty token can't be set.
           localStorage.setItem('id_token', data.id);
@@ -44,22 +47,24 @@ export default {
         }
       })
       .catch((err) => {
-        throw err;
+        context.error = 'Invalid user credentials!';
       });
   },
 
-  jwt(context, creds, cb) {
-    context.$http.post(`https://127.0.0.1:8443/db/sessions/createsession`, creds)
+  jwt(context, id) {
+    let token = {
+      userid: id,
+      logintime: Date.now(),
+      // id_token: 'whatisup' + data.username// Temp!!!
+    };
+
+    context.$http.post(`https://127.0.0.1:8443/db/sessions/createsession`, token)
       .then((res) => {
         let status = JSON.parse(res.status);
         let data = JSON.parse(res.body);
-        if (status === 201) {
-          this.user.authenticated = true;
-          cb(status, data);
-        }
       })
       .catch((err) => {
-        throw err;
+        context.error = err;
       });
   },
 
@@ -69,9 +74,7 @@ export default {
         let status = JSON.parse(res.status);
         let data = JSON.parse(res.body);
         if (res.status === 200) {
-          this.user.authenticated = true;
-          this.user.data = data;
-          cb(status, data);
+          cb(data[0].userid);
         }
       })
       .catch((err) => {
@@ -79,15 +82,13 @@ export default {
       })
   },
 
-  getUser(context, query, cb) {
+  getUser(context, query) {
     context.$http.get(`${USER_URL}`, {params: {'id': query}})
       .then((res) => {
         let data = JSON.parse(res.body);
         let status = JSON.parse(res.status);
-        if (status === 200) {
-          this.user.data = data;
-          cb(data);
-        }
+        this.user.data = data[0];
+        this.user.authenticated = true;
       })
       .catch((err) => {
         throw err;
@@ -97,6 +98,7 @@ export default {
   logout() {
     localStorage.removeItem('id_token');
     this.user.authenticated = false;
+    this.user.data = {};
   },
 
   // The object to be passed as a body for authentication requests
@@ -126,6 +128,10 @@ export default {
     // Minimum 8 characters at least 1 Alphabet, 1 Number and 1 Special Character:
     // FishyTreat1!
     return pw.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/) ? true : false;
+  },
+
+  getUserData() {
+    return this.user;
   }
 }
 

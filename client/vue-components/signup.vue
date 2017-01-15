@@ -2,13 +2,16 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <transition name="fade" mode="in-out">
-        <form @submit="onSubmit($event)">
+        <form @submit.prevent="onSubmit">
           <input type="text" class="form-control" placeholder="Username" v-model="credentials.username">
-          <input type="password" class="form-control email-password" placeholder="Password" v-model="credentials.password">
           <input type="text" class="form-control email-password" placeholder="Email" v-model="credentials.email">
-          <input type="submit" class="form-control submit" value="Signup"><input type="button" class="form-control submit" value="<<Back" @click="showNone()">
+          <input type="password" class="form-control email-password" placeholder="Password" v-model="credentials.password">
+          <input type="submit" class="form-control submit" value="Submit"><input type="button" class="form-control submit" value="<<Back" @click="showNone()">
         </form>
       </transition>
+      <div class="alert alert-danger" v-if="error">
+        <p> {{ error }} </p>
+      </div>
     </div>
   </div>
 </template>
@@ -29,12 +32,13 @@
         loggingin: true
       }
     },
+    created() {
+    },
     methods: {
       // Bob1! --> sample username
       // bob@me.com --> sample email
       // FishyTreat1! --> sample password
-      onSubmit(e) {
-        e.preventDefault();
+      onSubmit() {
         let credentials = {
           username: this.credentials.username.trim(),
           email: this.credentials.email.trim(),
@@ -42,24 +46,22 @@
           avatar: this.credentials.avatar,
           membersince: Date.now()
         };
-        // if (!auth.verifyUsername(credentials.username)) {
-        //   alert('Must contain at least one symbol');
-        //   return;
-        // }
-        // if (!auth.verifyEmail(credentials.email)) {
-        //   alert('Invalid email');
-        //   return
-        // }
-        // if (!auth.verifyPassword(credentials.password)) {
-        //   alert('Password must be 8 characters with least 1 Alphabet, 1 Number and 1 Special Character')
-        // }
-        auth.signup(this, credentials, (status) => {
-          console.log('signup ->>', status);
-          this.showNone();
-        });
+        if (!auth.verifyUsername(credentials.username)) {
+          this.error = 'Must contain at least one symbol';
+          return;
+        }
+        if (!auth.verifyEmail(credentials.email)) {
+          this.error = 'Invalid email';
+          return
+        }
+        if (!auth.verifyPassword(credentials.password)) {
+          this.error = 'Password must be 8 characters with least 1 Alphabet, 1 Number and 1 Special Character'
+          return
+        }
+        auth.signup(this, credentials, status => this.showNone());
       }
     },
-    props: ['isLoginShowing', 'isSignupShowing', 'showNone'] 
+    props: ['showNone'] 
   }
 </script>
 
@@ -80,6 +82,7 @@
   }
   input{
     float: right;
+    background-color: rgb(0, 0, 0);
   }
   input[type="text"], input[type="password"], input[type="submit"]{
     background-color: rgb(0, 0, 0);

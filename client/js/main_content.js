@@ -2,6 +2,7 @@
 // Methods for main_content.vu
 // HTTP calls ect.
 import Utils from '../js/utils.js'
+import auth from '../js/auth.js'
 
 module.exports = {
   // Function adds each charactor to input
@@ -32,5 +33,17 @@ module.exports = {
         cb(response.body);
       };
     });
+  },
+  showSignin() {
+    this.isSignupShowing = false;
+    this.isLoginShowing = !this.isLoginShowing;
+  },
+  showSignup() {
+    this.isLoginShowing = false;
+    this.isSignupShowing = !this.isSignupShowing;
+  },
+  showNone() {
+    this.isSignupShowing = false;
+    this.isLoginShowing = false;
   }
 }
