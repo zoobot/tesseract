@@ -15,29 +15,22 @@
 
 </template>
 
-<style>
-  video {
-    display: inline-block;
-    max-width: 100%;
-  }
-  button {
-    width: 100%
-  }
-</style>
 <script>
   import Utils from '../js/utils.js'
   import Methods from '../js/webrtc.js'
   export default {
 
     mounted() {
+      console.log('videocomponent mounted, this.wsrtc:', this.wsrtc)
+      console.log('videocomponent mounted, this.URI:', this.uri)
       this.start();
-      this.wsRTC.onmessage = e => {
+      this.wsrtc.onmessage = e => {
         this.signalHandler(e)
       };
       console.log('this.remoteMuted at start', this.remoteMuted)
     },
 
-    props: ['wsRTC','URI'],
+    props: ['wsrtc','uri'],
 
     data() {
         return {
@@ -270,3 +263,13 @@
     }
   }
 </script>
+
+<style>
+  video {
+    display: inline-block;
+    max-width: 100%;
+  }
+  button {
+    width: 100%
+  }
+</style>
