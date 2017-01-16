@@ -15,6 +15,11 @@ startServer()
 function startServer() {
   const app = express();
   app.use(express.static(__dirname + '/../client'));
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: false }))
+  const router = require('./routes')(app, express)
+  app.use('/', router)
+
   const server = http.createServer(app);
 
   // Connects any incoming WebSocket connection to ShareDB
