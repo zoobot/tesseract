@@ -8,6 +8,7 @@ logs
 *.logs
 
 ._*
+*.pem
 
 .Spotlight-V100
 .Trashes
@@ -23,3 +24,4 @@ cert.pem
 certMaker
 key.pem
 
+editor/editor

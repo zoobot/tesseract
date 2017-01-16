@@ -19,12 +19,10 @@ RUN go get github.com/gorilla/mux
 RUN go get github.com/gorilla/websocket
 RUN go install github.com/tesis-lab/tesis/editor
 
-RUN go run certMaker.go
-
 RUN webpack
 
 # Run the server command by default when the container starts.
 ENTRYPOINT /go/bin/editor
 
 # Document that the service listens on port 8000.
-EXPOSE 8443
+EXPOSE 8000
