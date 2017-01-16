@@ -124,7 +124,7 @@
   .signup, .signin{
     width: 50%;
     display: table-cell;
-    background-color: rgb(24, 24, 24);
+    background-color: transparent;
     border: none;
     color: rgb(255, 255, 255);
     outline: none;

@@ -3,7 +3,7 @@
     <div class="left-nav">
     </div>
     <div class="title" v-if="this.user.authenticated">
-      <p> {{ docData.currentDoc.name }} </p>
+      <p> {{ docData.currentDoc.name || 'New' }} </p>
     </div>
     <div class="right-nav" v-if="this.user.authenticated">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
@@ -94,6 +94,7 @@
   }
   .user-details{
     float: right;
+    margin-right: 1em;
   }
   .avatar{
     cursor: pointer;
