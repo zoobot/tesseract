@@ -7,8 +7,11 @@
       <button @click="screen()" id="screen" >S</button>
       </div>
 
-      <div><video id="localVideo" @click="toggleAudioMute()" muted="true" autoplay></video></div>
-      <div><video id="remoteVideo" muted="remoteMuted" autoplay></video></div>
+        <button @click="stop()" id="stop">Stop</button>
+        <button v-show="collaborate" @click="start()" id="collaborate" >collaborate++</button>
+        <button v-show= "connect" @click="call()" id="connect">click to connect</button>
+        <button @click="toggleMute()" id="mute">mute</button>
+        <div id="video-container"></div>
 
     </div>
 
@@ -21,19 +24,22 @@
   export default {
 
     mounted() {
+
       console.log('videocomponent mounted, this.wsrtc:', this.wsrtc)
       console.log('videocomponent mounted, this.URI:', this.uri)
-      this.start();
-      this.wsrtc.onmessage = e => {
-        this.signalHandler(e)
-      };
       console.log('this.remoteMuted at start', this.remoteMuted)
+
+      this.gainNode();
+      this.signalHandler();
+
     },
 
     props: ['wsrtc','uri'],
 
     data() {
         return {
+          collaborate: true,
+          connect: false,
           ourAnswer:'',
           otherSDP:'',
           iceCandidates:[],
@@ -49,59 +55,78 @@
     },
 
     methods: {
+
+      gainNode() {
+      let context = new AudioContext();
+      let sineWave = context.createOscillator();
+        // Declare gain node
+      let gainNode = context.createGain();
+        // Connect sine wave to gain node
+        sineWave.connect(gainNode);
+        // Connect gain node to speakers
+        gainNode.connect(context.destination);
+        gainNode.gain.value = 0.9;
+      },
+
     //eventually we can port all these methods into a js file
       start() {
+        this.startCollab();
         //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
         //which is then used in the success callback on the MediaStream object that contains the media stream
-          navigator.mediaDevices.getUserMedia({
-            audio: {
-            googEchoCancellation: true,
-            googAutoGainControl: true,
-            googNoiseSuppression: true,
-            googHighpassFilter: true,
-            googEchoCancellatio2n: true,
-            googAutoGainControl2: true,
-            googNoiseSuppression2: true,
-            googHighpassFilter2: true
-            },
-            video: {
-            width: { ideal: 320 },
-            height: { ideal: 240 },
-            frameRate: { min: 1, max: 15 }
-          }})
-          .then(this.gotStream)
-          .catch(e => { console.log('getUserMedia() error: ' + e.name);});
+
+         navigator.mediaDevices.getUserMedia({ audio: true, video: true})
+         .then (stream => {
+        // set localStream equal to this stream
+            this.localStream = stream
+          })
+         .catch(e => { console.log('getUserMedia() error: ' + e.name);});
+
+      },
+
+      startCollab()  {
+          this.wsRTC.send(JSON.stringify({'type':'join'}));
+          this.wsRTC.send(JSON.stringify({'type': 'joinUp'}))
       },
 
       gotStream(stream) {
-
-        this.localVideo = document.getElementById('localVideo');
+        //set button displays
+        this.collaborate = false;
         //set source of localVideo element to the stream captures from getUserMedia
-        this.localVideo.src = window.URL.createObjectURL(stream);
-        // set localStream equal to this stream
-        this.localStream = stream;
+        //this.localVideo = document.getElementById('localVideo');
+        //this.localVideo.src = window.URL.createObjectURL(this.localStream);
+        this.videos = document.getElementById('video-container');
+        let localVideo = document.createElement('video')
+        this.videos.appendChild(localVideo);
+        localVideo.src = URL.createObjectURL(this.localStream);
+        localVideo.autoplay = true;
+        localVideo.mute = true;
+        localVideo.setAttribute("id", this.localStream.id);
         // instantiate new peer connection
         this.pc = new RTCPeerConnection(this.peerConnectionConfig);
         // set methods on new peer connection object
         this.pc.addStream(this.localStream)
 
-
         this.pc.onaddstream = e => {
         //event handler for setRemoteDescription: adds remote stream src to DOM
-            this.remoteVideo = document.getElementById('remoteVideo');
-            this.remoteVideo.src = window.URL.createObjectURL(e.stream);
+            //this.remoteVideo.src = window.URL.createObjectURL(e.stream)
+            let otherVideo = document.createElement('video');
+            this.videos.appendChild(otherVideo);
+            otherVideo.src = URL.createObjectURL(e.stream);
+            otherVideo.autoplay = true;
+            otherVideo.setAttribute("id", e.stream.id);
         }
         //on initial reception of icecandidates...
         this.pc.onicecandidate = e => {
           //send ice candidates over WS signaling server
           if(e.candidate != null) {
             this.wsRTC.send(JSON.stringify({'ice': e.candidate}));
+            this.connect = true;
           }
         }
       },
 
       call() {
-      //call to create initial offer
+         //call to create initial offer
         this.pc.createOffer()
         .then(offer => {
         //set local description to own SDP offer
@@ -122,6 +147,56 @@
                 console.log('muted from other side', signal, this.remoteMuted);
                 document.getElementById("remoteVideo").muted = this.remoteMuted;
                 console.log(this.remoteMuted, 'this.isremotedMuted in mute signal')
+
+      toggleMute() {
+
+      let audio = this.localStream.getAudioTracks();
+        this.wsRTC.send(JSON.stringify(
+          {'toggleMute': true,
+          mediaStreamLabel: audio.label
+          })
+        )
+        console.log('toggleAudio signaled')
+      },
+
+      signalHandler() {
+
+
+        this.wsRTC.onmessage = e => {
+
+          let signal = JSON.parse(e.data);
+
+            if (signal.type === 'stop') {
+              var r = document.getElementById(signal.id);
+              this.videos.removeChild(r);
+              this.connect = false;
+              this.collaborate = true;
+            }
+
+            if (signal.type === 'join') {
+              this.collaborate = false;
+              this.connect = true;
+            }
+
+            if (signal.type === 'joinUp') {
+
+                if(this.localStream) {
+                  this.gotStream(this.localStream);
+                } else {
+                  navigator.mediaDevices.getUserMedia({ audio: true, video: true})
+                  .then (stream => {
+                // set localStream equal to this stream
+                    this.localStream = stream
+                  })
+                  .then(stream => {
+                    this.gotStream(stream)
+                  })
+                }
+
+            }
+
+            if (signal.type === 'allJoined') {
+              this.connect = false
             }
 
             if (signal.sdp && signal.sdp.type === 'offer' && signal.sdp !== this.pc.localDescription) {
@@ -142,10 +217,10 @@
 
           }
 
-          if (signal.ice) {
-          //add ice candidates to iceCandidates array in data
-            this.iceCandidates.push(signal.ice)
-          }
+            if (signal.ice) {
+           //add ice candidates to iceCandidates array in data
+              this.iceCandidates.push(signal.ice)
+            }
 
           if (signal.sdp && signal.sdp.type === 'answer' && signal.sdp !== this.pc.localDescription) {
             console.log('this is a signal', signal.sdp)
@@ -239,6 +314,12 @@
          )
         console.log('toggleAudio signaled')
         console.log(this.remoteMuted, 'this.isremotedMuted in toggleAudio')
+
+      },
+
+      stop() {
+        this.pc.removeStream(this.localStream);
+        this.wsRTC.send(JSON.stringify({'type':'stop', 'id': this.localStream.id}));
       }
 
       //hangUp() {
