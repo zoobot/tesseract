@@ -7,21 +7,27 @@
     </div>
     <div class="right-nav" v-if="this.user.authenticated">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
-      <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size="40"></avatar>
-
-      <div class="user-stuff panel-body">
-
+      <div @click="showControls()">
+        <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size="40"></avatar>
+      </div>
+      <!-- hidden control panel -->
+      <div class="user-stuff panel-body" v-if="this.showControl">
+        <!-- logout button -->
         <div class="signout-container panel-heading">
-          <button class="signout fixed-top" @click="logout()">Signout</button>
+          <button class="control-buttons signout fixed-top" @click="logout()">Signout</button>
+          <button class="control-buttons" @click="showControls()">Close</button>
         </div>
-
+        <!-- end logout button -->
+        <!-- saved documents list -->
         <div class="saved">
           <div class="saved-docs">
               <button v-for="item in docData.docs" :id="item.id" @click="uploadDoc($event.target.id)">
                 {{ item.name }}
               </button>
           </div>
+          <!-- end saved documents list -->
         </div>
+        <!-- end hidden control panel -->
       </div>
     </div>
   </nav>
@@ -39,7 +45,8 @@
     data() {
       return {
         user: auth.user,
-        docData: docsave.docData
+        docData: docsave.docData,
+        showControl: false
       }
     },
     components: {
@@ -89,22 +96,26 @@
     top: 0;
     right: 0;
     width: 30vw;
-    height: 8em;
-    background-color: transparent;
-    overflow: auto;
+    min-height: 8em;
+    background-color: rgb(24, 24, 24);
+    /*overflow: auto;*/
   }
   .saved{border: 1px solid white;
     width: 100%;
     padding-top: 3em;
     min-height: 100%;
-    overflow: scroll;
+    /*overflow: scroll;*/
   }
   .signout-container{
     position: fixed;
     top: 0;
     width: 30vw;
   }
-  .signout, .saved-docs button{
+  .control-buttons, .saved-docs button{
     background-color: rgb(24, 24, 24);
+  }
+  .control-buttons{
+    display: inline-block;
+    width: 40%;
   }
 </style>

@@ -4,10 +4,18 @@ import docsave from '../js/docsave.js'
 module.exports = {
   logout() {
     auth.logout();
+    this.showControls()
+    docsave.docData.currentDoc = {
+      name: '',
+      doc: ''
+    }
   },
 
   uploadDoc(id) {
     docsave.getDoc(this, id);
-    console.log(id)
+  },
+
+  showControls() {
+    this.showControl = !this.showControl;
   }
 }
