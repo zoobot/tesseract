@@ -41,6 +41,7 @@ export default {
         // can set a token, this ensures a falty token can't be set.
         localStorage.setItem('id_token', data.id);
         this.jwt(context, data.id);
+        console.log(data.username)
         docsave.getAllDocs(context, data.username);
       })
       .catch((err) => {
@@ -55,7 +56,7 @@ export default {
         let status = JSON.parse(res.status);
         this.user.data = data[0];
         this.user.authenticated = true;
-        docsave.getAllDocs(context, data[0]);
+        docsave.getAllDocs(context, data[0].username);
       })
       .catch((err) => {
         throw err;
@@ -97,6 +98,11 @@ export default {
     localStorage.removeItem('id_token');
     this.user.authenticated = false;
     this.user.data = {};
+    docsave.docData.currentDoc = {
+      name: '',
+      doc: ''
+    };
+    docsave.docData.docs = [];
   },
 
   // The object to be passed as a body for authentication requests

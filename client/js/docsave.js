@@ -27,8 +27,8 @@ export default {
       });
   },
 
-  getAllDocs(context, data) {
-    context.$http.get(`${USER_URL}/db/docs`, {params: {'username': data.username}})
+  getAllDocs(context, username) {
+    context.$http.get(`${USER_URL}/db/docs`, {params: {'username': username}})
       .then((res) => {
         let data = res.body;
         data.forEach((obj) => {

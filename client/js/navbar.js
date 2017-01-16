@@ -3,12 +3,8 @@ import docsave from '../js/docsave.js'
 
 module.exports = {
   logout() {
+    this.showControls();
     auth.logout();
-    this.showControls()
-    docsave.docData.currentDoc = {
-      name: '',
-      doc: ''
-    }
   },
 
   uploadDoc(id) {
