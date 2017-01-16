@@ -3,7 +3,7 @@
   <div class="main-content">
     <navbar :user-data="user" :user-logged-in="user.authenticated"></navbar>
     <div>
-
+    <!-- Authentication -->
     <div class="auth-area" v-if="!this.user.authenticated">
       <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
       <Signup v-if="isSignupShowing" :show-none="showNone"></Signup>
@@ -12,12 +12,17 @@
         </button>
       </div>
     </div>
-
+    <!-- end Authentication -->
     <ToolBar :word-count="count" :user="user" :user-logged-in="user.authenticated"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
       <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer" v-if="duncanisnoton"></VideoComponent>
-      <button @click="saveDoc()" v-if="this.user.authenticated">Save</button>
+      <!-- Save buttons -->
+      <div v-if="this.user.authenticated">
+        <button @click="saveAs(saveDoc)">Save As</button>
+        <button @click="save()" v-if="docData.currentDoc.doc">Save</button>
+      </div>
+      <!-- end Save buttons -->
     </div>
     <!-- end live data area -->
     <!-- text field -->
@@ -25,7 +30,7 @@
       <!-- Markdown editor -->
       <!-- Doesn't really compile markdown yet -->
       <div id="editor">
-        <textarea id="content" :value="docData.currentDoc" @input="update" @input.ws-send="wsSend" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
+        <textarea id="content" :value="docData.currentDoc.doc" @input="update" @input.ws-send="wsSend" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
       </div>
       <!-- end editor -->
     </div>
@@ -82,11 +87,13 @@
         channel: '',
         count: 0,
         channel: '',
-        duncanisnoton: false,
+        // User data stored in auth
         user: auth.user,
+        // Doc data stored in docsave
         docData: docsave.docData,
         isLoginShowing: false,
         isSignupShowing: false,
+        duncanisnoton: false,
       }
     },
     components: {

@@ -110,7 +110,7 @@ func UpdateDoc(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(404)
     return
   }
-  err = c.Update(bson.M{"id": d.Id}, bson.M{"id": d.Id, "username": d.UserName, "doc": d.Doc})
+  err = c.Update(bson.M{"id": d.Id}, bson.M{"id": d.Id, "username": d.UserName, "name": d.Name, "doc": d.Doc})
   if err != nil {
     w.WriteHeader(404)
     return

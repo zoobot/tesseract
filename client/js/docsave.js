@@ -4,7 +4,10 @@ const USER_URL = 'https://127.0.0.1:8443';
 
 export default {
   docData: {
-    currentDoc: '',
+    currentDoc: {
+      name: '',
+      doc: ''
+    },
     docs: [], // array of --> {name: 'docname', id: '932ejwocnodmcl'}
   },
 
@@ -17,8 +20,7 @@ export default {
           name: data.name,
           id: data.id
         }
-        this.docs.push(saved)
-        console.log(this.docs)
+        this.docData.docs.push(saved);
       })
       .catch((err) => {
         throw err;
@@ -42,22 +44,42 @@ export default {
       });
   },
 
-  getDoc(context, id, cb) {
-    context.$http.get(`${USER_URL}/db/docs`, {params: {'id': '587c17ce42f5bfeb5673fd31'}})
+  getDoc(context, id) {
+    context.$http.get(`${USER_URL}/db/docs`, {params: {'id': id}})
       .then((res) => {
         let data = res.body;
         let fix = auth.decrypt(data[0].doc);
-        this.docData.currentDoc = fix;
+        this.docData.currentDoc = {
+          id: data[0].id,
+          name: data[0].name,
+          doc: fix
+        }
       })
       .catch((err) => {
-        console.error('Doc not found')
+        console.error(err)
+      });
+  },
+
+  updateDoc(context, data) {
+    context.$http.put(`${USER_URL}/db/docs`, data)
+      .then((res) => {
+        let data = res.body;
+        let fix = auth.decrypt(data[0].doc);
+        this.docData.currentDoc = {
+          id: data[0].id,
+          name: data.name,
+          doc: fix
+        }
+      })
+      .catch((err) => {
+        console.error(err)
       });
   },
 
   fixDups(doc) {
     let count = 0;
     let docName = doc.name.split('(')[0];
-    this.docs.forEach((obj) => {
+    this.docData.docs.forEach((obj) => {
       let objName = obj.name.split('(')[0];
       if (objName === docName) {
         count++;

@@ -3,7 +3,7 @@
     <div class="left-nav">
     </div>
     <div class="title" v-if="this.user.authenticated">
-      <p> {{ docs.currentDoc || 'untitled' }} </p>
+      <p> {{ docData.currentDoc.name }} </p>
     </div>
     <div class="right-nav" v-if="this.user.authenticated">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
@@ -17,7 +17,7 @@
 
         <div class="saved">
           <div class="saved-docs">
-              <button v-for="item in docs" :id="item.id" @click="uploadDoc($event.target.id)">
+              <button v-for="item in docData.docs" :id="item.id" @click="uploadDoc($event.target.id)">
                 {{ item.name }}
               </button>
           </div>
@@ -39,7 +39,7 @@
     data() {
       return {
         user: auth.user,
-        docs: docsave.docData.docs
+        docData: docsave.docData
       }
     },
     components: {

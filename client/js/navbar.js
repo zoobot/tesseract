@@ -8,5 +8,6 @@ module.exports = {
 
   uploadDoc(id) {
     docsave.getDoc(this, id);
+    console.log(id)
   }
 }
