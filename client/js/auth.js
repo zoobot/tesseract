@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
+import docsave from './docsave.js'
 
 Vue.use(VueResource);
 
-const USER_URL = 'https://127.0.0.1:8443/db/user';
+const USER_URL = 'https://127.0.0.1:8443';
 const eValidate = require('email-validator');
+const crypto = require('crypto'),
+      algorithm = 'aes-256-ctr',
+      password = 'farfegnugen';
 
 Vue.use(VueResource);
 
@@ -15,39 +19,46 @@ export default {
     data: {}
   },
   signup(context, creds, cb) {
-    context.$http.post(`${USER_URL}/signup`, creds)
+    context.$http.post(`${USER_URL}/db/user/signup`, creds)
       .then((res) => {
         let data = JSON.parse(res.body);
         let status = JSON.parse(res.status);
-        if (status === 200) {
-          cb(status);
-        } else if (status === 201) {
-          cb(status);
-        }
+        cb();
       })
       .catch((err) => {
-        context.error = 'Oops something went wrong!';
+        context.error = 'This user name already exits!';
       });
   },
 
   signin(context, creds, cb) {
-    context.$http.post(`${USER_URL}/signin`, creds)
+    context.$http.post(`${USER_URL}/db/user/signin`, creds)
       .then((res) => {
         let data = JSON.parse(res.body);
         let status = JSON.parse(res.status);
-        if (status === 404) {
-          cb(status);
-        } else if (status === 200) {
-          this.user.data = data;
-          this.user.authenticated = true;
-          // Sets token in local storage, this is the only place that
-          // can set a token, this ensures a falty token can't be set.
-          localStorage.setItem('id_token', data.id);
-          cb(data);
-        }
+        this.user.data = data;
+        this.user.authenticated = true;
+        // Sets token in local storage, this is the only place that
+        // can set a token, this ensures a falty token can't be set.
+        localStorage.setItem('id_token', data.id);
+        this.jwt(context, data.id);
+        docsave.getAllDocs(context, data.username);
       })
       .catch((err) => {
         context.error = 'Invalid user credentials!';
+      });
+  },
+
+  getUser(context, query) {
+    context.$http.get(`${USER_URL}/db/user`, {params: {'id': query}})
+      .then((res) => {
+        let data = JSON.parse(res.body);
+        let status = JSON.parse(res.status);
+        this.user.data = data[0];
+        this.user.authenticated = true;
+        docsave.getAllDocs(context, data[0]);
+      })
+      .catch((err) => {
+        throw err;
       });
   },
 
@@ -58,7 +69,7 @@ export default {
       // id_token: 'whatisup' + data.username// Temp!!!
     };
 
-    context.$http.post(`https://127.0.0.1:8443/db/sessions/createsession`, token)
+    context.$http.post(`${USER_URL}/db/sessions/createsession`, token)
       .then((res) => {
         let status = JSON.parse(res.status);
         let data = JSON.parse(res.body);
@@ -68,31 +79,18 @@ export default {
       });
   },
 
-  getJwt(context, query, cb) {
-    context.$http.get(`https://127.0.0.1:8443/db/sessions`, {params: {'userid': query}})
+  getJwt(context, query) {
+    context.$http.get(`${USER_URL}/db/sessions`, {params: {'userid': query}})
       .then((res) => {
         let status = JSON.parse(res.status);
         let data = JSON.parse(res.body);
         if (res.status === 200) {
-          cb(data[0].userid);
+          this.getUser(context, data[0].userid);
         }
       })
       .catch((err) => {
         throw err;
       })
-  },
-
-  getUser(context, query) {
-    context.$http.get(`${USER_URL}`, {params: {'id': query}})
-      .then((res) => {
-        let data = JSON.parse(res.body);
-        let status = JSON.parse(res.status);
-        this.user.data = data[0];
-        this.user.authenticated = true;
-      })
-      .catch((err) => {
-        throw err;
-      });
   },
 
   logout() {
@@ -132,6 +130,20 @@ export default {
 
   getUserData() {
     return this.user;
+  },
+
+  encrypt(text){
+    const cipher = crypto.createCipher(algorithm,password)
+    let crypted = cipher.update(text,'utf8','hex')
+    crypted += cipher.final('hex');
+    return crypted;
+  },
+
+  decrypt(text){
+    const decipher = crypto.createDecipher(algorithm,password)
+    let dec = decipher.update(text,'hex','utf8')
+    dec += decipher.final('utf8');
+    return dec;
   }
 }
 

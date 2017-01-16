@@ -17,6 +17,7 @@
 
 <script>
   import auth from '../js/auth.js'
+  import docsave from '../js/docsave.js'
 
   export default {
     data(){
@@ -45,7 +46,7 @@
           this.error = 'Invalid password!'
           return;
         }
-        auth.signin(this, credentials, data => auth.jwt(this, data.id));
+        auth.signin(this, credentials);
       }
     },
     props: ['showNone'] 

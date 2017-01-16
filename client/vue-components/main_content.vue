@@ -17,6 +17,7 @@
     <!-- area to add live data as text is being added -->
     <div class="content-left">
       <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer" v-if="duncanisnoton"></VideoComponent>
+      <button @click="saveDoc()" v-if="this.user.authenticated">Save</button>
     </div>
     <!-- end live data area -->
     <!-- text field -->
@@ -24,7 +25,7 @@
       <!-- Markdown editor -->
       <!-- Doesn't really compile markdown yet -->
       <div id="editor">
-        <textarea id="content" :value="input" @input="update" @input.ws-send="wsSend" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
+        <textarea id="content" :value="docData.currentDoc" @input="update" @input.ws-send="wsSend" @keyup.delete="wordCounter" @keyup.space="wordCounter" @keyup.enter="wordCounter(true)"></textarea>
       </div>
       <!-- end editor -->
     </div>
@@ -40,6 +41,7 @@
   import Signin from './signin.vue'
   import Signup from './signup.vue'
   import auth from '../js/auth.js'
+  import docsave from '../js/docsave.js'
   import Chance from 'chance'
 
   const chance = new Chance()
@@ -67,7 +69,7 @@
       // If token exists
       if (token) {
         // Checks if token in computer is valid then gets user resource
-        auth.getJwt(this, token, userid => auth.getUser(this, userid));
+        auth.getJwt(this, token);
       }
     },
     data() {
@@ -76,12 +78,13 @@
         ws: null,
         wsRTC: null,
         answer:'',
-        input: '',
+        // input: '',
         channel: '',
         count: 0,
         channel: '',
         duncanisnoton: false,
         user: auth.user,
+        docData: docsave.docData,
         isLoginShowing: false,
         isSignupShowing: false,
       }

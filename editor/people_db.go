@@ -48,8 +48,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
   }
   err = c.Insert(u)
   if err != nil {
-    c.Find(bson.M{"username": u.UserName}).One(&u)
-    w.WriteHeader(200)
+    w.WriteHeader(404)
   } else {
     w.WriteHeader(201)
   }

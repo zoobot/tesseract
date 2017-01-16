@@ -2,11 +2,10 @@
   <nav class="navbar navbar-fixed-top">
     <div class="left-nav">
     </div>
-    <div class="title">
-      <p>Untitled</p>
+    <div class="title" v-if="this.user.authenticated">
+      <p> {{ docs.currentDoc || 'untitled' }} </p>
     </div>
     <div class="right-nav" v-if="this.user.authenticated">
-
       <!-- can change fullname to image.//size throws an error however it is working?! -->
       <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size="40"></avatar>
 
@@ -18,19 +17,9 @@
 
         <div class="saved">
           <div class="saved-docs">
-            <p>duncan1</p>
-            <p>duncan2</p>
-            <p>duncan3</p>
-            <p>duncan4</p>
-            <p>duncan5</p>
-            <p>duncan6</p>
-            <p>duncan7</p>
-            <p>duncan8</p>
-            <p>duncan9</p>
-            <p>duncan10</p>
-            <p>duncan11</p>
-            <p>duncan12</p>
-            <p>duncan13</p>
+              <button v-for="item in docs" :id="item.id" @click="uploadDoc($event.target.id)">
+                {{ item.name }}
+              </button>
           </div>
         </div>
       </div>
@@ -42,6 +31,7 @@
   import Avatar from 'vue-avatar-component'
   import Methods from '../js/navbar.js'
   import auth from '../js/auth.js'
+  import docsave from '../js/docsave.js'
 
   export default {
     created() {
@@ -49,6 +39,7 @@
     data() {
       return {
         user: auth.user,
+        docs: docsave.docData.docs
       }
     },
     components: {
@@ -113,7 +104,7 @@
     top: 0;
     width: 30vw;
   }
-  .signout{
+  .signout, .saved-docs button{
     background-color: rgb(24, 24, 24);
   }
 </style>

@@ -11,6 +11,7 @@ import (
 type Documents struct {
   Id bson.ObjectId `json:"id" bson:"id"`
   UserName string `json:"username" bson:"username"`
+  Name string `json:"name" bson:"name"`
   Doc string `json:"doc" bson:"doc"`
 }
 
