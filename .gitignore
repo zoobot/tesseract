@@ -8,6 +8,7 @@ logs
 *.logs
 
 ._*
+*.pem
 
 .Spotlight-V100
 .Trashes
