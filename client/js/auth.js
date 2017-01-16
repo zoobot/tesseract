@@ -31,6 +31,7 @@ export default {
   },
 
   signin(context, creds, cb) {
+        console.log(creds)
     context.$http.post(`${USER_URL}/db/user/signin`, creds)
       .then((res) => {
         let data = JSON.parse(res.body);
@@ -41,11 +42,10 @@ export default {
         // can set a token, this ensures a falty token can't be set.
         localStorage.setItem('id_token', data.id);
         this.jwt(context, data.id);
-        console.log(data.username)
         docsave.getAllDocs(context, data.username);
       })
       .catch((err) => {
-        context.error = 'Invalid user credentials!';
+        context.error = 'Invalid credentials!';
       });
   },
 

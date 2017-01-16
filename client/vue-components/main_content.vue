@@ -1,21 +1,15 @@
 <template>
   <div class="main-content">
-    <navbar :user-data="user" :user-logged-in="user.authenticated" :input="input"></navbar>
+    <navbar :user-data="user" :user-logged-in="user.authenticated"></navbar>
     <div>
-    <!-- Authentication -->
-    <div class="auth-area" v-if="!this.user.authenticated">
-      <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
-      <Signup v-if="isSignupShowing" :show-none="showNone"></Signup>
-      <div class="signup-signin">
-        <button class="signup" @click="showSignup()">Signup</button><button class="signin" @click="showSignin()">Signin
-        </button>
-      </div>
-    </div>
-    <!-- end Authentication -->
-    <ToolBar :word-count="count" :user="user" :user-logged-in="user.authenticated"></ToolBar>
     <!-- area to add live data as text is being added -->
-    <div class="content-left">
-      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
+     <div class="content-left">
+      <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
+
+      <div class="doc-info" v-if="count > 0">
+        <div>{{ count }} words</div>
+        <div>{{ time }} read</div>
+      </div>
     </div>
 
     <div class="content-right">
@@ -35,8 +29,6 @@
   import richText from 'rich-text'
   import Quill from 'quill'
   import Chance from 'chance'
-  import Signin from './signin.vue'
-  import Signup from './signup.vue'
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
 
@@ -61,7 +53,7 @@
       let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.URI}`)
       const connection = new sharedb.Connection(socket)
 
-      console.log(socket, this.wsRTC)
+      // console.log(socket, this.wsRTC)
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
@@ -80,6 +72,8 @@
         let stats = textStats(text)
         this.time = stats.display
         this.count = stats.length
+        // Updating current doc
+        docsave.docData.currentDoc.doc = this.quill.getText();
       })
       docSubscribe(this.quill, doc)
     },
@@ -90,12 +84,10 @@
         wsScreen: null,
         channel: '',
         count: 0,
-                // User data stored in auth
+        // User data stored in auth
         user: auth.user,
         // Doc data stored in docsave
         docData: docsave.docData,
-        isLoginShowing: false,
-        isSignupShowing: false,
         time: '',
         quill: '',
         URI: ''
@@ -103,9 +95,7 @@
     },
     components: {
       Navbar,
-      VideoComponent,
-      Signin,
-      Signup
+      Videocomponent,
     },
     // Methods are located in js directory
     methods: Methods,
@@ -115,6 +105,7 @@
 <style scoped>
 .main-content{
   width: 100vw;
+  margin-top: 2em;
 }
 .content{
   display: inline-flex;
@@ -123,10 +114,12 @@
 }
 .content-right{
   width: 80%;
+  display: inline-block;
+  float: right;
 }
 .content-left{
   width: 20%;
-  display: flex;
+  display: inline-block;
   justify-content: center;
   align-items: flex-end;
 }
@@ -145,37 +138,6 @@ html, body{
 }
 code {
   color: #f66;
-}
-.signup-signin{
-  width: 100%;
-  display: table;
-  position: absolute;
-  top: 2.25em;
-}
-.signup, .signin{
-  width: 50%;
-  display: table-cell;
-  background-color: transparent;
-  border: none;
-  color: rgb(255, 255, 255);
-  outline: none;
-}
-.signup-signin button{
-  color: white;
-  text-decoration: none;
-}
-.signup-signin button:hover{
-  cursor: pointer;
-  -moz-box-shadow: 0 0 60px rgb(246, 246, 246);
-  -webkit-box-shadow: 0 0 60px rgb(246, 246, 246);
-  box-shadow: 0 0 60px rgb(246, 246, 246);
-}
-.auth-area{
-  position: fixed;
-  width: 25vw;
-  height: 4em;
-  right: 0;
-  top: 0.5em;
 }
 </style>
 

@@ -52,5 +52,20 @@ module.exports = {
       doc: ''
     };
     this.input = '';
+  },
+
+  showSignin() {
+    this.isSignupShowing = false;
+    this.isLoginShowing = !this.isLoginShowing;
+  },
+
+  showSignup() {
+    this.isLoginShowing = false;
+    this.isSignupShowing = !this.isSignupShowing;
+  },
+
+  showNone() {
+    this.isSignupShowing = false;
+    this.isLoginShowing = false;
   }
 }

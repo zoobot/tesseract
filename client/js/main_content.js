@@ -3,12 +3,6 @@ import auth from '../js/auth.js'
 import docsave from '../js/docsave.js'
 
 module.exports = {
-  // Function adds each charactor to input
-  update(e) {
-    this.input = e.target.value;
-    docsave.docData.currentDoc.doc = this.input;
-  },
-
   wsSend() {
     this.ws.send(this.input);
   },
@@ -35,20 +29,5 @@ module.exports = {
         cb(response.body);
       };
     });
-  },
-
-  showSignin() {
-    this.isSignupShowing = false;
-    this.isLoginShowing = !this.isLoginShowing;
-  },
-
-  showSignup() {
-    this.isLoginShowing = false;
-    this.isSignupShowing = !this.isSignupShowing;
-  },
-
-  showNone() {
-    this.isSignupShowing = false;
-    this.isLoginShowing = false;
   }
 }

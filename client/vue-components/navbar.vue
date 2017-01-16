@@ -5,10 +5,19 @@
     <div class="title" v-if="this.user.authenticated">
       <p> {{ docData.currentDoc.name || 'New' }} </p>
     </div>
+      <!-- Authentication -->
+      <div class="auth-area" v-if="!this.user.authenticated">
+        <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
+        <Signup v-if="isSignupShowing" :show-none="showNone"></Signup>
+        <div class="signup-signin">
+          <button class="signup" @click="showSignup()">Signup</button><button class="signin" @click="showSignin()">Signin
+          </button>
+        </div>
+      </div>
     <div class="right-nav" v-if="this.user.authenticated">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
       <div @click="showControls()">
-        <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size="40"></avatar>
+        <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size=40></avatar>
       </div>
 
       <!-- hidden control panel -->
@@ -47,6 +56,8 @@
   import Methods from '../js/navbar.js'
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
+  import Signin from './signin.vue'
+  import Signup from './signup.vue'
 
   export default {
     created() {
@@ -55,15 +66,18 @@
       return {
         user: auth.user,
         docData: docsave.docData,
-        showControl: false
+        showControl: false,
+        isLoginShowing: false,
+        isSignupShowing: false,
       }
     },
     components: {
-      Avatar
+      Avatar,
+      Signin,
+      Signup
     },
     // Methods are located in js directory
-    methods: Methods,
-    props: ['input']
+    methods: Methods
   }
 </script>
 
@@ -131,5 +145,36 @@
   }
   .save button{
     color: black;
+  }
+  .signup-signin{
+  width: 100%;
+  display: table;
+  position: absolute;
+  top: 2.25em;
+  }
+  .signup, .signin{
+    width: 50%;
+    display: table-cell;
+    background-color: transparent;
+    border: none;
+    color: rgb(255, 255, 255);
+    outline: none;
+  }
+  .signup-signin button{
+    color: white;
+    text-decoration: none;
+  }
+  .signup-signin button:hover{
+    cursor: pointer;
+    -moz-box-shadow: 0 0 60px rgb(246, 246, 246);
+    -webkit-box-shadow: 0 0 60px rgb(246, 246, 246);
+    box-shadow: 0 0 60px rgb(246, 246, 246);
+  }
+  .auth-area{
+    position: fixed;
+    width: 25vw;
+    height: 4em;
+    right: 0;
+    top: 0.5em;
   }
 </style>
