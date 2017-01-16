@@ -13,5 +13,44 @@ module.exports = {
 
   showControls() {
     this.showControl = !this.showControl;
+  },
+
+  saveAs(cb) {
+  // Saves new documents to the database
+    let name = prompt('name da file');
+    //cb is being used to ensure saveAs is async
+    cb(name);
+  },
+
+  saveDoc(name) {
+  // saveDoc makes the actual call to the database with the data
+    let prepDoc = {
+      username: auth.user.data.username,
+      name: name,
+      doc: auth.encrypt(docsave.docData.currentDoc.doc)
+    }
+    // fixDups adds a number to the saved doc in order to ensure all docs
+    // have unique names
+    prepDoc = docsave.fixDups(prepDoc);
+    docsave.sendDoc(this, prepDoc);
+  },
+
+  save() {
+  // save updates the form that is currently loaded
+    let assembleData = {
+      id: docsave.docData.currentDoc.id,
+      username: auth.user.data.username,
+      name: docsave.docData.currentDoc.name,
+      doc: auth.encrypt(docsave.docData.currentDoc.doc)
+    }
+    docsave.updateDoc(this, assembleData);
+  },
+
+  newDoc() {
+    docsave.docData.currentDoc = {
+      name: '',
+      doc: ''
+    };
+    this.input = '';
   }
 }

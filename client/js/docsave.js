@@ -16,6 +16,12 @@ export default {
       .then((res) => {
         let data = JSON.parse(res.body);
         let status = JSON.parse(res.status);
+        let fix = auth.decrypt(data.doc);
+        this.docData.currentDoc = {
+          id: data.id,
+          name: data.name,
+          doc: fix
+        }
         let saved = {
           name: data.name,
           id: data.id

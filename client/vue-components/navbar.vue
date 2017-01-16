@@ -10,6 +10,7 @@
       <div @click="showControls()">
         <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size="40"></avatar>
       </div>
+
       <!-- hidden control panel -->
       <div class="user-stuff panel-body" v-if="this.showControl">
         <!-- logout button -->
@@ -25,9 +26,17 @@
                 {{ item.name }}
               </button>
           </div>
+          <!-- Save buttons -->
+          <div class="save" v-if="this.user.authenticated">
+            <button @click="saveAs(saveDoc)">Save As</button>
+            <button @click="save()" v-if="docData.currentDoc.doc">Save</button>
+            <button @click="newDoc()">New</button>
+          </div>
+          <!-- end Save buttons -->
           <!-- end saved documents list -->
         </div>
         <!-- end hidden control panel -->
+
       </div>
     </div>
   </nav>
@@ -53,7 +62,8 @@
       Avatar
     },
     // Methods are located in js directory
-    methods: Methods
+    methods: Methods,
+    props: ['input']
   }
 </script>
 
@@ -117,5 +127,8 @@
   .control-buttons{
     display: inline-block;
     width: 40%;
+  }
+  .save button{
+    color: black;
   }
 </style>

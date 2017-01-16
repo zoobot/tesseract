@@ -1,7 +1,6 @@
-<!-- Created by Duncan on 12.28.2016 -->
 <template>
   <div class="main-content">
-    <navbar :user-data="user" :user-logged-in="user.authenticated"></navbar>
+    <navbar :user-data="user" :user-logged-in="user.authenticated" :input="input"></navbar>
     <div>
     <!-- Authentication -->
     <div class="auth-area" v-if="!this.user.authenticated">
@@ -16,13 +15,7 @@
     <ToolBar :word-count="count" :user="user" :user-logged-in="user.authenticated"></ToolBar>
     <!-- area to add live data as text is being added -->
     <div class="content-left">
-      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer" v-if="duncanisnoton"></VideoComponent>
-      <!-- Save buttons -->
-      <div v-if="this.user.authenticated">
-        <button @click="saveAs(saveDoc)">Save As</button>
-        <button @click="save()" v-if="docData.currentDoc.doc">Save</button>
-      </div>
-      <!-- end Save buttons -->
+      <VideoComponent id="video" :wsRTC="wsRTC" :answer="answer"></VideoComponent>
     </div>
     <!-- end live data area -->
     <!-- text field -->
@@ -66,7 +59,7 @@
       // Whenever we receive a message, update textarea
       this.ws.onmessage = e => {
         if (e.data !== this.input) {
-          this.input = e.data;
+          docsave.docData.currentDoc.doc = e.data;
           this.wordCounter();
         }
       };
@@ -83,7 +76,7 @@
         ws: null,
         wsRTC: null,
         answer:'',
-        // input: '',
+        input: '',
         channel: '',
         count: 0,
         channel: '',
@@ -92,8 +85,7 @@
         // Doc data stored in docsave
         docData: docsave.docData,
         isLoginShowing: false,
-        isSignupShowing: false,
-        duncanisnoton: false,
+        isSignupShowing: false
       }
     },
     components: {
