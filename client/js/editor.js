@@ -55,7 +55,7 @@ module.exports = {
   },
 
   changeQuill(data) {
-    data = data || ''; // This allows us to delete the entire thing.
+    data = data || ''; // This allows us to delete the entire thing with an empty string
     this.makeQuill();
     this.quillOn(this.doc);
     this.quill.deleteText(0, this.quill.getLength());

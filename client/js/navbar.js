@@ -44,6 +44,7 @@ module.exports = {
       name: docsave.docData.currentDoc.name,
       doc: auth.encrypt(docsave.docData.currentDoc.doc)
     }
+    console.log(editor.quill.container.firstChild.innerHTML)
     docsave.updateDoc(this, assembleData);
   },
 
