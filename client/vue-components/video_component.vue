@@ -21,8 +21,6 @@
   export default {
 
     mounted() {
-      console.log('videocomponent mounted, this.wsrtc:', this.wsrtc)
-      console.log('videocomponent mounted, this.URI:', this.uri)
       this.start();
       this.wsrtc.onmessage = e => {
         this.signalHandler(e)

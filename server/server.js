@@ -6,6 +6,7 @@ const db = require('sharedb-mongo')('mongodb://localhost:27017/data')
 const richText = require('rich-text')
 const WebSocket = require('ws')
 const WebSocketJSONStream = require('websocket-json-stream')
+const bodyParser = require('body-parser')
 
 ShareDB.types.register(richText.type)
 const backend = new ShareDB({db})

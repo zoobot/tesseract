@@ -4,7 +4,7 @@
   "description": "A snappy, collaborative text editor!",
   "main": "./client/client.js",
   "scripts": {
-    "start": "node server/server.js",
+    "start": "node server/server.js & go run editor/*.go",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.js",
     "dev": "webpack-dev-server"
@@ -44,6 +44,7 @@
     "webpack": "^1.14.0"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
     "chance": "^1.0.4",
     "express": "^4.14.0",
     "morgan": "^1.7.0",

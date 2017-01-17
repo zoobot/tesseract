@@ -5,9 +5,11 @@
     <div class="content">
 
     <div class="content-left">
-      <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
 
       <div class="doc-info" v-if="count > 0">
+        <button v-on:click="getStats"> Get Stats </button>
+        <button v-on:click="analyseSentiment"> Analyse Sentiment </button>
+        <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
       </div>
@@ -86,8 +88,29 @@
       Navbar,
       Videocomponent
     },
-    // Methods are located in js directory
-    methods: Methods,
+    methods: {
+      update(e) {
+      },
+      analyseSentiment() {
+        console.log(Quill.imports)
+        var delta = this.quill.getContents()
+        $.post('/sentiment', {content: JSON.stringify(delta)})
+          .then(res=>{
+            console.log(res)
+            this.quill.setContents(JSON.parse(res), 'user')
+            // this.quill.update()
+            // this.sentiment  = res
+            // $('.ql-editor').html(res)
+            // console.log($('.ql-editor').html())
+          })
+      },
+      getStats() {
+        $.post('/stats', {text: $('.ql-editor').text()})
+          .then(res=>{
+            console.log(res)
+          })
+      }
+    },
   }
 </script>
 
