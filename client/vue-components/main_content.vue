@@ -101,7 +101,6 @@
 <style scoped>
 .main-content{
   width: 100vw;
-  margin-top: 2em;
 }
 .content{
   display: inline-flex;
