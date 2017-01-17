@@ -5,16 +5,11 @@
     <div class="content">
 
     <div class="content-left">
-<<<<<<< 7f4091f7ead5a0f6a8eae4081c24c33260468ed8
       <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
-
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
       </div>
-=======
-      <VideoComponent id="video" :wsRTC="wsRTC"></VideoComponent>
->>>>>>> rebase
     </div>
 
     <div class="content-right">
@@ -37,26 +32,24 @@
   import Chance from 'chance'
 
   export default {
+
     created() {
       let chance = new Chance()
       let c = this.$route.params.channel
       this.URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
       //create RTC websocket
-<<<<<<< 7f4091f7ead5a0f6a8eae4081c24c33260468ed8
       this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${this.URI}rtc`);
-=======
-      this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${URI}rtc`)
->>>>>>> rebase
-
       // update URL display. I still think we can do this with router somehow :S
       window.history.pushState(window.location.origin, '/', this.URI);
     },
+
     mounted() {
+
       sharedb.types.register(richText.type)
       let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.URI}`)
       const connection = new sharedb.Connection(socket)
 
-      console.log(socket, this.wsRTC)
+      //console.log(socket, this.wsRTC)
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
@@ -78,6 +71,7 @@
       })
       docSubscribe(this.quill, doc)
     },
+
     data() {
       return {
         ws: null,

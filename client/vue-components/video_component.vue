@@ -1,7 +1,7 @@
 <template>
 
     <div>
-      <div id="buttonContainer"><button @click="call()" id="callButton" >C</button>
+      <div id="buttonContainer">
       <button @click="record()" id="record" >R</button>
       <button @click="download()" id="download" >D</button>
       <button @click="screen()" id="screen" >S</button>
@@ -25,10 +25,6 @@
 
     mounted() {
 
-      console.log('videocomponent mounted, this.wsrtc:', this.wsrtc)
-      console.log('videocomponent mounted, this.URI:', this.uri)
-      console.log('this.remoteMuted at start', this.remoteMuted)
-
       this.gainNode();
       this.signalHandler();
 
@@ -49,7 +45,6 @@
           theRecorder: null,
           recordedChuck: [],
           remoteVideo:'',
-          remoteMuted: false,
           peerConnectionConfig: {'iceServers': [{'url': 'stun:stun.l.google.com:19305'}, {'url': 'stun:stun.services.mozilla.com'}]},
         }
     },
@@ -73,8 +68,9 @@
         this.startCollab();
         //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
         //which is then used in the success callback on the MediaStream object that contains the media stream
-
-         navigator.mediaDevices.getUserMedia({ audio: true, video: true})
+         navigator.mediaDevices.getUserMedia({ audio: {
+         googAutoGainControl: false
+         }, video: true})
          .then (stream => {
         // set localStream equal to this stream
             this.localStream = stream
@@ -84,8 +80,8 @@
       },
 
       startCollab()  {
-          this.wsRTC.send(JSON.stringify({'type':'join'}));
-          this.wsRTC.send(JSON.stringify({'type': 'joinUp'}))
+          this.wsrtc.send(JSON.stringify({'type':'join'}));
+          this.wsrtc.send(JSON.stringify({'type': 'joinUp'}))
       },
 
       gotStream(stream) {
@@ -99,7 +95,7 @@
         this.videos.appendChild(localVideo);
         localVideo.src = URL.createObjectURL(this.localStream);
         localVideo.autoplay = true;
-        localVideo.mute = true;
+        localVideo.setAttribute("muted", true);
         localVideo.setAttribute("id", this.localStream.id);
         // instantiate new peer connection
         this.pc = new RTCPeerConnection(this.peerConnectionConfig);
@@ -108,18 +104,20 @@
 
         this.pc.onaddstream = e => {
         //event handler for setRemoteDescription: adds remote stream src to DOM
-            //this.remoteVideo.src = window.URL.createObjectURL(e.stream)
-            let otherVideo = document.createElement('video');
-            this.videos.appendChild(otherVideo);
-            otherVideo.src = URL.createObjectURL(e.stream);
-            otherVideo.autoplay = true;
-            otherVideo.setAttribute("id", e.stream.id);
+            if (!document.getElementById(e.stream.id)) {
+              let otherVideo = document.createElement('video');
+              this.videos.appendChild(otherVideo);
+              otherVideo.src = URL.createObjectURL(e.stream);
+              otherVideo.autoplay = true;
+              otherVideo.setAttribute("id", e.stream.id);
+              otherVideo.setAttribute("muted", false);
+            }
         }
         //on initial reception of icecandidates...
         this.pc.onicecandidate = e => {
           //send ice candidates over WS signaling server
           if(e.candidate != null) {
-            this.wsRTC.send(JSON.stringify({'ice': e.candidate}));
+            this.wsrtc.send(JSON.stringify({'ice': e.candidate}));
             this.connect = true;
           }
         }
@@ -132,37 +130,30 @@
         //set local description to own SDP offer
           this.pc.setLocalDescription(offer);
           //send offer over WS signaling server
-          this.wsRTC.send(JSON.stringify({'sdp': offer}))
+          this.wsrtc.send(JSON.stringify({'sdp': offer}))
         })
         .catch(e => { console.log('err offer setLocalDescription', e);})
       },
 
-      signalHandler(e) {
-
-          let signal = JSON.parse(e.data);
-
-            if(signal.ToggleMediaStreamTrack) {
-            //if signal is media stream muter, mute the remote video stream
-                this.remoteMuted = !this.remoteMuted;
-                console.log('muted from other side', signal, this.remoteMuted);
-                document.getElementById("remoteVideo").muted = this.remoteMuted;
-                console.log(this.remoteMuted, 'this.isremotedMuted in mute signal')
-
       toggleMute() {
 
-      let audio = this.localStream.getAudioTracks();
-        this.wsRTC.send(JSON.stringify(
-          {'toggleMute': true,
-          mediaStreamLabel: audio.label
+      let id = this.localStream.id;
+        this.wsrtc.send(JSON.stringify(
+          {'type': 'toggleMute',
+          'id': id
           })
         )
-        console.log('toggleAudio signaled')
+      },
+
+
+      stop() {
+        this.pc.removeStream(this.localStream);
+        this.wsrtc.send(JSON.stringify({'type':'stop', 'id': this.localStream.id}));
       },
 
       signalHandler() {
 
-
-        this.wsRTC.onmessage = e => {
+        this.wsrtc.onmessage = e => {
 
           let signal = JSON.parse(e.data);
 
@@ -171,6 +162,11 @@
               this.videos.removeChild(r);
               this.connect = false;
               this.collaborate = true;
+            }
+
+            if (signal.type === 'toggleMute') {
+              var r = document.getElementById(signal.id);
+              r.muted = !r.muted;
             }
 
             if (signal.type === 'join') {
@@ -192,15 +188,9 @@
                     this.gotStream(stream)
                   })
                 }
-
-            }
-
-            if (signal.type === 'allJoined') {
-              this.connect = false
             }
 
             if (signal.sdp && signal.sdp.type === 'offer' && signal.sdp !== this.pc.localDescription) {
-            console.log('this is a signal', signal)
             //if signal is offer and we are the callee, set SDP offer as remote description
               this.pc.setRemoteDescription(signal.sdp)
               //attach our local stream to the peerConnection object
@@ -211,7 +201,7 @@
               .then(answer => {this.ourAnswer = answer; this.pc.setLocalDescription(answer)})
               //send this answer along with our local stream data over WS signaling server
               .then(() => {
-                this.wsRTC.send(JSON.stringify({ 'sdp': this.ourAnswer }));
+                this.wsrtc.send(JSON.stringify({ 'sdp': this.ourAnswer }));
               })
               .catch(e => { console.log('err at offer', e);})
 
@@ -222,20 +212,20 @@
               this.iceCandidates.push(signal.ice)
             }
 
-          if (signal.sdp && signal.sdp.type === 'answer' && signal.sdp !== this.pc.localDescription) {
-            console.log('this is a signal', signal.sdp)
+           if (signal.sdp && signal.sdp.type === 'answer' && signal.sdp !== this.pc.localDescription) {
             //on reception of answer as caller, set SDP answer as remote description
-            this.pc.setRemoteDescription(signal.sdp)
-            .then(() => {
-              if (this.pc.remoteDescription && this.iceCandidates.length > 0)
+             this.pc.setRemoteDescription(signal.sdp)
+             .then(() => {
+               if (this.pc.remoteDescription && this.iceCandidates.length > 0)
               //if the local and remote description has been set and ice candidates exist
-                for (var i = 0; i < this.iceCandidates.length; i++) {
+                 for (var i = 0; i < this.iceCandidates.length; i++) {
                 //add ice candidates to peerConnection
-                  this.pc.addIceCandidate(this.iceCandidates[i])
-                }
-            })
+                   this.pc.addIceCandidate(this.iceCandidates[i])
+                 }
+             })
             .catch(e => { console.log('err at answer', e)})
-          }
+           }
+         }
       },
 
       record() {
@@ -300,47 +290,7 @@
         a.click();
         // setTimeout() here is needed for Firefox.
         setTimeout(function() { URL.revokeObjectURL(url); }, 100);
-      },
-
-
-
-      toggleAudioMute() {
-
-      let audio = this.localStream.getAudioTracks();
-         this.wsRTC.send(JSON.stringify(
-           {ToggleMediaStreamTrack: true,
-            mediaStreamLabel: audio.label
-           })
-         )
-        console.log('toggleAudio signaled')
-        console.log(this.remoteMuted, 'this.isremotedMuted in toggleAudio')
-
-      },
-
-      stop() {
-        this.pc.removeStream(this.localStream);
-        this.wsRTC.send(JSON.stringify({'type':'stop', 'id': this.localStream.id}));
       }
-
-      //hangUp() {
-        //console.log('in hangUp')
-
-        //document.getElementById("localVideo").muted = !this.muted;
-        //document.getElementById("remoteVideo").muted = !this.muted;
-        // this.pc.onstream = function (e) {
-
-        //   if (e.type === 'local') {
-        //       window.streamid = e.streamid;
-        //       connection.streams[e.streamid].mute({
-        //           audio: true,
-        //           video: true
-        //       });
-        //   }
-        // };
-      //}
-
-
-
     }
   }
 </script>
