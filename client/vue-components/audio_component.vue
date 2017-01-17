@@ -40,23 +40,6 @@
 
 <script>
 export default {
-  created() {
-    // var yourAudio = document.getElementById('yourAudio'),
-    // // ctrl = document.getElementById('audioControl'),
-    // // playButton = document.getElementById('play'),
-    // // pauseButton = document.getElementById('pause');
-    // console.log('inplay', this.yourAudio)
-    //       // if (this.yourAudio.paused) {
-    //           this.yourAudio.play();
-  },
-  data() {
-    return {
-      yourAudio: document.getElementById('yourAudio'),
-      playButton: document.getElementById('play'),
-      pauseButton: document.getElementById('pause'),
-      ctrl: document.getElementById('audioControl')
-    }
-  },
   methods: {
     toggleButton() {
         if (this.playButton.style.display === 'none') {
