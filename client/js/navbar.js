@@ -1,5 +1,6 @@
 import auth from '../js/auth.js'
 import docsave from '../js/docsave.js'
+import editor from '../js/editor.js'
 
 module.exports = {
   logout() {
@@ -19,7 +20,7 @@ module.exports = {
   // Saves new documents to the database
     let name = prompt('name da file');
     //cb is being used to ensure saveAs is async
-    cb(name);
+    cb(name)
   },
 
   saveDoc(name) {
@@ -51,7 +52,7 @@ module.exports = {
       name: '',
       doc: ''
     };
-    this.input = '';
+    editor.changeQuill('');
   },
 
   showSignin() {

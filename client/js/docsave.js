@@ -1,4 +1,5 @@
 import auth from './auth.js'
+import editor from '../js/editor.js'
 
 const USER_URL = 'https://127.0.0.1:8443';
 
@@ -60,6 +61,7 @@ export default {
           name: data[0].name,
           doc: fix
         }
+        editor.changeQuill(fix);
       })
       .catch((err) => {
         console.error(err)

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
 import docsave from './docsave.js'
+import editor from '../js/editor.js'
 
 Vue.use(VueResource);
 
@@ -31,7 +32,6 @@ export default {
   },
 
   signin(context, creds, cb) {
-        console.log(creds)
     context.$http.post(`${USER_URL}/db/user/signin`, creds)
       .then((res) => {
         let data = JSON.parse(res.body);
@@ -103,6 +103,7 @@ export default {
       doc: ''
     };
     docsave.docData.docs = [];
+    editor.changeQuill('');
   },
 
   // The object to be passed as a body for authentication requests

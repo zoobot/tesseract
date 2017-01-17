@@ -68,7 +68,7 @@
         docData: docsave.docData,
         showControl: false,
         isLoginShowing: false,
-        isSignupShowing: false,
+        isSignupShowing: false
       }
     },
     components: {
@@ -85,7 +85,6 @@
   .navbar{
     color: white;
     display: table;
-    z-index: 0;
     background-color: rgb(24, 24, 24);
     height: 8em;
     width: 100vw;

@@ -1,6 +1,8 @@
 import Utils from '../js/utils.js'
+
 import auth from '../js/auth.js'
 import docsave from '../js/docsave.js'
+import editor from '../js/editor.js'
 
 module.exports = {
   wsSend() {
