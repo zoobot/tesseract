@@ -2,13 +2,13 @@
   <div class="audioref" >
     <a @click="basketball()">
       <audio loop id="basketball" src="/client/assets/audio/Stomp-Basketballs.mp3"></audio>
-      <img src="/client/assets/images/black-basketball3.svg" id="bballplay" />
+      <img src="/client/assets/images/basketball.svg" id="bballplay" />
       <img class="audioControl" src="https://i0.wp.com/www.rnningfool.com/wp-content/uploads/2014/07/pause_lead_flow.gif" id="pause" />
     </a>
 
     <a @click="fire()">
       <audio loop id="fire" src="/client/assets/audio/Campfire_sound_ambience.mp3"></audio>
-      <img src="/client/assets/images/pretty.svg" id="fireplay" />
+      <img src="/client/assets/images/fire.svg" id="fireplay" />
       <img class="audioControl" src="https://i0.wp.com/www.rnningfool.com/wp-content/uploads/2014/07/pause_lead_flow.gif" id="pause" />
     </a>
 
