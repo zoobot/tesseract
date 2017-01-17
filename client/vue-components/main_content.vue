@@ -6,7 +6,9 @@
 
     <div class="content-left">
       <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
-
+      <div class="audio">
+        <audiocomponent id="audio" ></audiocomponent>
+      </div>
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
@@ -25,6 +27,7 @@
   import Navbar from './navbar.vue'
   import Methods from '../js/main_content.js'
   import Videocomponent from './video_component.vue'
+  import Audiocomponent from './audio_component.vue'
   import Utils from '../js/utils.js'
   import {textStats, docSubscribe} from '../js/editor.js'
   import sharedb from 'sharedb/lib/client'
@@ -84,7 +87,9 @@
     },
     components: {
       Navbar,
-      Videocomponent
+      Videocomponent,
+      Audiocomponent
+
     },
     // Methods are located in js directory
     methods: Methods,
