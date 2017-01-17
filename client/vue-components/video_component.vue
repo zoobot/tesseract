@@ -33,7 +33,7 @@
       console.log('this.remoteMuted at start', this.remoteMuted)
     },
 
-    props: ['wsRTC','uri'],
+    props: ['wsrtc','uri'],
 
     data() {
       return {
