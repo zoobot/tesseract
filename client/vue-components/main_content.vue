@@ -1,12 +1,14 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
+
     <div>
     <!-- area to add live data as text is being added -->
      <div class="content-left">
      <div>
       <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
      </div>
+
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
@@ -134,4 +136,8 @@ html, body{
 code {
   color: #f66;
 }
+<<<<<<< a897181742249f80925d321e795883f007dc95c1
 </style>
+=======
+</style>
+>>>>>>> added database to be ignored
