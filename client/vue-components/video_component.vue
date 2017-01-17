@@ -20,26 +20,6 @@
 
 </template>
 
-<style>
-  video {
-    display: inline-block;
-    max-width: 100%;
-  }
-  .grayscale {
-  +filter: grayscale(1);
-  }
-  .sepia {
-    +filter: sepia(1);
-  }
-  .blur {
-    +filter: blur(3px);
-  }
-</style>
-<style>
-  button {
-    width: 100%
-  }
-</style>
 <script>
   import Utils from '../js/utils.js'
   import Methods from '../js/webrtc.js'
@@ -53,7 +33,7 @@
       console.log('this.remoteMuted at start', this.remoteMuted)
     },
 
-    props: ['wsRTC','saverURI'],
+    props: ['wsRTC','uri'],
 
     data() {
       return {
@@ -76,3 +56,14 @@
 
   }
 </script>
+<style>
+  video {
+    display: inline-block;
+    max-width: 100%;
+  }
+</style>
+<style>
+  button {
+    width: 100%
+  }
+</style>
