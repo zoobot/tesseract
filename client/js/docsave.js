@@ -93,7 +93,7 @@ export default {
         count++;
       }
     });
-    if (count > 0) {
+    if (count > 1) {
       doc.name = `${doc.name}(${count+1})`
     }
     return doc;
