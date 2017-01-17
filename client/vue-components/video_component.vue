@@ -27,7 +27,7 @@
 
     mounted() {
       this.start();
-      this.wsRTC.onmessage = e => {
+      this.wsrtc.onmessage = e => {
         this.signalHandler(e)
       };
       console.log('this.remoteMuted at start', this.remoteMuted)
