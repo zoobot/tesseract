@@ -19,3 +19,9 @@ client/dist/
 .flooignore
 
 .idea/*
+
+editor/editor
+
+cert.pem
+certMaker
+key.pem
