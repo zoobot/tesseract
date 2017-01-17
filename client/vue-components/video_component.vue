@@ -23,10 +23,7 @@
   export default {
 
     mounted() {
-
-      this.gainNode();
       this.signalHandler();
-
     },
 
     props: ['wsrtc','uri'],
