@@ -72,7 +72,7 @@ export default {
     context.$http.put(`${USER_URL}/db/docs`, data)
       .then((res) => {
         let data = res.body;
-        let fix = auth.decrypt(data[0].doc);
+        let fix = auth.encrypt(data[0].doc);
         this.docData.currentDoc = {
           id: data[0].id,
           name: data.name,
