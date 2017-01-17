@@ -4,7 +4,7 @@
     <div>
     <!-- area to add live data as text is being added -->
      <div class="content-left">
-     <div v-if="!isduncanworking">
+     <div>
       <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
      </div>
 
@@ -86,8 +86,7 @@
         docData: docsave.docData,
         time: '',
         quill: editor.quill,
-        URI: '',
-        isduncanworking: true
+        URI: ''
       }
     },
     components: {
