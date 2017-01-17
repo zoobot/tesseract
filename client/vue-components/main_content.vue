@@ -1,12 +1,14 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
+
     <div>
     <!-- area to add live data as text is being added -->
      <div class="content-left">
      <div>
       <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
      </div>
+
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
@@ -69,6 +71,7 @@
         let socket = new WebSocket(`ws://${window.location.host}`);
         connection.bindToSocket(socket);
       }
+<<<<<<< 4cccba5e8144a1bb2f18461c7b9b2a64f67fd1c2
       // Storing doc inside editor for access in other components.
       editor.doc = connection.get('docs', this.URI);
       // New quill
@@ -76,6 +79,34 @@
       editor.quillOn(editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
       editor.changeQuill('');
+=======
+      const doc = connection.get('docs', this.URI);
+      this.quill = new Quill('#editor', {
+        modules: {
+          toolbar : {
+            container: [
+              ['bold', 'italic', 'underline'],
+              [{header: 1}, {header: 2}],
+              ['blockquote', 'code-block'],
+              ['image', 'link']
+            ],
+            handlers: {
+
+            }
+          },
+          placeholder: 'Filthy animals.',
+          theme: 'bubble'
+        }
+      })
+
+      this.quill.on('text-change', () => {
+        let text = this.quill.getText()
+        let stats = textStats(text)
+        this.time = stats.display
+        this.count = stats.length
+      })
+      docSubscribe(this.quill, doc)
+>>>>>>> added database to be ignored
     },
 
     data() {
@@ -140,4 +171,3 @@ code {
   color: #f66;
 }
 </style>
-
