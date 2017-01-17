@@ -3,19 +3,7 @@
  */
 
 module.exports = {
-
-  gainNode() {
-    let context = new AudioContext();
-    let sineWave = context.createOscillator();
-    // Declare gain node
-    let gainNode = context.createGain();
-    // Connect sine wave to gain node
-    sineWave.connect(gainNode);
-    // Connect gain node to speakers
-    gainNode.connect(context.destination);
-    gainNode.gain.value = 0.9;
-  },
-
+  
   start() {
     this.startCollab();
     //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
