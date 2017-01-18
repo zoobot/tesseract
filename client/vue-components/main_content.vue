@@ -1,12 +1,14 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
+
     <div>
     <!-- area to add live data as text is being added -->
      <div class="content-left">
      <div>
       <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
      </div>
+
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
@@ -72,6 +74,7 @@
       editor.quillOn(editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
       editor.changeQuill('');
+
     },
     data() {
       return {
