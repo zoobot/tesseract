@@ -108,7 +108,8 @@
             var sentiment_update = JSON.parse(res)
             //
             console.log('Incoming Delta:',sentiment_update)
-            this.quill.setContents(sentiment_update, 'api')
+            this.quill.setContents(sentiment_update, 'user')
+            this.quill.update()
           })
       },
       getStats() {

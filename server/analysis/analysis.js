@@ -4,108 +4,108 @@ const WordPOS = require('wordpos')
 let wordpos = new WordPOS()
 
 function sent(req, res) {
-  // console.log('sentiment post received, req.body.content:', req.body.content)
-  var source = JSON.parse(req.body.content)
-  // var colors = {
-  //   "-5": "rgba(127, 9, 187, 0.44)",
-  //   "-4": "rgba(146, 41, 199, 0.44)",
-  //   "-3": "rgba(166, 76, 212, 0.44)",
-  //   "-2": "rgba(187, 116, 223, 0.44)",
-  //   "-1": "rgba(217, 173, 240, 0.44)",
-  //   "0": "rgba(255, 255, 255, 0)",
-  //   "1": "rgba(240, 174, 219, 0.44)",
-  //   "2": "rgba(224, 127, 193, 0.44)",
-  //   "3": "rgba(221, 89, 179, 0.44)",
-  //   "4": "rgba(215, 51, 163, 0.44)",
-  //   "5": "rgba(221, 7, 152, 0.44)",
-  // }
-  //
-  //
-  var resp = {
-    ops: []
-  };
-  // console.log(source.ops)
 
-  // res.status(201).send(JSON.stringify(source))
+  var source = nParse(JSON.parse(req.body.content))
+  var result = {ops: []}
 
 
-  source.ops.forEach(i => {
-    console.log('i attr:',i.attributes)
-    var attr = i.attributes || {};
-    // console.log('line is:', i)
-    var nsplit = i.insert.split('\n')
-    // console.log('array of line:', i.insert.match(/\(?[^\.\?\!]+[\.{1,3}!\?\n?] ?\)?/g))
-    nsplit.forEach(n=>{
-      if (n !== ''){
-        var lineArr = n.match(/\(?[^\.\?\!]+[\.{1,3}!\?] ?\)?/g)
-        lineArr.forEach(j => {
-          var score = sentiment(j).score
-          score = score > 5 ? 5 : score
-          score = score < -5 ? -5 : score
-          var sent = score > 0 ? 'pos' + score : 'neg' + Math.abs(score)
-          attr[sent] = true
-          // console.log('j:', j, 'attr', attr)
-          resp.ops.push({
-            attributes: attr,
-            insert: j
-          })
-        })
-      } else {
-        resp.ops[resp.ops.length-1].insert += '\n'
+  source.ops.forEach(line=>{
+    if (/\n/.test(line.insert)){
+      result.ops.push(line)
+    } else {
+      var attr = false
+      if (line.attributes !== undefined){
+        attr = true
       }
-    })
-    //
-    //
-    // var lineArr = i.insert.match(/\(?[^\.\?\!]+[\.{1,3}!\?] ?\)?/g)
-    // if (lineArr){
-    //   lineArr.forEach(j => {
-    //     console.log('j is:', j, 'attr:', attr)
-    //
-    //     // if (!/^\n?\n$/.test(j)){
-    //       var score = sentiment(j).score
-    //       score = score > 5 ? 5 : score
-    //       score = score < -5 ? -5 : score
-    //       var sent = score > 0 ? 'pos' + score : 'neg' + Math.abs(score)
-    //       attr[sent] = true
-    //       // console.log('j:', j, 'attr', attr)
-    //       resp.ops.push({
-    //         attributes: attr,
-    //         insert: j
-    //       })
-    //       // resp.ops.push({insert: ''})
-    //   // } else {
-    //   //   resp.ops.push({insert: j})
-    //   // }
-    //   })
-    // }
-    // resp.ops.push({insert: '\n'})
+
+      var sentences = line.insert.match(/\(?[^\.\?\!]+([(\.+)!\?]?| $)\)?/g)
+      if (sentences){
+        sentences.forEach(sentence => {
+          var sentenceAttr = {}
+          if (sentence) {
+            var score = sentiment(sentence).score
+            score = score > 5 ? 5 : score
+            score = score < -5 ? -5 : score
+            var sent = score >= 0 ? 'pos' + score : 'neg' + Math.abs(score)
+            if (!attr) {
+              attr = {}
+            } else {
+              for (var key in line.attributes){
+                console.log('copy attribute:', key)
+                sentenceAttr[key] = line.attributes[key]
+              }
+            }
+            sentenceAttr[sent] = true
+            console.log('sentenceAttr is now:', sentenceAttr)
+            result.ops.push({attributes: sentenceAttr, insert: sentence})
+          }
+        })
+      }
+    }
   })
-  // resp.ops.forEach(i=>{
-  //   console.log('Resp insert:', i.insert, 'attr:', i.attributes)
+
+  console.log('**********\nRESULT:\n',result,'\n**********')
+
+
+  // source.ops.forEach(i => {
+  //   console.log('i attr:',i.attributes)
+  //   var attr = i.attributes || {};
+  //   // console.log('line is:', i)
+  //   var nsplit = i.insert.split('\n')
+  //   // console.log('array of line:', i.insert.match(/\(?[^\.\?\!]+[\.{1,3}!\?\n?] ?\)?/g))
+  //   nsplit.forEach(n=>{
+  //     if (n !== ''){
+  //       var lineArr = n.match(/\(?[^\.\?\!]+[\.{1,3}!\?] ?\)?/g)
+  //       lineArr.forEach(j => {
+  //         var score = sentiment(j).score
+  //         score = score > 5 ? 5 : score
+  //         score = score < -5 ? -5 : score
+  //         var sent = score > 0 ? 'pos' + score : 'neg' + Math.abs(score)
+  //         attr[sent] = true
+  //         // console.log('j:', j, 'attr', attr)
+  //         resp.ops.push({
+  //           attributes: attr,
+  //           insert: j
+  //         })
+  //       })
+  //     } else {
+  //       resp.ops[resp.ops.length-1].insert += '\n'
+  //     }
+  //   })
   // })
-  // console.log('resp created:', resp)
-  res.status(201).send(JSON.stringify(resp))
-    // console.log('response created\n**********\n',resp)
+  // var testObj1 = [ { insert: 'Fucking heading.' },
+  // { attributes: { header: 1, pos1: true }, insert: '\n' },
+  // { insert: '\n' },
+  // { attributes: { pos1: true, bold: true },
+  //   insert: 'Bold shit and garbage.' },
+  // { insert: '\n \n\nTwo sentences back to back. This is the second one damnit!\n' } ]
+  // var testObj2 = [ { insert: 'Fucking heading.' },
+  // { attributes: { header: 1, pos1: true }, insert: '\n' },
+  // { insert: '\n' },
+  // { attributes: { pos1: true, bold: true },
+  //   insert: 'Bold shit and garbage.' },
+  // { insert: '\n \n\n' },
+  // { insert: 'Two sentences back to back. This is the second one damnit!'},
+  // { insert: '\n' } ]
+  // var testObj3 = [ { insert: 'Line break here:\nNew sentence.\nSecond sentence.\nThird sentence.\n\nTwo breaks above.\n' } ]
+  var testObj4 = [
+    { insert: 'Line break here:'},
+    { insert: '\n'},
+    { insert: 'New sentence.'},
+    { insert: '\n'},
+    { insert: 'Second sentence.'},
+    { insert: '\n'},
+    { insert: 'Third sentence.'},
+    { insert: '\n'},
+    { insert: '\n'},
+    { insert: 'Two breaks above.'},
+    { insert: '\n'},
+    { insert: '' } ]
 
 
+  // console.log('nParse result:',nParse(source))
+  res.status(201).send(JSON.stringify(result))
 
-  // var testObj = { ops:
-  //   [
-  //     {attributes: {bold: true}, insert: "So can we just make stuff up? "},
-  //     {insert: "And have it appear in the text editor? Turnips are good. Bungee jumping is actually pretty boring. Free simpering!"},
-  //     {attributes: {background: "rgba(199, 99, 27, 0.71)"}, insert: "Even putting bgcolor in?\n\n"},
-  //     {insert: "It remains to be seen..."},
-  //     {attributes: {class: "sent1"}, insert: "Custom class text here?"}
-  //   ]
-  // }
-  // res.status(201).send(JSON.stringify(testObj))
-  // let ps = req.body.content.split(/<p>|<\/p>|<h1>|<\/h1>/)
-  //           .filter(i=>i !== '')// && i !== '<br>')
-  //           .map(i=>i.split('. '))
-  // ps = ps.map(i=>`<p>${i.map(s=>`<span class="sent${sentiment(s).score}">${s}</span>`)}</p>`).join('')
-  // console.log(ps)
-  // var test = '<p class="banjo"><strong>TURBO</strong> noises</p>'
-  // res.send(201, test)
 }
 
 function stats(req, res) {
@@ -119,6 +119,62 @@ function stats(req, res) {
     stats.rest = posObj.rest.length
     res.send(stats)
   })
+}
+
+function nParse(src){
+  // console.log('nParse source:', src)
+  var clean = {ops: []}
+  src.ops.forEach(line=>{
+    if (!/\n/.test(line.insert)){
+      clean.ops.push(line)
+    } else {
+      var attr = false
+      if (line.attributes !== undefined){
+        attr = line.attributes
+      }
+      var nSplit = line.insert.split('\n')
+      // console.log('nSplit:', nSplit)
+      nSplit.forEach((val, ind)=>{
+        var insert = val.trim()
+        if (insert.length > 0){
+          if (attr) {
+            clean.ops.push({attributes: attr, insert: insert})
+            clean.ops.push({attributes: attr, insert: '\n'})
+          } else {
+            clean.ops.push({insert: insert})
+            clean.ops.push({insert: '\n'})
+          }
+          if (ind === nSplit.length-1){
+            clean.ops.pop()
+            clean.ops.push({insert: ' '})
+          }
+        } else {
+          if (attr) {
+            // Handle Heading tags because they're fucked.
+            if (attr.heading !== null){
+              if (clean.ops[clean.ops.length-1].insert === '\n'){
+                clean.ops.pop()
+                clean.ops.push({attributes: attr, insert: '\n'})
+                clean.ops.push({insert: '\n'})
+              } else {
+                clean.ops.push({attributes: attr, insert: '\n'})
+              }
+            } else {
+              clean.ops.push({attributes: attr, insert: '\n'})
+            }
+          } else {
+            clean.ops.push({insert: '\n'})
+          }
+          if (ind === nSplit.length-1){
+            clean.ops.pop()
+            clean.ops.push({insert: ''})
+          }
+        }
+      })
+    }
+  })
+  // console.log('nParse result:', clean)
+  return clean
 }
 
 module.exports.sentiment = sent
