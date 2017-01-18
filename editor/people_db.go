@@ -28,6 +28,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
   session.SetMode(mgo.Monotonic, true)
   c := session.DB("tesis").C("people")
 
+ // bcryptit("1")
+
   var u People
   u.Id = bson.NewObjectId()
   err = json.NewDecoder(r.Body).Decode(&u)
@@ -82,9 +84,14 @@ func AuthUser(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(404)
     return
   }
+  fmt.Println(bcryptit("farfegnugenqwerty1!"))
+  decryptit("farfegnugenqwerty1!", "$2a$12$8qwJcNBqvUJzawxU2gEq6u2xP23QldRkSBqWLZnCQoF8B2uTUNZ3i")
 
+<<<<<<< HEAD
   pt := secret + u.Password
 
+=======
+>>>>>>> Stores hashed version of password to db
   err = c.Find(bson.M{"username": u.UserName}).One(&u)
   if err != nil {
     w.WriteHeader(404)
