@@ -59,6 +59,8 @@ module.exports = {
     this.makeQuill();
     this.quillOn(this.doc);
     this.quill.deleteText(0, this.quill.getLength());
-    this.quill.insertText(0, data)
+
+    this.quill.clipboard.dangerouslyPasteHTML(0, data)
+    // this.quill.insertText(0, data)
   }
 }

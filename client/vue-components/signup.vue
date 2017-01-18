@@ -47,7 +47,7 @@
           membersince: Date.now()
         };
         if (!auth.verifyUsername(credentials.username)) {
-          this.error = 'Must contain at least one symbol';
+          this.error = 'Username must contain at least one symbol';
           return;
         }
         if (!auth.verifyEmail(credentials.email)) {

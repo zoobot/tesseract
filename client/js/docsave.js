@@ -17,7 +17,7 @@ export default {
       .then((res) => {
         let data = JSON.parse(res.body);
         let status = JSON.parse(res.status);
-        let fix = auth.encrypt(data.doc);
+        let fix = auth.decrypt(data.doc);
         this.docData.currentDoc = {
           id: data.id,
           name: data.name,
@@ -72,7 +72,7 @@ export default {
     context.$http.put(`${USER_URL}/db/docs`, data)
       .then((res) => {
         let data = res.body;
-        let fix = auth.encrypt(data[0].doc);
+        let fix = auth.decrypt(data[0].doc);
         this.docData.currentDoc = {
           id: data[0].id,
           name: data.name,
@@ -93,7 +93,9 @@ export default {
         count++;
       }
     });
-    doc.name = `${doc.name}(${count+1})`
+    if (count > 1) {
+      doc.name = `${doc.name}(${count+1})`
+    }
     return doc;
   }
 }
