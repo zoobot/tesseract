@@ -35,9 +35,20 @@ module.exports = {
       })
     })
   },
-
+  // Toolbar config
+  TOOLBAR_CONFIG: {
+    container: [
+      ['bold', 'italic'],
+      [{header: 1}, {header: 2}],
+      ['blockquote', 'code-block'],
+      ['image']
+    ]
+  },
   makeQuill() {
     this.quill = new Quill('#editor', {
+      modules: {
+        toolbar: this.TOOLBAR_CONFIG
+      },
       placeholder: 'Filthy animals.',
       theme: 'bubble'
     })
