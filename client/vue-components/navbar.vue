@@ -16,12 +16,10 @@
       </div>
     <div class="right-nav" v-if="this.user.authenticated">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
-<<<<<<< HEAD
       <avatar fullname="Duncan Nevin" color="rgb(0, 0, 0)" size="20"></avatar>
     </div>
     <div class="audio">
       <audiocomponent id="audio" ></audiocomponent>
-=======
       <div @click="showControls()">
         <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size=40></avatar>
       </div>
@@ -53,7 +51,6 @@
         <!-- end hidden control panel -->
 
       </div>
->>>>>>> 186347efb3e51b734de00c0d5e1cc4d5768543eb
     </div>
   </nav>
 </template>
@@ -68,10 +65,6 @@
   import Signup from './signup.vue'
 
   export default {
-<<<<<<< HEAD
-    created() {},
-    components: { Avatar, Audiocomponent },
-=======
     created() {
     },
     data() {
@@ -88,7 +81,6 @@
       Signin,
       Signup
     },
->>>>>>> 186347efb3e51b734de00c0d5e1cc4d5768543eb
     // Methods are located in js directory
     methods: Methods
   }
