@@ -32,7 +32,7 @@
 
     <a @click="eye()">
       <audio loop id="eye" src="/client/assets/audio/Growth-Mindset-Hypnosis.mp3"></audio>
-      <img src="/client/assets/images/eye.svg" id="eyeplay" />
+      <img src="/client/assets/images/hypnosis.svg" id="eyeplay" />
       <img class="audioControl"  id="pause" />
     </a>
 </div>
@@ -112,11 +112,11 @@ export default {
 
 <style>
 .audioref img {
-    height: 30px;
-    background-color: black;
+    width: 15%;
 }
-audio {
-  background-color: black;
+.audioref {
+  width: 100%;
+  background-color: #eeeaea;
 }
 #pause {
     display: none;

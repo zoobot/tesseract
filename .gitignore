@@ -3,6 +3,7 @@
 .LSOverride
 
 node_modules/
+database/
 
 logs
 *.logs

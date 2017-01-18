@@ -10,3 +10,14 @@ html, body{
 body{
   padding-top: 8em;
 }
+.ql-bubble .ql-editor code,
+.ql-bubble .ql-editor pre {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 1px;
+}
+.ql-bubble .ql-tooltip {
+  background-color: #444;
+  border-radius: 3px;
+  color: #fff;
+}
