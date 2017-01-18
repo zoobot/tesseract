@@ -1,4 +1,3 @@
-
 <template>
   <div class="main-content">
     <navbar></navbar>
@@ -51,7 +50,6 @@
       let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.uri}`)
       const connection = new sharedb.Connection(socket)
 
-      console.log(socket, this.wsrtc)
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
@@ -60,19 +58,15 @@
         let socket = new WebSocket(`ws://${window.location.host}`);
         connection.bindToSocket(socket);
       }
-      const doc = connection.get('docs', this.uri);
-      this.quill = new Quill('#editor', {
-        placeholder: 'Filthy animals.',
-        theme: 'bubble'
-      })
-      this.quill.on('text-change', () => {
-        let text = this.quill.getText()
-        let stats = textStats(text)
-        this.time = stats.display
-        this.count = stats.length
-      })
-      docSubscribe(this.quill, doc)
+      // Storing doc inside editor for access in other components.
+      editor.doc = connection.get('docs', this.uri);
+      // New quill
+      editor.makeQuill();
+      editor.quillOn(editor.doc);
+      editor.docSubscribe(editor.quill, editor.doc);
+      editor.changeQuill('');
     },
+
     data() {
       return {
         ws: null,
@@ -80,19 +74,21 @@
         wsScreen: null,
         channel: '',
         count: 0,
+        // User data stored in auth
+        user: auth.user,
+        // Doc data stored in docsave
+        docData: docsave.docData,
         time: '',
-        quill: '',
-        uri: ''
+        quill: editor.quill,
+        URI: ''
       }
     },
     components: {
       Navbar,
       Videocomponent,
-      Audiocomponent
-
     },
     // Methods are located in js directory
-    methods: Methods,
+    methods: Methods
   }
 </script>
 

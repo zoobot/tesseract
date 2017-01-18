@@ -29,7 +29,7 @@ func bcryptit() {
     }
     fmt.Println(string(hashedPassword))
 
-    // Comparing plaintext with the hash
+    // Comparing plaintext with hash
     err = bcrypt.CompareHashAndPassword(hashedPassword, plaintext)
     fmt.Println(err) // nil means matched hash
 }
