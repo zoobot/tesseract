@@ -18,12 +18,9 @@
       <!-- can change fullname to image.//size throws an error however it is working?! -->
       <avatar fullname="Duncan Nevin" color="rgb(0, 0, 0)" size="20"></avatar>
     </div>
-    <div class="audio">
-      <audiocomponent id="audio" ></audiocomponent>
       <div @click="showControls()">
         <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size=40></avatar>
       </div>
-
       <!-- hidden control panel -->
       <div class="user-stuff panel-body" v-if="this.showControl">
         <!-- logout button -->
@@ -57,7 +54,6 @@
 
 <script>
   import Avatar from 'vue-avatar-component'
-  import Audiocomponent from './audio_component.vue'
   import Methods from '../js/navbar.js'
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
