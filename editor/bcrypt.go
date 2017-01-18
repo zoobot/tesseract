@@ -19,17 +19,24 @@ const (
 var ErrMismatchedHashAndPassword = errors.New("crypto/bcrypt: hashedPassword is not the hash of the given password")
 var ErrHashTooShort = errors.New("crypto/bcrypt: hashedSecret too short to be a bcrypted password")
 
-func bcryptit() {
-    plaintext := []byte("Call me Ishmael. Some years ago- never mind how long precisely- having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth, whenever it is a damp, drizzly November in my soul whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I ")
+func bcryptit(pw string) string {
+    plaintext := []byte(pw)
 
     // Hashing the plaintext cost of 12
     hashedPassword, err := bcrypt.GenerateFromPassword(plaintext, MedCost)
     if err != nil {
         panic(err)
     }
-    fmt.Println(string(hashedPassword))
+
+    return string(hashedPassword)
+}
+
+func decryptit(pw string, pt string){
+
+    plaintext := []byte(pt)
+    hashedPassword := []byte(pw)
 
     // Comparing plaintext with hash
-    err = bcrypt.CompareHashAndPassword(hashedPassword, plaintext)
+    err := bcrypt.CompareHashAndPassword(plaintext, hashedPassword)
     fmt.Println(err) // nil means matched hash
 }

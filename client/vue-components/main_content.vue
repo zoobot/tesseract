@@ -37,6 +37,7 @@
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
   import editor from '../js/editor.js'
+
   export default {
     created() {
       let chance = new Chance()
@@ -57,7 +58,7 @@
       sharedb.types.register(richText.type)
       let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.uri}`)
       const connection = new sharedb.Connection(socket)
-      //console.log(socket, this.wsrtc)
+      // console.log(socket, this.wsrtc)
       // console.log(socket, this.wsrtc)
       // For testing reconnection
       window.disconnect = function() {
