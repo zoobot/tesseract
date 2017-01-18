@@ -49,7 +49,6 @@
 <style>
   video {
     display: inline-block;
-    max-width: 100%;
   }
   button {
     width: 100%
