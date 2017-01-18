@@ -4,7 +4,6 @@ import (
     //install with go get golang.org/x/crypto/bcrypt
     //https://godoc.org/golang.org/x/crypto/pbkdf2 this is faster but uses Sha
     "golang.org/x/crypto/bcrypt"
-    "fmt"
     "errors"
 )
 
@@ -31,12 +30,16 @@ func bcryptit(pw string) string {
     return string(hashedPassword)
 }
 
-func decryptit(pw string, pt string){
+func decryptit(pw string, pt string) string {
 
     plaintext := []byte(pt)
     hashedPassword := []byte(pw)
 
-    // Comparing plaintext with hash
-    err := bcrypt.CompareHashAndPassword(plaintext, hashedPassword)
-    fmt.Println(err) // nil means matched hash
+    // Comparing hash to plaintext
+    err := bcrypt.CompareHashAndPassword(hashedPassword, plaintext)
+    if err == nil {
+        return "Valid"
+    } else {
+        return "Invalid"
+    }
 }
