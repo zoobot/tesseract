@@ -136,8 +136,4 @@ html, body{
 code {
   color: #f66;
 }
-<<<<<<< a897181742249f80925d321e795883f007dc95c1
 </style>
-=======
-</style>
->>>>>>> added database to be ignored

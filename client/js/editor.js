@@ -1,5 +1,25 @@
 import Quill from 'quill'
 import docsave from './docsave.js'
+import Chance from 'chance'
+
+const chance = new Chance()
+
+const Block = Quill.import('blots/block')
+
+class Header extends Block {
+  static formats(domNode) {
+    if (!domNode.id) {
+      let time = '' + Date.now()
+      domNode.id = `th-${chance.word({length: 3}) + time.slice(-3)}`
+    }
+    return this.tagName.indexOf(domNode.tagName) + 1
+  }
+}
+
+Header.blotName = 'header'
+Header.tagName = ['H1', 'H2']
+
+Quill.register('formats/header', Header, true)
 
 module.exports = {
   quill: '',
