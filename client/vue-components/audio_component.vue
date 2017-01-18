@@ -113,8 +113,11 @@ export default {
 <style>
 .audioref img {
     height: 30px;
+    background-color: black;
 }
-
+audio {
+  background-color: black;
+}
 #pause {
     display: none;
 }
