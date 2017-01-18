@@ -28,13 +28,11 @@ module.exports = {
     let prepDoc = {
       username: auth.user.data.username,
       name: name,
-      doc: auth.encrypt(editor.quill.root.innerHTML)
-      // doc: auth.encrypt(docsave.docData.currentDoc.doc)
+      doc: auth.encrypt(docsave.docData.currentDoc.doc)
     }
     // fixDups adds a number to the saved doc in order to ensure all docs
     // have unique names
     prepDoc = docsave.fixDups(prepDoc);
-    console.log(editor.quill.root.innerHTML)
     docsave.sendDoc(this, prepDoc);
   },
 
@@ -44,10 +42,8 @@ module.exports = {
       id: docsave.docData.currentDoc.id,
       username: auth.user.data.username,
       name: docsave.docData.currentDoc.name,
-      doc: auth.encrypt(editor.quill.root.innerHTML)
-      // doc: auth.encrypt(docsave.docData.currentDoc.doc)
+      doc: auth.encrypt(docsave.docData.currentDoc.doc)
     }
-    console.log(editor.quill.root.innerHTML)
     docsave.updateDoc(this, assembleData);
   },
 
