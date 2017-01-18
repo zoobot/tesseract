@@ -112,7 +112,7 @@ export default {
 
 <style>
 .audioref img {
-    height: 15%;
+    width: 15%;
 }
 .audioref {
   width: 100%;
