@@ -40,11 +40,11 @@
       let chance = new Chance()
       let c = this.$route.params.channel
       const token = auth.getToken();
-      this.URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
+      this.uri = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
       //create RTC websocket
-      this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${this.URI}rtc`);
+      this.wsrtc = new WebSocket(`wss://${window.location.host}/ws/${this.uri}rtc`);
       // update URL display. I still think we can do this with router somehow :S
-      window.history.pushState(window.location.origin, '/', this.URI);
+      window.history.pushState(window.location.origin, '/', this.uri);
       // If token exists
       if (token) {
         // Checks if token in computer is valid then gets user resource
@@ -53,20 +53,20 @@
     },
     mounted() {
       sharedb.types.register(richText.type)
-      let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.URI}`)
+      let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.uri}`)
       const connection = new sharedb.Connection(socket)
-      //console.log(socket, this.wsRTC)
-      // console.log(socket, this.wsRTC)
+      //console.log(socket, this.wsrtc)
+      // console.log(socket, this.wsrtc)
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
       }
-      window.connect = function(URI) {
+      window.connect = function(uri) {
         let socket = new WebSocket(`ws://${window.location.host}`);
         connection.bindToSocket(socket);
       }
       // Storing doc inside editor for access in other components.
-      editor.doc = connection.get('docs', this.URI);
+      editor.doc = connection.get('docs', this.uri);
       // New quill
       editor.makeQuill();
       editor.quillOn(editor.doc);
@@ -76,7 +76,7 @@
     data() {
       return {
         ws: null,
-        wsRTC: null,
+        wsrtc: null,
         channel: '',
         count: 0,
         // User data stored in auth
@@ -85,7 +85,7 @@
         docData: docsave.docData,
         time: '',
         quill: editor.quill,
-        URI: ''
+        uri: ''
       }
     },
     components: {
