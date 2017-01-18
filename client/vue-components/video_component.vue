@@ -20,7 +20,6 @@
 
     mounted() {
       this.signalHandler();
-      $( '.draggable' ).draggable();
     },
 
     props: ['wsrtc','uri'],
