@@ -28,8 +28,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
   session.SetMode(mgo.Monotonic, true)
   c := session.DB("tesis").C("people")
 
- // bcryptit("1")
-
   var u People
   u.Id = bson.NewObjectId()
   err = json.NewDecoder(r.Body).Decode(&u)
@@ -38,7 +36,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  u.Password = bcryptit(u.Password)
+  secret := "farfegnugen"
+
+  u.Password = bcryptit(secret + u.Password)
 
   index := mgo.Index{
     Key:        []string{"username"},
@@ -75,21 +75,32 @@ func AuthUser(w http.ResponseWriter, r *http.Request) {
 
   u := People{}
 
+  secret := "farfegnugen"
+
   err = json.NewDecoder(r.Body).Decode(&u)
   if err != nil {
     w.WriteHeader(404)
     return
   }
-  fmt.Println(bcryptit("farfegnugenqwerty1!"))
-  decryptit("farfegnugenqwerty1!", "$2a$12$8qwJcNBqvUJzawxU2gEq6u2xP23QldRkSBqWLZnCQoF8B2uTUNZ3i")
+
+  pt := secret + u.Password
 
   err = c.Find(bson.M{"username": u.UserName}).One(&u)
   if err != nil {
     w.WriteHeader(404)
     return
   } else {
-    w.WriteHeader(200)
+    validate := decryptit(u.Password, pt)
+
+    fmt.Println(validate)
+    if validate == "Valid"{
+      w.WriteHeader(200)
+    } else {
+      w.WriteHeader(404)
+      return
+    }
   }
+
   uj, _ := json.Marshal(u)
   w.Header().Set("Content-Type", "application/json")
   fmt.Fprintf(w, "%s", uj)
