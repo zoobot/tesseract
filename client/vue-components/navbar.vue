@@ -16,10 +16,11 @@
       </div>
     <div class="right-nav" v-if="this.user.authenticated">
       <!-- can change fullname to image.//size throws an error however it is working?! -->
+      <avatar fullname="Duncan Nevin" color="rgb(0, 0, 0)" size="20"></avatar>
+    </div>
       <div @click="showControls()">
         <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size=40></avatar>
       </div>
-
       <!-- hidden control panel -->
       <div class="user-stuff panel-body" v-if="this.showControl">
         <!-- logout button -->
