@@ -209,7 +209,7 @@ module.exports = {
     a.href = url;
     //make rand number padd 4
     var rand =  ('0000' + Math.floor((Math.random() * 1000))).slice(-4);
-    a.download = this.saverURI + rand +'.mp4';
+    a.download = this.uri + rand +'.mp4';
     a.click();
     // setTimeout() here is needed for Firefox.
     setTimeout(function() { URL.revokeObjectURL(url); }, 100);
