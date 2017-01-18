@@ -1,10 +1,12 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
-    <div class="content">
-
-    <div class="content-left">
+    <div>
+    <!-- area to add live data as text is being added -->
+     <div class="content-left">
+     <div>
       <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
+     </div>
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
@@ -13,12 +15,9 @@
         <audiocomponent id="audio" ></audiocomponent>
       </div>
     </div>
-
     <div class="content-right">
       <div id="editor"></div>
     </div>
-
-  </div>
   </div>
 </template>
 
@@ -36,45 +35,48 @@
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
   import editor from '../js/editor.js'
-
   export default {
     created() {
       let chance = new Chance()
       let c = this.$route.params.channel
-      this.uri = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
-      //create rtc websocket
-      this.wsrtc = new WebSocket(`wss://${window.location.host}/ws/${this.uri}rtc`);
-
+      const token = auth.getToken();
+      this.URI = c !== undefined && /^\w{5}$/.test(c) ? c : chance.word({length: 5})
+      //create RTC websocket
+      this.wsRTC = new WebSocket(`wss://${window.location.host}/ws/${this.URI}rtc`);
       // update URL display. I still think we can do this with router somehow :S
-      window.history.pushState(window.location.origin, '/', this.uri);
+      window.history.pushState(window.location.origin, '/', this.URI);
+      // If token exists
+      if (token) {
+        // Checks if token in computer is valid then gets user resource
+        auth.getJwt(this, token);
+      }
     },
     mounted() {
       sharedb.types.register(richText.type)
-      let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.uri}`)
+      let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.URI}`)
       const connection = new sharedb.Connection(socket)
-
+      //console.log(socket, this.wsRTC)
+      // console.log(socket, this.wsRTC)
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
       }
-      window.connect = function(uri) {
+      window.connect = function(URI) {
         let socket = new WebSocket(`ws://${window.location.host}`);
         connection.bindToSocket(socket);
       }
       // Storing doc inside editor for access in other components.
-      editor.doc = connection.get('docs', this.uri);
+      editor.doc = connection.get('docs', this.URI);
       // New quill
       editor.makeQuill();
       editor.quillOn(editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
       editor.changeQuill('');
     },
-
     data() {
       return {
         ws: null,
-        wsrtc: null,
-        wsScreen: null,
+        wsRTC: null,
         channel: '',
         count: 0,
         // User data stored in auth
@@ -89,6 +91,7 @@
     components: {
       Navbar,
       Videocomponent,
+      Audiocomponent,
     },
     // Methods are located in js directory
     methods: Methods
@@ -106,10 +109,12 @@
 }
 .content-right{
   width: 80%;
+  display: inline-block;
+  float: right;
 }
 .content-left{
   width: 20%;
-  display: flex;
+  display: inline-block;
   justify-content: center;
   align-items: flex-end;
 }
