@@ -74,6 +74,7 @@
       editor.quillOn(editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
       editor.changeQuill('');
+
     },
     data() {
       return {
