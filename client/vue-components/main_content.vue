@@ -7,17 +7,14 @@
      <div>
       <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
      </div>
-
       <div class="doc-info" v-if="count > 0">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
       </div>
     </div>
-
     <div class="content-right">
       <div id="editor"></div>
     </div>
-
   </div>
 </template>
 
@@ -36,6 +33,7 @@
   import editor from '../js/editor.js'
 
   export default {
+
     created() {
       let chance = new Chance()
       let c = this.$route.params.channel
@@ -51,12 +49,18 @@
         auth.getJwt(this, token);
       }
     },
+
     mounted() {
+
       sharedb.types.register(richText.type)
       let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.URI}`)
       const connection = new sharedb.Connection(socket)
 
+
+      //console.log(socket, this.wsRTC)
+
       // console.log(socket, this.wsRTC)
+
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
@@ -73,6 +77,7 @@
       editor.docSubscribe(editor.quill, editor.doc);
       editor.changeQuill('');
     },
+
     data() {
       return {
         ws: null,
