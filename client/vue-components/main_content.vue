@@ -33,6 +33,9 @@
   import richText from 'rich-text'
   import Quill from 'quill'
   import Chance from 'chance'
+  import auth from '../js/auth.js'
+  import docsave from '../js/docsave.js'
+  import editor from '../js/editor.js'
 
   export default {
     created() {
