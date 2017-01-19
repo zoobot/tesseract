@@ -1,16 +1,30 @@
 
 <template>
   <nav class="navbar navbar-fixed-top">
+
     <div class="left-nav">
+      <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
     </div>
-    <div class="title" v-if="this.user.authenticated">
-      <p> {{ docData.currentDoc.name || 'New' }} </p>
+
+    <div class="title">
+      <p v-if="this.user.authenticated"> {{ docData.currentDoc.name || 'New' }} </p>
     </div>
+<<<<<<< bfd1820bafbe9f93a844b575a4b9c05d1ae2646b
       <!-- Authentication -->
       <div class="auth-area" v-if="!this.user.authenticated">
         <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
         <div class="user-details" @click="showSignin()"> # </div>
       </div>
+=======
+
+    <div class="auth-area" v-if="!this.user.authenticated">
+      <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
+      <div class="user-details" @click="showSignin()"> # </div>
+    </div>
+
+>>>>>>> updated styling
     <div class="right-nav" v-if="this.user.authenticated">
         <div class="user-details" @click="showControls()"> {{ user.data.username[0] }} </div>
       <!-- hidden control panel -->
@@ -78,12 +92,22 @@
 
 <style>
   .navbar{
+    margin: 0;
+    display: inline-flex;
     color: white;
-    display: table;
     background-color: rgb(24, 24, 24);
-    height: 8em;
+    height: 10vh;
     width: 100vw;
-    border: transparent;
+    border: none;
+  }
+  .left-nav{
+    display: flex;
+    width: 20%;
+    align-items: flex-end;
+    justify-content: space-around;
+  }
+  .left-nav span{
+    padding: 0.75em;
   }
   .title{
     color: rgb(255, 255, 255);
@@ -94,11 +118,6 @@
   .title, .right-nav{
     text-align: center;
     vertical-align: middle;
-  }
-  .left-nav, .right-nav, .title{
-    display: table-cell;
-    height: 100%;
-    width: 33.33vw;
   }
   .user-details{
     position: absolute;
@@ -128,7 +147,6 @@
     width: 30vw;
     min-height: 8em;
     background-color: rgb(24, 24, 24);
-    /*overflow: auto;*/
   }
   .saved{border: 1px solid white;
     width: 100%;

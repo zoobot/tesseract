@@ -1,124 +1,75 @@
 <template>
-  <div class="audioref" >
-    <a @click="basketball()">
-      <audio loop id="basketball" src="/client/assets/audio/Stomp-Basketballs.mp3"></audio>
-      <img src="/client/assets/images/basketball.svg" id="bballplay" />
-      <img class="audioControl" src="https://i0.wp.com/www.rnningfool.com/wp-content/uploads/2014/07/pause_lead_flow.gif" id="pause" />
-    </a>
-
-    <a @click="fire()">
-      <audio loop id="fire" src="/client/assets/audio/Campfire_sound_ambience.mp3"></audio>
-      <img src="/client/assets/images/fire.svg" id="fireplay" />
-      <img class="audioControl" src="https://i0.wp.com/www.rnningfool.com/wp-content/uploads/2014/07/pause_lead_flow.gif" id="pause" />
-    </a>
-
-    <a @click="flute()">
-      <audio loop id="flute" src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Hymne_delphique.ogg"></audio>
-      <img src="/client/assets/images/flute.svg" id="fluteplay" />
-      <img class="audioControl" src="https://i0.wp.com/www.rnningfool.com/wp-content/uploads/2014/07/pause_lead_flow.gif" id="pause" />
-    </a>
-
-    <a @click="square()">
-      <audio loop id="square" src="/client/assets/audio/White.mp3"></audio>
-      <img src="/client/assets/images/square.svg" id="squareplay" />
-      <img class="audioControl" src="https://i0.wp.com/www.rnningfool.com/wp-content/uploads/2014/07/pause_lead_flow.gif" id="pause" />
-    </a>
-
-    <a @click="forest()">
-      <audio loop id="forest" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Calling_of_Cicads_on_Ko_Tao%2C_Thailand_1.ogg"></audio>
-      <img src="/client/assets/images/sin.svg" id="forestplay" />
-      <img class="audioControl" src="https://i0.wp.com/www.rnningfool.com/wp-content/uploads/2014/07/pause_lead_flow.gif" id="pause" />
-    </a>
-
-    <a @click="eye()">
-      <audio loop id="eye" src="/client/assets/audio/Growth-Mindset-Hypnosis.mp3"></audio>
-      <img src="/client/assets/images/hypnosis.svg" id="eyeplay" />
-      <img class="audioControl"  id="pause" />
-    </a>
-</div>
+    <div>
+    <audio v-for="track in tracks" :id="track.id" :src="track.url" :paused="track.paused" @click="toggleButton($event)">
+    </audio>
+        <div v-for="track in tracks" @click="toggleButton($event)">{{track.id}}</div>
+    <div>
 </template>
 
 <script>
 export default {
+
+  data() {
+    return {
+    tracks: [
+   {
+     id: 'basketball',
+     url: "/client/assets/audio/Stomp-Basketballs.mp3",
+     svg:'',
+     paused: true
+   },
+   {
+     id: 'fire',
+     url: "/client/assets/audio/Campfire_sound_ambience.mp3",
+     svg:'',
+      paused: true
+    },
+    {
+      id: 'flute',
+      url: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Hymne_delphique.ogg",
+      svg:'',
+      paused: true
+    },
+    {
+      id: 'square',
+      url: "/client/assets/audio/White.mp3",
+      svg:'',
+      paused: true
+    },
+    {
+      id: 'forest',
+      url: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Calling_of_Cicads_on_Ko_Tao%2C_Thailand_1.ogg",
+      svg:'',
+      paused: true
+    },
+    {
+      id: 'eye',
+      url: "/client/assets/audio/Growth-Mindset-Hypnosis.mp3",
+      svg:'',
+      paused: true
+    }
+   ]}
+  },
+
   methods: {
-    toggleButton() {
-        if (this.playButton.style.display === 'none') {
-            this.playButton.style.display = 'block';
-            this.pauseButton.style.display = 'none';
-        } else {
-            this.playButton.style.display = 'none';
-            this.pauseButton.style.display = 'block';
+
+    toggleButton(e) {
+      let item = e.target.innerText;
+      for (var i = 0; i < this.tracks.length; i++) {
+        if (item === this.tracks[i].id) {
+          this.tracks[i].paused = !this.tracks[i].paused
+          console.log('this is our track', this.tracks[i].paused)
         }
-    },
-
-    flute() {
-      var flute = document.getElementById('flute'),
-      ctrl = document.getElementById('audioControl'),
-      playButton = document.getElementById('fluteplay'),
-      pauseButton = document.getElementById('flutepause');
-      flute.paused ? flute.play() : flute.pause();
-      this.toggleButton();
-      return false;
-    },
-
-    basketball() {
-      var basketball = document.getElementById('basketball'),
-      ctrl = document.getElementById('audioControl'),
-      playButton = document.getElementById('bballplay'),
-      pauseButton = document.getElementById('bballpause');
-      basketball.paused ? basketball.play() : basketball.pause();
-      this.toggleButton();
-      return false;
-    },
-    fire() {
-      var fire = document.getElementById('fire'),
-      ctrl = document.getElementById('audioControl'),
-      playButton = document.getElementById('fireplay'),
-      pauseButton = document.getElementById('firepause');
-      fire.paused ? fire.play() : fire.pause();
-      this.toggleButton();
-      return false;
-    },
-    forest() {
-      var forest = document.getElementById('forest'),
-      ctrl = document.getElementById('audioControl'),
-      playButton = document.getElementById('forestplay'),
-      pauseButton = document.getElementById('forestpause');
-      forest.paused ? forest.play() : forest.pause();
-      this.toggleButton();
-      return false;
-    },
-    square() {
-      var square = document.getElementById('square'),
-      ctrl = document.getElementById('audioControl'),
-      playButton = document.getElementById('squareplay'),
-      pauseButton = document.getElementById('squarepause');
-      square.paused ? square.play() : square.pause();
-      this.toggleButton();
-      return false;
-    },
-    eye() {
-      var eye = document.getElementById('eye'),
-      ctrl = document.getElementById('audioControl'),
-      playButton = document.getElementById('eyeplay'),
-      pauseButton = document.getElementById('eyepause');
-      eye.paused ? eye.play() : eye.pause();
-      this.toggleButton();
-      return false;
+      }
     }
   }
 }
 </script>
 
 <style>
-.audioref img {
-    width: 15%;
+
+audioref {
+  background-color:transparent;
 }
-.audioref {
-  width: 100%;
-  background-color: #eeeaea;
-}
-#pause {
-    display: none;
-}
+
 </style>

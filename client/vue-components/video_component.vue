@@ -1,12 +1,12 @@
 <template>
 
-    <div>
+    <div id="video">
       <div id="video-container"></div>
-      <button v-show="collaborate" @click="start()" id="collaborate" >collaborate++</button>
+      <button v-show="collaborate" @click="start()" id="collaborate" >collaborate</button>
       <button v-show="connected" @click="call()" id="connect">click to connect</button>
       <button v-show="!ourAudio" @click="toggleMute()" id="mute">unmute yourself</button>
       <button v-show="ourAudio" @click="toggleMute()" id="mute">mute yourself</button>
-      <button @click="stop()" id="stop">stop sharing</button>
+      <button v-show="stopped" @click="stop()" id="stop">stop sharing</button>
       <button @click="record()" id="record" >record yourself</button>
       <button @click="download()" id="download" >download recording</button>
     </div>
@@ -25,6 +25,7 @@
 
     data() {
       return {
+        stopped:false,
         ourAudio: true,
         videos:'',
         collaborate: true,
@@ -45,11 +46,6 @@
   }
 </script>
 
-<style>
-  video {
-    display: inline-block;
-  }
-  button {
-    width: 100%
-  }
+<style scoped>
+
 </style>

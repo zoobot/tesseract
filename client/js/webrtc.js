@@ -1,9 +1,5 @@
-/**
- * Created by charleen on 1/6/17.
- */
-
 module.exports = {
-  
+
   start() {
     this.startCollab();
     //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
@@ -19,7 +15,7 @@ module.exports = {
       .catch(e => { console.log('getUserMedia() error: ' + e.name);});
   },
 
-  startCollab()  {
+  startCollab() {
     this.wsrtc.send(JSON.stringify({'type':'join'}));
     this.wsrtc.send(JSON.stringify({'type': 'joinUp'}))
   },
@@ -39,6 +35,7 @@ module.exports = {
   gotStream(stream) {
     //set button displays
     this.collaborate = false;
+    this.stopped = true;
     //set source of localVideo element to the stream captures from getUserMedia;
     this.videos = document.getElementById('video-container');
     let localVideo = document.createElement('video')
@@ -47,6 +44,7 @@ module.exports = {
     localVideo.setAttribute("autoplay", true);
     localVideo.setAttribute("muted", true);
     localVideo.setAttribute("id", this.localStream.id);
+    localVideo.setAttribute('width', '100%')
     // instantiate new peer connection
     this.pc = new RTCPeerConnection(this.peerConnectionConfig);
     // set methods on new peer connection object
@@ -93,6 +91,7 @@ module.exports = {
     //delete descriptions
     delete this.pc.localDescription;
     delete this.pc.remoteDescription;
+    this.stopped = false;
   },
 
   signalHandler() {

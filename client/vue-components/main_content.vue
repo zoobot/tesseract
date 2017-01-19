@@ -112,7 +112,7 @@
 }
 .content{
   display: inline-flex;
-  height: 87vh;
+  height: 90vh;
   width: 100vw;
 }
 .content-right{
