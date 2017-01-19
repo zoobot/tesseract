@@ -124,11 +124,6 @@ export default {
     return eValidate.validate(email);
   },
 
-  verifyUsername(un) {
-    // Must contain at least one symbol
-    return un.match(/^[A-Za-z0-9]+$/) ? false : true;
-  },
-
   verifyPassword(pw) {
     // Minimum 8 characters at least 1 Alphabet, 1 Number and 1 Special Character:
     // FishyTreat1!
