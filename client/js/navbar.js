@@ -23,11 +23,12 @@ module.exports = {
 
   saveAs(name) {
     if (this.docName !== '') {
+      let stringIt = editor.quill.getContents();
     // saveDoc makes the actual call to the database with the data
       let prepDoc = {
         username: auth.user.data.username,
         name: this.docName,
-        doc: auth.encrypt(JSON.stringify(editor.quill.getContents()))
+        doc: auth.encrypt(JSON.stringify(stringIt))
       }
       // fixDups adds a number to the saved doc in order to ensure all docs
       // have unique names
@@ -42,11 +43,13 @@ module.exports = {
 
   save() {
   // save updates the form that is currently loaded
+    let stringIt = editor.quill.getContents();
+
     let assembleData = {
       id: docsave.docData.currentDoc.id,
       username: auth.user.data.username,
       name: docsave.docData.currentDoc.name,
-      doc: auth.encrypt(JSON.stringify(editor.quill.getContents()))
+      doc: auth.encrypt(JSON.stringify(stringIt))
     }
     docsave.updateDoc(this, assembleData);
   },
@@ -56,7 +59,7 @@ module.exports = {
       name: '',
       doc: ''
     };
-    editor.changeQuill('');
+    editor.quill.deleteText(0);
   },
 
   deleteDoc() {

@@ -98,7 +98,7 @@ export default {
             return obj;
           }
         })
-        editor.changeQuill('');
+        editor.quill.deleteText(0);
       })
       .catch((err) => {
         console.error(err)
