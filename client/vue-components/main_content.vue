@@ -9,7 +9,7 @@
       <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
      </div>
 
-      <div class="doc-info" v-if="count > 0">
+      <div class="doc-info">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
       </div>

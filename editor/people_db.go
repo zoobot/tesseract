@@ -85,11 +85,6 @@ func AuthUser(w http.ResponseWriter, r *http.Request) {
 
   pt := secret + u.Password
 
-<<<<<<< HEAD
-  pt := secret + u.Password
-
-=======
->>>>>>> Stores hashed version of password to db
   err = c.Find(bson.M{"username": u.UserName}).One(&u)
   if err != nil {
     w.WriteHeader(404)
