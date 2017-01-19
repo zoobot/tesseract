@@ -41,6 +41,7 @@
           password: this.credentials.password.trim(),
           timestamp: Date.now()
         };
+
         if (!auth.verifyPassword(credentials.password)) {
           this.error = 'Invalid password!'
           return;

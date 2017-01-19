@@ -16,6 +16,9 @@
       <div class="audio">
         <audiocomponent id="audio" ></audiocomponent>
       </div>
+      <div>
+        <statcomponent :quill="quill"></statcomponent>
+      </div>
     </div>
     <div class="content-right">
       <div id="editor"></div>
@@ -31,11 +34,12 @@
   import {textStats, docSubscribe} from '../js/editor.js'
   import sharedb from 'sharedb/lib/client'
   import richText from 'rich-text'
-  import Quill from 'quill'
+  // import Quill from 'quill'
   import Chance from 'chance'
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
   import editor from '../js/editor.js'
+  import statcomponent from './stat_component.vue'
 
   export default {
     created() {
@@ -71,9 +75,10 @@
       editor.doc = connection.get('docs', this.uri);
       // New quill
       editor.makeQuill();
+
       editor.quillOn(this, editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
-
+      this.quill = editor.quill
     },
     data() {
       return {
@@ -86,7 +91,7 @@
         // Doc data stored in docsave
         docData: docsave.docData,
         time: '',
-        quill: editor.quill,
+        quill: '',
         uri: ''
       }
     },
@@ -94,6 +99,7 @@
       Navbar,
       Videocomponent,
       Audiocomponent,
+      statcomponent
     },
     // Methods are located in js directory
     methods: Methods

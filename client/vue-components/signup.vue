@@ -43,6 +43,7 @@
           avatar: this.credentials.avatar,
           membersince: Date.now()
         };
+
         if (!auth.verifyEmail(credentials.email)) {
           this.error = 'Invalid email';
           return
