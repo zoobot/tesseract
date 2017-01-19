@@ -74,12 +74,12 @@ module.exports = {
     })
   },
 
-  quillOn(doc) {
+  quillOn(context, doc) {
     this.quill.on('text-change', () => {
       let text = this.quill.getText()
       let stats = this.textStats(text)
-      this.time = stats.display
-      this.count = stats.length
+      context.time = stats.display
+      context.count = stats.length
 
       docsave.docData.currentDoc.doc = text;
     })
