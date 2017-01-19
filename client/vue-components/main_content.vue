@@ -28,7 +28,6 @@
   import Methods from '../js/main_content.js'
   import Videocomponent from './video_component.vue'
   import Audiocomponent from './audio_component.vue'
-  import Utils from '../js/utils.js'
   import {textStats, docSubscribe} from '../js/editor.js'
   import sharedb from 'sharedb/lib/client'
   import richText from 'rich-text'
