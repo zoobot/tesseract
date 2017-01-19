@@ -3,26 +3,13 @@
   "minimum_chrome_version": "34",
   "name": "Tesis Screen Sharing and Recording",
   "short_name": "Tesis",
-  "description": "Tesis Tab recording.",
+  "description": "Tesis Tab recording. Based off Skyroom and Chromium tab tabCapture demo",
   "permissions": ["desktopCapture", "tabCapture", "tabs"],
   "version": "2.0",
 
-  "background": {
-    "persistent": true,
-    "scripts": ["script.js", "recorder.js"]
-  },
-
-  // "externally_connectable": {
-  //   "matches": [
-  //     "http://localhost/*",
-  //     "https://localhost/*"
-  //   ]
-  // },
-
-  "icons": {
-    "16": "tesis-icon.png",
-    "48": "tesis-icon.png",
-    "128": "tesis-icon.png"
+  "content_scripts": {
+    "matches": ["https://localhost:8443/*"],
+    "js": ["jquery-3.1.1.min.js","script.js", "recorder.js"]
   },
 
   "browser_action": {
@@ -30,10 +17,10 @@
     "default_popup": "popup.html"
   },
 
-  "content_scripts": [{
-    "matches": [
-      // "<all_urls>"
-      "https://localhost:8443/*"
-    ]
-  }]
+  "icons": {
+    "16": "tesis-icon.png",
+    "48": "tesis-icon.png",
+    "128": "tesis-icon.png"
+  }
+
 }

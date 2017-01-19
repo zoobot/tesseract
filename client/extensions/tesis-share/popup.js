@@ -12,25 +12,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
   console.log('CurrentTab', tabs);
   if (tabs.length) {
     CurrentTab = tabs[0];
-    updateUi();
+    gui();
   }
 });
 
-/**
- * Gives list of tabs that are being captured
- */
-function getCapturedTabs() {
-  let cTabs = [];
-  let tabs = bg.getCapturedTabs();
-  for (let cTab in tabs) {
-    if (tabs.hasOwnProperty(cTab)) {
-      cTabs.push(tabs[cTab]);
-    }
-  }
-  return cTabs;
-}
-
-function updateUi() {
+function gui() {
   let $captures = $('captures');
   $captures.innerHTML = '';
 
@@ -50,98 +36,78 @@ function updateUi() {
     }
   }
 }
+/**
+ * Gives list of tabs that are being captured
+ */
+function getCapturedTabs() {
+  let cTabs = [];
+  let tabs = bg.getCapturedTabs();
+  for (let cTab in tabs) {
+    if (tabs.hasOwnProperty(cTab)) {
+      cTabs.push(tabs[cTab]);
+    }
+  }
+  return cTabs;
+}
+
+
 
 function getTabItem(tabInfo, capInfo) {
-  let ce = document.createElement.bind(document);
-  let $tab = ce('div');
+  let elcreate = document.createElement.bind(document);
+  let $tab = elcreate('div');
   $tab.id = 'capture_' + tabInfo.id;
-  $tab.className = 'box-grow row spaced-sm tab-capture';
-
-  // tab icon
-  // let $iconTab = ce('img');
-  // if (tabInfo.favIconUrl && tabInfo.favIconUrl.indexOf('chrome://') === -1) {
-  //   // Not allowed to load local resource
-  //   $iconTab.src = tabInfo.favIconUrl;
-  // }
-  // $iconTab.className = 'box-shrink tab-icon';
-  // $tab.appendChild($iconTab);
-
-  // tab name
-  // let $name = ce('span');
-  // $name.innerHTML = tabInfo.title;
-  // $name.className = 'box-grow tab-name';
-  // $tab.appendChild($name);
+  $tab.className = 'tab-capture'
 
   // add buttons container to DOM
-  let $buttons = ce('span');
+  let $buttons = elcreate('span');
   $buttons.className = 'button-container';
   // add timer container to DOM
-  let $timer = ce('span');
+  let $timer = elcreate('span');
   $timer.className = 'timer-container';
 
-    let $btnRec = ce('button');
-    $btnRec.title = 'RECORD';
-    $btnRec.className = 'record';
-    $btnRec.innerHTML = '●';
+  let $btnRec = elcreate('button');
+  $btnRec.title = 'RECORD';
+  $btnRec.className = 'record';
+  $btnRec.innerHTML = '●';
 
-    let $btnStop = ce('button');
-    $btnStop.title = 'STOP';
-    $btnStop.className = 'stop';
-    $btnStop.innerHTML = '■';
-    $buttons.appendChild($btnStop);
+  let $btnStop = elcreate('button');
+  $btnStop.title = 'STOP';
+  $btnStop.className = 'stop';
+  $btnStop.innerHTML = '■';
+  $buttons.appendChild($btnStop);
 
-    $buttons.appendChild($btnRec);
+  $buttons.appendChild($btnRec);
 
-    let $btnSave = ce('button');
-    $btnSave.title = 'DOWNLOAD';
-    $btnSave.className = 'download';
-    $btnSave.innerHTML = '▼';
-    $buttons.appendChild($btnSave);
+  let $btnSave = elcreate('button');
+  $btnSave.title = 'DOWNLOAD';
+  $btnSave.className = 'download';
+  $btnSave.innerHTML = '▼';
+  $buttons.appendChild($btnSave);
 
-    let $btnRemove = ce('button');
-    $btnRemove.title = 'RESET';
-    $btnRemove.className = 'reset';
-    $btnRemove.innerHTML = 'x';
-    $buttons.appendChild($btnRemove);
-    // add timer
-    $tab.appendChild($timer);
+  let $btnRemove = elcreate('button');
+  $btnRemove.title = 'RESET';
+  $btnRemove.className = 'reset';
+  $btnRemove.innerHTML = 'x';
+  $buttons.appendChild($btnRemove);
+  // add timer
+  $tab.appendChild($timer);
 
   if (!capInfo) { // capturing is not started yet
-
     $btnRec.addEventListener('click', startRecording);
-
   } else {
-
-
     if (capInfo.stopTime) { // capturing has finished
-
       $btnSave.addEventListener('click', downloadRecording.bind(null, tabInfo.id));
-
       $btnRemove.addEventListener('click', removeRecording.bind(null, tabInfo.id));
-
-
       $timer.innerHTML = formatSeconds(Math.round((capInfo.stopTime - capInfo.startTime) / 1000));
-
-
-    } else { // still is capturing
-      // let $iconRec = ce('button');
-      // $iconRec.className = 'recordstill';
-      // $iconRec.innerHTML = '●';
-      // $tab.appendChild($iconRec);
-
+    } else {
       $timer.innerHTML = formatSeconds(Math.round((Date.now() - capInfo.startTime) / 1000));
       $tab.appendChild($timer);
-
-
       $btnStop.addEventListener('click', stopRecording.bind(null, tabInfo.id));
-
     }
   }
   $tab.appendChild($buttons);
-
   return $tab;
 }
-
 /**
  * Formats seconds to time(HH:MM:SS)
  */
@@ -155,11 +121,10 @@ function formatSeconds(n) {
 }
 
 setInterval(() => {
-  updateUi();
+  gui();
 }, 1100);
 
 function startRecording() {
-  // bg.startCapture(CurrentTab, CurrentTab.audible, true);
   bg.startCapture(CurrentTab, true, true);
 }
 
@@ -176,16 +141,3 @@ function removeRecording(tabId) {
   let $el = document.getElementById('capture_' + tabId);
   $el.parentElement.removeChild($el);
 }
-
-/*
-Element.prototype.show = function () {
-  console.log('show', this);
-  this.style.display = 'block';
-};
-Element.prototype.hide = function () {
-  this.style.display = 'none';
-};
-Element.prototype.remove = function () {
-  this.parentElement.removeChild(this);
-};
-*/
