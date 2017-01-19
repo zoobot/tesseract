@@ -103,7 +103,7 @@ export default {
       doc: ''
     };
     docsave.docData.docs = [];
-    editor.changeQuill('');
+    editor.quill.deleteText(0);
   },
 
   // The object to be passed as a body for authentication requests
