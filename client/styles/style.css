@@ -8,45 +8,16 @@ html, body{
   width: 100vw;
 }
 body{
-  padding-top: 13vh;
+  padding-top: 8em;
 }
-
-pos1 {
-  background-color: rgba(240, 174, 219, 0.44);
+.ql-bubble .ql-editor code,
+.ql-bubble .ql-editor pre {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 1px;
 }
-
-pos2 {
-  background-color: rgba(224, 127, 193, 0.44);
-}
-
-pos3 {
-  background-color: rgba(221, 89, 179, 0.44);
-}
-
-pos4 {
-  background-color: rgba(215, 51, 163, 0.44);
-}
-
-pos5 {
-  background-color: rgba(221, 7, 152, 0.44);
-}
-
-neg1 {
-  background-color: rgba(217, 173, 240, 0.44);
-}
-
-neg2 {
-  background-color: rgba(187, 116, 223, 0.44);
-}
-
-neg3 {
-  background-color: rgba(166, 76, 212, 0.44);
-}
-
-neg4 {
-  background-color: rgba(146, 41, 199, 0.44);
-}
-
-neg5 {
-  background-color: rgba(127, 9, 187, 0.44);
+.ql-bubble .ql-tooltip {
+  background-color: #444;
+  border-radius: 3px;
+  color: #fff;
 }

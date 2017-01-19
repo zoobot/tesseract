@@ -1,4 +1,29 @@
+import Quill from 'quill'
+import docsave from './docsave.js'
+import Chance from 'chance'
+
+const chance = new Chance()
+
+const Block = Quill.import('blots/block')
+
+class Header extends Block {
+  static formats(domNode) {
+    if (!domNode.id) {
+      let time = '' + Date.now()
+      domNode.id = `th-${chance.word({length: 3}) + time.slice(-3)}`
+    }
+    return this.tagName.indexOf(domNode.tagName) + 1
+  }
+}
+
+Header.blotName = 'header'
+Header.tagName = ['H1', 'H2']
+
+Quill.register('formats/header', Header, true)
+
 module.exports = {
+  quill: '',
+  doc: '',
   textStats(text) {
     let words = text.split(/[ \n\,\.]+/).filter(i => i !== '')
     let length = words.length
@@ -29,5 +54,39 @@ module.exports = {
         quill.updateContents(op)
       })
     })
+  },
+  // Toolbar config
+  TOOLBAR_CONFIG: {
+    container: [
+      ['bold', 'italic'],
+      [{header: 1}, {header: 2}],
+      ['blockquote', 'code-block'],
+      ['image']
+    ]
+  },
+  makeQuill() {
+    this.quill = new Quill('#editor', {
+      modules: {
+        toolbar: this.TOOLBAR_CONFIG
+      },
+      placeholder: 'Filthy animals.',
+      theme: 'bubble'
+    })
+  },
+
+  quillOn(doc) {
+    this.quill.on('text-change', () => {
+      let text = this.quill.getText()
+      let stats = this.textStats(text)
+      this.time = stats.display
+      this.count = stats.length
+
+      docsave.docData.currentDoc.doc = text;
+    })
+  },
+
+  changeQuill(data) {
+    data = data || ''; // This allows us to delete the entire thing with an empty string
+    this.quill.setContents(JSON.parse(data), 'user');
   }
 }
