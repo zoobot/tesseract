@@ -21,3 +21,45 @@ body{
   border-radius: 3px;
   color: #fff;
 }
+
+/*Sentiment highlights.*/
+
+pos1 {
+  background-color: rgba(240, 174, 219, 0.44);
+}
+
+pos2 {
+  background-color: rgba(224, 127, 193, 0.44);
+}
+
+pos3 {
+  background-color: rgba(221, 89, 179, 0.44);
+}
+
+pos4 {
+  background-color: rgba(215, 51, 163, 0.44);
+}
+
+pos5 {
+  background-color: rgba(221, 7, 152, 0.44);
+}
+
+neg1 {
+  background-color: rgba(149, 232, 237, 0.44);
+}
+
+neg2 {
+  background-color: rgba(106, 217, 223, 0.44);
+}
+
+neg3 {
+  background-color: rgba(75, 203, 210, 0.44);
+}
+
+neg4 {
+  background-color: rgba(47, 188, 196, 0.44);
+}
+
+neg5 {
+  background-color: rgba(9, 177, 187, 0.44);
+}
