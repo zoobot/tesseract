@@ -1,15 +1,16 @@
 <template>
   <div class="panel panel-default">
     <div class="panel-body">
-      <transition name="fade" mode="in-out">
-        <form @submit.prevent="onSubmit">
-          <input type="text" class="form-control" placeholder="Username" v-model="credentials.username">
-          <input type="password" class="form-control" placeholder="Password" v-model="credentials.password">
-          <input type="submit" class="form-control submit" value="Submit"><input type="button" class="form-control submit" value="<<Back" @click="showNone()">
-        </form>
-      </transition>
-      <div class="alert alert-danger" v-if="error">
-        <p> {{ error }} </p>
+      <form @submit.prevent="onSubmit">
+        <input type="text" class="form-control" placeholder="Username" v-model="credentials.username">
+        <input type="password" class="form-control" placeholder="Password" v-model="credentials.password">
+        <input type="submit" class="form-control submit" value="Submit">
+        <input type="button" class="form-control submit" value="Back" @click="showNone()">
+      </form>
+    </div>
+    <div class="alert alert-danger" v-if="error">
+      <div class="auth-area">
+        <Signup :show-none="showNone"></Signup>
       </div>
     </div>
   </div>
@@ -18,6 +19,7 @@
 <script>
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
+  import Signup from './signup.vue'
 
   export default {
     data(){
@@ -26,10 +28,11 @@
           username: '',
           password: ''
         },
-        error: ''
+        error: false
       }
     },
-    created() {
+    components: {
+      Signup
     },
     methods: {
       onSubmit() {
@@ -49,7 +52,7 @@
         auth.signin(this, credentials);
       }
     },
-    props: ['showNone'] 
+    props: ['showNone', 'isLoginShowing'] 
   }
 </script>
 
