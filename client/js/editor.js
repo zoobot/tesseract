@@ -1,4 +1,5 @@
-import Quill from 'quill'
+// import Quill from 'quill'
+import {Quill} from '../js/sentiment_blots.js'
 import docsave from './docsave.js'
 import Chance from 'chance'
 
