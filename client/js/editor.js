@@ -86,7 +86,8 @@ module.exports = {
   },
 
   changeQuill(data) {
-    data = data || ''; // This allows us to delete the entire thing with an empty string
-    this.quill.setContents(JSON.parse(data), 'user');
+    data = JSON.parse(data) || ''; // This allows us to delete the entire thing with an empty string
+
+    this.quill.setContents(data, 'user');
   }
 }
