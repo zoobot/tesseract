@@ -1,28 +1,26 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
-
-    <div>
     <!-- area to add live data as text is being added -->
-     <div class="content-left">
-     <div>
-      <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
-     </div>
-
-      <div class="doc-info">
-        <div>{{ count }} words</div>
-        <div>{{ time }} read</div>
-      </div>
-      <div class="audio">
+    <div class="content">
+      <div class="content-left">
+        <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
+        <div class="doc-info">
+          <div>{{ count }} words</div>
+          <div>{{ time }} read</div>
+        </div>
         <audiocomponent id="audio" ></audiocomponent>
+
+      </div>
+
+      <div class="content-right">
+        <div id="editor"></div>
       </div>
       <div>
         <statcomponent :quill="quill"></statcomponent>
       </div>
     </div>
-    <div class="content-right">
-      <div id="editor"></div>
-    </div>
+
   </div>
 </template>
 
@@ -40,6 +38,7 @@
   import docsave from '../js/docsave.js'
   import editor from '../js/editor.js'
   import statcomponent from './stat_component.vue'
+
 
   export default {
     created() {
@@ -63,6 +62,7 @@
       const connection = new sharedb.Connection(socket)
       // console.log(socket, this.wsrtc)
       // console.log(socket, this.wsrtc)
+
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
@@ -106,7 +106,7 @@
   }
 </script>
 
-<style scoped>
+<style>
 .main-content{
   width: 100vw;
 }
@@ -117,19 +117,18 @@
 }
 .content-right{
   width: 80%;
-  display: inline-block;
-  float: right;
 }
 .content-left{
   width: 20%;
-  display: inline-block;
-  justify-content: center;
-  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
 }
 .doc-info{
   font-size: 0.95em;
   font-weight: 600;
-  margin: 0.75em;
+  margin: 1em;
   opacity: 0.35;
 }
 html, body{
@@ -138,6 +137,7 @@ html, body{
 }
 #editor {
   height: 100%;
+  padding: 1em;
 }
 code {
   color: #f66;
