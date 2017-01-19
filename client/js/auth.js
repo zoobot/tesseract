@@ -45,7 +45,7 @@ export default {
         docsave.getAllDocs(context, data.username);
       })
       .catch((err) => {
-        context.error = 'Invalid credentials!';
+        context.error = true;
       });
   },
 

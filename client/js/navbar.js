@@ -6,6 +6,7 @@ module.exports = {
   logout() {
     this.showControls();
     auth.logout();
+    this.showNone();
   },
 
   uploadDoc(id) {
@@ -16,25 +17,27 @@ module.exports = {
     this.showControl = !this.showControl;
   },
 
-  saveAs(cb) {
-  // Saves new documents to the database
-    let name = prompt('name da file');
-    //cb is being used to ensure saveAs is async
-    cb(name)
+  swapSaveAs() {
+    this.savingAs = !this.savingAs;
   },
 
-  saveDoc(name) {
-  // saveDoc makes the actual call to the database with the data
-    let prepDoc = {
-      username: auth.user.data.username,
-      name: name,
-      doc: auth.encrypt(editor.quill.root.innerHTML)
-      // doc: auth.encrypt(docsave.docData.currentDoc.doc)
+  saveAs(name) {
+    if (this.docName !== '') {
+    // saveDoc makes the actual call to the database with the data
+      let prepDoc = {
+        username: auth.user.data.username,
+        name: this.docName,
+        doc: auth.encrypt(JSON.stringify(editor.quill.getContents()))
+      }
+      // fixDups adds a number to the saved doc in order to ensure all docs
+      // have unique names
+      prepDoc = docsave.fixDups(prepDoc);
+      docsave.sendDoc(this, prepDoc);
+      this.swapSaveAs();
+      this.docName = '';
+    } else {
+      this.swapSaveAs();
     }
-    // fixDups adds a number to the saved doc in order to ensure all docs
-    // have unique names
-    prepDoc = docsave.fixDups(prepDoc);
-    docsave.sendDoc(this, prepDoc);
   },
 
   save() {
@@ -43,8 +46,7 @@ module.exports = {
       id: docsave.docData.currentDoc.id,
       username: auth.user.data.username,
       name: docsave.docData.currentDoc.name,
-      doc: auth.encrypt(editor.quill.root.innerHTML)
-      // doc: auth.encrypt(docsave.docData.currentDoc.doc)
+      doc: auth.encrypt(JSON.stringify(editor.quill.getContents()))
     }
     docsave.updateDoc(this, assembleData);
   },
@@ -55,6 +57,10 @@ module.exports = {
       doc: ''
     };
     editor.changeQuill('');
+  },
+
+  deleteDoc() {
+    docsave.removeDoc(this, docsave.docData.currentDoc.id);
   },
 
   showSignin() {

@@ -1,17 +1,14 @@
 <template>
   <div class="panel panel-default">
     <div class="panel-body">
-      <transition name="fade" mode="in-out">
-        <form @submit.prevent="onSubmit">
-          <input type="text" class="form-control" placeholder="Username" v-model="credentials.username">
-          <input type="text" class="form-control email-password" placeholder="Email" v-model="credentials.email">
-          <input type="password" class="form-control email-password" placeholder="Password" v-model="credentials.password">
-          <input type="submit" class="form-control submit" value="Submit"><input type="button" class="form-control submit" value="<<Back" @click="showNone()">
-        </form>
-      </transition>
-      <div class="alert alert-danger" v-if="error">
-        <p> {{ error }} </p>
-      </div>
+      <form @submit.prevent="onSubmit">
+        <input type="text" class="form-control" placeholder="Username" v-model="credentials.username">
+        <input type="text" class="form-control" placeholder="Email" v-model="credentials.email">
+        <input type="password" class="form-control" placeholder="Password" v-model="credentials.password">
+        <input type="submit" class="form-control submit" value="Submit">
+        <input type="button" class="form-control submit" value="Back" @click="showNone()">
+      </form>
+      <div class="alert alert-danger" v-if="error"> {{ error }} </div>
     </div>
   </div>
 </template>

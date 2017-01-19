@@ -9,7 +9,7 @@
       <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
      </div>
 
-      <div class="doc-info" v-if="count > 0">
+      <div class="doc-info">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
       </div>
@@ -28,7 +28,6 @@
   import Methods from '../js/main_content.js'
   import Videocomponent from './video_component.vue'
   import Audiocomponent from './audio_component.vue'
-  import Utils from '../js/utils.js'
   import {textStats, docSubscribe} from '../js/editor.js'
   import sharedb from 'sharedb/lib/client'
   import richText from 'rich-text'
@@ -37,6 +36,7 @@
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
   import editor from '../js/editor.js'
+
   export default {
     created() {
       let chance = new Chance()
@@ -57,7 +57,7 @@
       sharedb.types.register(richText.type)
       let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.uri}`)
       const connection = new sharedb.Connection(socket)
-      //console.log(socket, this.wsrtc)
+      // console.log(socket, this.wsrtc)
       // console.log(socket, this.wsrtc)
       // For testing reconnection
       window.disconnect = function() {
@@ -73,8 +73,6 @@
       editor.makeQuill();
       editor.quillOn(editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
-      editor.changeQuill('');
-
     },
     data() {
       return {

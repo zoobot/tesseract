@@ -1,3 +1,4 @@
+
 <template>
   <nav class="navbar navbar-fixed-top">
     <div class="left-nav">
@@ -8,16 +9,10 @@
       <!-- Authentication -->
       <div class="auth-area" v-if="!this.user.authenticated">
         <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
-        <Signup v-if="isSignupShowing" :show-none="showNone"></Signup>
-        <div class="signup-signin">
-          <button class="signup" @click="showSignup()">Signup</button><button class="signin" @click="showSignin()">Signin
-          </button>
-        </div>
+        <div class="user-details" @click="showSignin()"> # </div>
       </div>
     <div class="right-nav" v-if="this.user.authenticated">
-      <div @click="showControls()">
-        <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size=40></avatar>
-      </div>
+        <div class="user-details" @click="showControls()"> {{ user.data.username[0] }} </div>
       <!-- hidden control panel -->
       <div class="user-stuff panel-body" v-if="this.showControl">
         <!-- logout button -->
@@ -35,28 +30,29 @@
           </div>
           <!-- Save buttons -->
           <div class="save" v-if="this.user.authenticated">
-            <button @click="saveAs(saveDoc)">Save As</button>
-            <button @click="save()" v-if="docData.currentDoc.doc">Save</button>
+            <button @click="swapSaveAs()" v-if="!savingAs">Save As</button>
+            <form v-if="savingAs" @submit.prevent="saveAs">
+              <input class="saving-as" type="input" name="save-as" v-model="docName" placeholder="Chapter-9">
+            </form>
+            <button @click="save()" v-if="docData.currentDoc.name">Save</button>
+            <button @click="deleteDoc()" v-if="docData.currentDoc.name">Delete</button>
             <button @click="newDoc()">New</button>
           </div>
           <!-- end Save buttons -->
           <!-- end saved documents list -->
         </div>
         <!-- end hidden control panel -->
-
       </div>
     </div>
   </nav>
 </template>
 
 <script>
-  import Avatar from 'vue-avatar-component'
   import Methods from '../js/navbar.js'
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
   import Signin from './signin.vue'
   import Signup from './signup.vue'
-
   export default {
     created() {
     },
@@ -66,11 +62,12 @@
         docData: docsave.docData,
         showControl: false,
         isLoginShowing: false,
-        isSignupShowing: false
+        isSignupShowing: false,
+        savingAs: false,
+        docName: ''
       }
     },
     components: {
-      Avatar,
       Signin,
       Signup
     },
@@ -104,8 +101,19 @@
     width: 33.33vw;
   }
   .user-details{
-    float: right;
-    margin-right: 1em;
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    top: 2.25em;
+    right: 2em;
+    background-color: rgb(0, 0, 0);
+    cursor: pointer;
+    width: 3em;
+    height: 3em;
+    -moz-border-radius: 3em;
+    -webkit-border-radius: 3em;
+    border-radius: 3em;
   }
   .avatar{
     cursor: pointer;
@@ -143,12 +151,6 @@
   .save button{
     color: black;
   }
-  .signup-signin{
-  width: 100%;
-  display: table;
-  position: absolute;
-  top: 2.25em;
-  }
   .signup, .signin{
     width: 50%;
     display: table-cell;
@@ -173,5 +175,8 @@
     height: 4em;
     right: 0;
     top: 0.5em;
+  }
+  .saving-as{
+    width: 100%;
   }
 </style>
