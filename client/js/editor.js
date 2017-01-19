@@ -69,19 +69,19 @@ module.exports = {
       modules: {
         toolbar: this.TOOLBAR_CONFIG
       },
-      placeholder: 'Filthy animals.',
+      placeholder: 'Tesis Editor',
       theme: 'bubble'
     })
   },
 
-  quillOn(doc) {
+  quillOn(doc, t) {
     this.quill.on('text-change', () => {
       let text = this.quill.getText()
       let stats = this.textStats(text)
-      this.time = stats.display
-      this.count = stats.length
 
       docsave.docData.currentDoc.doc = text;
+      t.time = stats.display
+      t.count = stats.length
     })
   },
 
