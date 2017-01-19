@@ -71,8 +71,9 @@
       editor.doc = connection.get('docs', this.uri);
       // New quill
       editor.makeQuill();
-      editor.quillOn(editor.doc);
+      editor.quillOn(this, editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
+
     },
     data() {
       return {
