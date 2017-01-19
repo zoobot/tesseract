@@ -43,10 +43,7 @@
           avatar: this.credentials.avatar,
           membersince: Date.now()
         };
-        if (!auth.verifyUsername(credentials.username)) {
-          this.error = 'Username must contain at least one symbol';
-          return;
-        }
+
         if (!auth.verifyEmail(credentials.email)) {
           this.error = 'Invalid email';
           return

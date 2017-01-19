@@ -9,7 +9,7 @@
       <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
      </div>
 
-      <div class="doc-info" v-if="count > 0">
+      <div class="doc-info">
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
       </div>
@@ -75,11 +75,10 @@
       editor.doc = connection.get('docs', this.uri);
       // New quill
       editor.makeQuill();
-      editor.quillOn(editor.doc, this);
 
+      editor.quillOn(this, editor.doc);
       editor.docSubscribe(editor.quill, editor.doc);
       this.quill = editor.quill
-      console.log(this.quill)
     },
     data() {
       return {

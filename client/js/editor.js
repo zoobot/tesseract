@@ -1,3 +1,4 @@
+
 // import Quill from 'quill'
 import {Quill} from '../js/sentiment_blots.js'
 import docsave from './docsave.js'
@@ -75,19 +76,20 @@ module.exports = {
     })
   },
 
-  quillOn(doc, t) {
+  quillOn(context, doc) {
     this.quill.on('text-change', () => {
       let text = this.quill.getText()
       let stats = this.textStats(text)
+      context.time = stats.display
+      context.count = stats.length
 
       docsave.docData.currentDoc.doc = text;
-      t.time = stats.display
-      t.count = stats.length
     })
   },
 
   changeQuill(data) {
-    data = data || ''; // This allows us to delete the entire thing with an empty string
-    this.quill.setContents(JSON.parse(data), 'user');
+    data = JSON.parse(data) || ''; // This allows us to delete the entire thing with an empty string
+
+    this.quill.setContents(data, 'user');
   }
 }

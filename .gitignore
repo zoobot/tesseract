@@ -3,6 +3,7 @@
 .LSOverride
 
 node_modules/
+database/
 
 logs
 *.logs
@@ -17,3 +18,11 @@ client/dist/
 
 .floo
 .flooignore
+
+.idea/*
+
+editor/editor
+
+cert.pem
+certMaker
+key.pem

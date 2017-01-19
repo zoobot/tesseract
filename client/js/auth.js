@@ -103,7 +103,7 @@ export default {
       doc: ''
     };
     docsave.docData.docs = [];
-    editor.changeQuill('');
+    editor.quill.deleteText(0);
   },
 
   // The object to be passed as a body for authentication requests
@@ -122,11 +122,6 @@ export default {
   verifyEmail(email) {
     // Only checking format currently. Will implement confirmation email later.
     return eValidate.validate(email);
-  },
-
-  verifyUsername(un) {
-    // Must contain at least one symbol
-    return un.match(/^[A-Za-z0-9]+$/) ? false : true;
   },
 
   verifyPassword(pw) {
@@ -153,4 +148,3 @@ export default {
     return dec;
   }
 }
-
