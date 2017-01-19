@@ -6,11 +6,7 @@
 
     <div class="content-left">
       <div class="doc-info" v-if="count > 0">
-        <button v-on:click="getStats"> Get Stats </button>
-        <div>
-          <canvas id="wordDist"></canvas>
-        </div>
-        <button v-on:click="analyseSentiment"> Analyse Sentiment </button>
+        <statcomponent :quill="quill"></statcomponent>
         <videocomponent id="video" :wsrtc="wsRTC" :uri="URI"></videocomponent>
         <div>{{ count }} words</div>
         <div>{{ time }} read</div>
@@ -35,6 +31,7 @@
   import richText from 'rich-text'
   // import Quill from 'quill'
   import {Quill} from '../js/sentiment_blots.js'
+  import statcomponent from './stat_component.vue'
   import Chance from 'chance'
 
   export default {
@@ -94,50 +91,12 @@
     },
     components: {
       Navbar,
-      Videocomponent
+      Videocomponent,
+      statcomponent
     },
     methods: {
-      update(e) {
-      },
-      analyseSentiment() {
-        var delta = this.quill.getContents()
-        //
-        console.log('Outgoing Delta:', delta)
-        $.post('/sentiment', {content: JSON.stringify(delta)})
-          .then(res=>{3
-            var sentiment_update = JSON.parse(res)
-            //
-            console.log('Incoming Delta:',sentiment_update)
-            this.quill.setContents(sentiment_update, 'user')
-            this.quill.update()
-          })
-      },
-      getStats() {
-        $.post('/stats', {text: $('.ql-editor').text()})
-          .then(res=>{
-            console.log(res)
-            var ctx = document.getElementById('wordDist').getContext('2d');
-            var data = {labels: [], datasets: [{backgroundColor: [], data: []}]}
-            for (var key in res){
-              data.labels.push(key)
-              data.datasets[0].data.push(res[key])
-            }
-              data.datasets[0].backgroundColor = [
-                "#fa9ad3",
-                "#9d60ec",
-                "#95a5a6",
-                "#9cdee0",
-                "#34495e"
-              ]
-            console.log('data for chart:', data)
-            var myChart = new Chart(ctx, {
-              type: 'doughnut',
-              data: data
-            });
-          })
-      }
-    },
-  }
+    }
+}
 </script>
 
 <style scoped>

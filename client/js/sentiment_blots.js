@@ -1,5 +1,7 @@
 import Quill from 'quill'
 
+// This seems terrible but it is required because deltas combine tags otherwise.
+
 let Inline = Quill.import('blots/inline');
 
 class PosBlot1 extends Inline { }

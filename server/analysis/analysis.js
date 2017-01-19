@@ -4,6 +4,11 @@ const WordPOS = require('wordpos')
 let wordpos = new WordPOS()
 
 function sent(req, res) {
+  if (req.body.toggle === 'off'){
+    // console.log("Toggle off, should go to removeSent")
+    return removeSent(req, res)
+  }
+  // console.log("TOGGLE:", req.body.toggle)
 
   var source = nParse(JSON.parse(req.body.content))
   var result = {ops: []}
@@ -44,81 +49,24 @@ function sent(req, res) {
     }
   })
 
-  console.log('**********\nRESULT:\n',result,'\n**********')
-
-
-  // source.ops.forEach(i => {
-  //   console.log('i attr:',i.attributes)
-  //   var attr = i.attributes || {};
-  //   // console.log('line is:', i)
-  //   var nsplit = i.insert.split('\n')
-  //   // console.log('array of line:', i.insert.match(/\(?[^\.\?\!]+[\.{1,3}!\?\n?] ?\)?/g))
-  //   nsplit.forEach(n=>{
-  //     if (n !== ''){
-  //       var lineArr = n.match(/\(?[^\.\?\!]+[\.{1,3}!\?] ?\)?/g)
-  //       lineArr.forEach(j => {
-  //         var score = sentiment(j).score
-  //         score = score > 5 ? 5 : score
-  //         score = score < -5 ? -5 : score
-  //         var sent = score > 0 ? 'pos' + score : 'neg' + Math.abs(score)
-  //         attr[sent] = true
-  //         // console.log('j:', j, 'attr', attr)
-  //         resp.ops.push({
-  //           attributes: attr,
-  //           insert: j
-  //         })
-  //       })
-  //     } else {
-  //       resp.ops[resp.ops.length-1].insert += '\n'
-  //     }
-  //   })
-  // })
-  // var testObj1 = [ { insert: 'Fucking heading.' },
-  // { attributes: { header: 1, pos1: true }, insert: '\n' },
-  // { insert: '\n' },
-  // { attributes: { pos1: true, bold: true },
-  //   insert: 'Bold shit and garbage.' },
-  // { insert: '\n \n\nTwo sentences back to back. This is the second one damnit!\n' } ]
-  // var testObj2 = [ { insert: 'Fucking heading.' },
-  // { attributes: { header: 1, pos1: true }, insert: '\n' },
-  // { insert: '\n' },
-  // { attributes: { pos1: true, bold: true },
-  //   insert: 'Bold shit and garbage.' },
-  // { insert: '\n \n\n' },
-  // { insert: 'Two sentences back to back. This is the second one damnit!'},
-  // { insert: '\n' } ]
-  // var testObj3 = [ { insert: 'Line break here:\nNew sentence.\nSecond sentence.\nThird sentence.\n\nTwo breaks above.\n' } ]
-  var testObj4 = [
-    { insert: 'Line break here:'},
-    { insert: '\n'},
-    { insert: 'New sentence.'},
-    { insert: '\n'},
-    { insert: 'Second sentence.'},
-    { insert: '\n'},
-    { insert: 'Third sentence.'},
-    { insert: '\n'},
-    { insert: '\n'},
-    { insert: 'Two breaks above.'},
-    { insert: '\n'},
-    { insert: '' } ]
-
-
-  // console.log('nParse result:',nParse(source))
   res.status(201).send(JSON.stringify(result))
 
 }
 
-function stats(req, res) {
-  console.log('stats post received, reqbody:', req.body.text)
-  wordpos.getPOS(req.body.text, (posObj) => {
-    let stats = {};
-    stats.nouns = posObj.nouns.length
-    stats.verbs = posObj.verbs.length
-    stats.adjectives = posObj.adjectives.length
-    stats.adverbs = posObj.adverbs.length
-    stats.rest = posObj.rest.length
-    res.send(stats)
+function removeSent(req, res) {
+  var source = JSON.parse(req.body.content)
+
+  source.ops = source.ops.map(line=>{
+    if (line.attributes !== undefined){
+      for (var i=1; i<=5; i++){
+        delete line.attributes['pos' + i]
+        delete line.attributes['neg' + i]
+      }
+    }
+    return line
   })
+  console.log('Remove Sent, source is:', source)
+  res.status(201).send(JSON.stringify(source))
 }
 
 function nParse(src){
@@ -177,5 +125,49 @@ function nParse(src){
   return clean
 }
 
+function stats(req, res) {
+  // console.log('stats post received, reqbody:', req.body.text)
+  var words = req.body.text.split(/[ \n\,\.\!\?]+/).filter(i => i !== '')
+  var wordFreqObj = words
+                .map(i=>i.length).sort((a,b)=>a-b)
+                .reduce((m, i)=>{
+                  if (!m[i]){
+                    m[i] = 1
+                  } else {
+                    m[i]++
+                  }
+                  return m
+                }, {})
+  console.log(wordFreqObj)
+  var wordLen = []
+  for (var key in wordFreqObj){
+    wordLen.push([key, wordFreqObj[key]])
+  }
+  wordLen = wordLen.sort((a, b)=>{a[0] - b[0]})
+
+  var shortest = longest = words[0]
+  words.forEach(w=>{
+    shortest = shortest.length < w.length ? shortest : w
+    longest = longest.length > w.length ? longest : w
+  })
+  console.log('words:', words, 'wordLen', wordLen, shortest, longest)
+  var freq = {}
+  freq.shortest = shortest
+  freq.longest = longest
+  freq.wordLen = wordLen
+
+  var stats = {};
+  wordpos.getPOS(req.body.text, (posObj) => {
+    stats.nouns = posObj.nouns.length
+    stats.verbs = posObj.verbs.length
+    stats.adjectives = posObj.adjectives.length
+    stats.adverbs = posObj.adverbs.length
+    stats.rest = posObj.rest.length
+    res.send({stats, freq})
+  })
+}
+
+
 module.exports.sentiment = sent
 module.exports.stats = stats
+module.exports.removeSent = removeSent
