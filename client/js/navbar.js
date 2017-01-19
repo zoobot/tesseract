@@ -57,6 +57,10 @@ module.exports = {
     editor.changeQuill('');
   },
 
+  deleteDoc() {
+    docsave.removeDoc(this, docsave.docData.currentDoc.id);
+  },
+
   showSignin() {
     this.isSignupShowing = false;
     this.isLoginShowing = !this.isLoginShowing;

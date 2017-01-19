@@ -131,18 +131,18 @@ func DeleteDoc(w http.ResponseWriter, r *http.Request) {
   defer session.Close()
   session.SetMode(mgo.Monotonic, true)
   c := session.DB("tesis").C("documents")
-  var d Documents
-  err = json.NewDecoder(r.Body).Decode(&d)
+  err = r.ParseForm()
+  if err != nil {
+    return
+  }
+
+  err = c.Remove(bson.M{"id": bson.ObjectIdHex(r.Form.Get("id"))})
   if err != nil {
     w.WriteHeader(404)
     return
   }
-  err = c.Remove(bson.M{"id": d.Id})
-  if err != nil {
-    w.WriteHeader(404)
-    return
-  }
+
   w.WriteHeader(200)
   w.Header().Set("Content-Type", "application/json")
-  fmt.Fprintf(w, "%s", "Doc removed Successfully!")
+  fmt.Fprintf(w, "%s", "Delete Successful")
 }
