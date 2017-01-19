@@ -35,6 +35,12 @@ func main() {
   // websocket endpoint
   r.HandleFunc("/ws/{channel}", serveWS)
 
+  // Because we're using http we can't connect directly to the node server.
+  // The below sets up reverse proxies to allow http access to node.
+  u, _ := url.Parse("http://localhost:3000")
+  r.Handle("/sentiment", httputil.NewSingleHostReverseProxy(u))
+  r.Handle("/stats", httputil.NewSingleHostReverseProxy(u))
+
   /* ======>API<====== */
   // People table
   r.HandleFunc("/db/user/signup", CreateUser).Methods("POST")
