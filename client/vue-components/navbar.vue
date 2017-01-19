@@ -14,6 +14,7 @@
           </button>
         </div>
       </div>
+      <!-- end Authentication -->
     <div class="right-nav" v-if="this.user.authenticated">
       <div @click="showControls()">
         <avatar class="user-details" v-bind:fullname="user.data.username" color="rgb(0, 0, 0)" size=40></avatar>
@@ -38,6 +39,7 @@
             <button @click="saveAs(saveDoc)">Save As</button>
             <button @click="save()" v-if="docData.currentDoc.doc">Save</button>
             <button @click="newDoc()">New</button>
+            <button @click="deleteDoc()">Delete</button>
           </div>
           <!-- end Save buttons -->
           <!-- end saved documents list -->

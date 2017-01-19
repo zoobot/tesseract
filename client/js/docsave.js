@@ -71,13 +71,34 @@ export default {
   updateDoc(context, data) {
     context.$http.put(`${USER_URL}/db/docs`, data)
       .then((res) => {
-        let data = res.body;
-        let fix = auth.decrypt(data[0].doc);
+        let data = JSON.parse(res.body);
+        let fix = auth.decrypt(data.doc);
         this.docData.currentDoc = {
-          id: data[0].id,
+          id: data.id,
           name: data.name,
           doc: fix
         }
+        editor.changeQuill(fix);
+      })
+      .catch((err) => {
+        console.error(err)
+      });
+  },
+
+  removeDoc(context, id) {
+    context.$http.delete(`${USER_URL}/db/docs`, {params: {'id': id}})
+      .then((res) => {
+        this.docData.currentDoc = {
+          id: '',
+          name: '',
+          doc: ''
+        }
+        this.docData.docs = this.docData.docs.filter((obj) => {
+          if (obj.id !== id) {
+            return obj;
+          }
+        })
+        editor.changeQuill('');
       })
       .catch((err) => {
         console.error(err)
