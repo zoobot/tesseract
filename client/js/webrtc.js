@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-  
+
   start() {
     this.startCollab();
     //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
