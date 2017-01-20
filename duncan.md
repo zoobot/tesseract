@@ -15,6 +15,10 @@
 ### Dependancies
 
 1.  npm install
+2.  golang.org/x/crypto/bcrypt
+3.  github.com/gorilla/mux
+4.  gopkg.in/mgo.v2
+5.  gopkg.in/mgo.v2/bson
 
 * * *
 
