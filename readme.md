@@ -4,6 +4,7 @@
 * * *
 
 ### Getting the app started ###
+
 * This is a Golang app so be sure to clone this repo into your Gopath
 * Typical gopath: $GOPATH/src/github.com/~github username~/~repo~
 * For help getting started with Golang checkout https://golang.org/doc/install
