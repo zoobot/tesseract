@@ -1,51 +1,53 @@
 
 <template>
   <nav class="navbar navbar-fixed-top">
+
     <div class="left-nav">
     </div>
-    <div class="title" v-if="this.user.authenticated">
-      <p> {{ docData.currentDoc.name || 'New' }} </p>
+
+    <div class="title">
+      <p v-if="this.user.authenticated"> {{ docData.currentDoc.name || 'New' }} </p>
     </div>
-      <!-- Authentication -->
-      <div class="auth-area" v-if="!this.user.authenticated">
-        <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
-        <div class="user-details" @click="showSignin()"> # </div>
-      </div>
-    <div class="right-nav" v-if="this.user.authenticated">
-        <div class="user-details" @click="showControls()"> {{ user.data.username[0] }} </div>
-      <!-- hidden control panel -->
-      <div class="user-stuff panel-body" v-if="this.showControl">
-        <!-- logout button -->
-        <div class="signout-container panel-heading">
-          <button class="control-buttons signout fixed-top" @click="logout()">Signout</button>
-          <button class="control-buttons" @click="showControls()">Close</button>
-        </div>
-        <!-- end logout button -->
-        <!-- saved documents list -->
-        <div class="saved">
-          <div class="saved-docs">
-              <button v-for="item in docData.docs" :id="item.id" @click="uploadDoc($event.target.id)">
-                {{ item.name }}
-              </button>
-          </div>
-          <!-- Save buttons -->
-          <div class="save" v-if="this.user.authenticated">
-            <button @click="swapSaveAs()" v-if="!savingAs">Save As</button>
-            <form v-if="savingAs" @submit.prevent="saveAs">
-              <input class="saving-as" type="input" name="save-as" v-model="docName" placeholder="Chapter-9">
-            </form>
-            <button @click="save()" v-if="docData.currentDoc.name">Save</button>
-            <button @click="deleteDoc()" v-if="docData.currentDoc.name">Delete</button>
-            <button @click="newDoc()">New</button>
-          </div>
-          <!-- end Save buttons -->
-          <!-- end saved documents list -->
-        </div>
-        <!-- end hidden control panel -->
-      </div>
-    </div>
-  </nav>
-</template>
+    <!-- Authentication -->
+         <div class="auth-area" v-if="!this.user.authenticated">
+           <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
+           <div class="user-details" @click="showSignin()"> # </div>
+         </div>
+       <div class="right-nav" v-if="this.user.authenticated">
+           <div class="user-details" @click="showControls()"> {{ user.data.username[0] }} </div>
+         <!-- hidden control panel -->
+         <div class="user-stuff panel-body" v-if="this.showControl">
+           <!-- logout button -->
+           <div class="signout-container panel-heading">
+             <button class="control-buttons signout fixed-top" @click="logout()">Signout</button>
+             <button class="control-buttons" @click="showControls()">Close</button>
+           </div>
+           <!-- end logout button -->
+           <!-- saved documents list -->
+           <div class="saved">
+             <div class="saved-docs">
+                 <button v-for="item in docData.docs" :id="item.id" @click="uploadDoc($event.target.id)">
+                   {{ item.name }}
+                 </button>
+             </div>
+             <!-- Save buttons -->
+             <div class="save" v-if="this.user.authenticated">
+               <button @click="swapSaveAs()" v-if="!savingAs">Save As</button>
+               <form v-if="savingAs" @submit.prevent="saveAs">
+                 <input class="saving-as" type="input" name="save-as" v-model="docName" placeholder="Chapter-9">
+               </form>
+               <button @click="save()" v-if="docData.currentDoc.name">Save</button>
+               <button @click="deleteDoc()" v-if="docData.currentDoc.name">Delete</button>
+               <button @click="newDoc()">New</button>
+             </div>
+             <!-- end Save buttons -->
+             <!-- end saved documents list -->
+           </div>
+           <!-- end hidden control panel -->
+         </div>
+       </div>
+     </nav>
+   </template>
 
 <script>
   import Methods from '../js/navbar.js'
@@ -71,6 +73,7 @@
       Signin,
       Signup
     },
+    props: ['stats'],
     // Methods are located in js directory
     methods: Methods
   }
@@ -78,12 +81,22 @@
 
 <style>
   .navbar{
+    margin: 0;
+    display: inline-flex;
     color: white;
-    display: table;
     background-color: rgb(24, 24, 24);
-    height: 8em;
+    height: 10vh;
     width: 100vw;
-    border: transparent;
+    border: none;
+  }
+  .left-nav{
+    display: flex;
+    width: 20%;
+    align-items: flex-end;
+    justify-content: space-around;
+  }
+  .left-nav span{
+    padding: 0.75em;
   }
   .title{
     color: rgb(255, 255, 255);
@@ -94,11 +107,6 @@
   .title, .right-nav{
     text-align: center;
     vertical-align: middle;
-  }
-  .left-nav, .right-nav, .title{
-    display: table-cell;
-    height: 100%;
-    width: 33.33vw;
   }
   .user-details{
     position: absolute;
@@ -128,7 +136,6 @@
     width: 30vw;
     min-height: 8em;
     background-color: rgb(24, 24, 24);
-    /*overflow: auto;*/
   }
   .saved{border: 1px solid white;
     width: 100%;

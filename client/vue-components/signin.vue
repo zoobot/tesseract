@@ -20,7 +20,6 @@
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
   import Signup from './signup.vue'
-
   export default {
     data(){
       return {
@@ -41,7 +40,6 @@
           password: this.credentials.password.trim(),
           timestamp: Date.now()
         };
-
         if (!auth.verifyPassword(credentials.password)) {
           this.error = 'Invalid password!'
           return;
@@ -49,7 +47,7 @@
         auth.signin(this, credentials);
       }
     },
-    props: ['showNone', 'isLoginShowing'] 
+    props: ['showNone', 'isLoginShowing']
   }
 </script>
 

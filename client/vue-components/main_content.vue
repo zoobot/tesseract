@@ -1,28 +1,35 @@
 <template>
   <div class="main-content">
     <navbar></navbar>
-
-    <div>
     <!-- area to add live data as text is being added -->
-     <div class="content-left">
-     <div>
-      <videocomponent id="video" :wsrtc="wsrtc" :uri="uri"></videocomponent>
-     </div>
+    <div class="content">
+      <div class="content-left">
+        <div class="cl-controls">
+          <span class="glyphicon glyphicon-file" aria-hidden="true" @click="stats = false"></span>
+          <span class="glyphicon glyphicon-stats" aria-hidden="true" @click="stats = true"></span>
+        </div>
 
-      <div class="doc-info">
-        <div>{{ count }} words</div>
-        <div>{{ time }} read</div>
+        <div class="cl-content" :class="[stats ? 'start' : 'end']">
+          <statcomponent :quill="quill" v-show="stats"></statcomponent>
+
+          <videocomponent id="video" :wsrtc="wsrtc" :uri="uri" v-show="!stats"></videocomponent>
+          <div class="info-con" v-show="!stats">
+            <div class="doc-info">
+              <div>{{ count }} words</div>
+              <div>{{ time }} read</div>
+            </div>
+            <audiocomponent id="audio" ></audiocomponent>
+          </div>
+        </div>
+
       </div>
-      <div class="audio">
-        <audiocomponent id="audio" ></audiocomponent>
+
+      <div class="content-right">
+        <div id="editor"></div>
       </div>
-      <div>
-        <statcomponent :quill="quill"></statcomponent>
-      </div>
+
     </div>
-    <div class="content-right">
-      <div id="editor"></div>
-    </div>
+
   </div>
 </template>
 
@@ -34,12 +41,12 @@
   import {textStats, docSubscribe} from '../js/editor.js'
   import sharedb from 'sharedb/lib/client'
   import richText from 'rich-text'
-  // import Quill from 'quill'
   import Chance from 'chance'
   import auth from '../js/auth.js'
   import docsave from '../js/docsave.js'
   import editor from '../js/editor.js'
   import statcomponent from './stat_component.vue'
+
 
   export default {
     created() {
@@ -63,6 +70,7 @@
       const connection = new sharedb.Connection(socket)
       // console.log(socket, this.wsrtc)
       // console.log(socket, this.wsrtc)
+
       // For testing reconnection
       window.disconnect = function() {
         connection.close();
@@ -86,13 +94,12 @@
         wsrtc: null,
         channel: '',
         count: 0,
-        // User data stored in auth
         user: auth.user,
-        // Doc data stored in docsave
         docData: docsave.docData,
         time: '',
         quill: '',
-        uri: ''
+        uri: '',
+        stats: false
       }
     },
     components: {
@@ -110,34 +117,69 @@
 .main-content{
   width: 100vw;
 }
+.active{
+  background-color: rgb(24, 24, 24);
+  color: #FFF;
+}
+.disabled{
+  background-color: #333;
+  color: #FFF;
+}
 .content{
   display: inline-flex;
-  height: 87vh;
+  height: 90vh;
   width: 100vw;
+}
+.cl-controls{
+  display: inline-flex;
+  width: 100%;
+  height: 10%;
+}
+.cl-controls span{
+  display: flex;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+}
+.cl-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 90%;
 }
 .content-right{
   width: 80%;
-  display: inline-block;
-  float: right;
 }
 .content-left{
   width: 20%;
-  display: inline-block;
-  justify-content: center;
-  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.start{
+  justify-content: flex-start;
+}
+.end{
+  justify-content: flex-end;
 }
 .doc-info{
   font-size: 0.95em;
   font-weight: 600;
-  margin: 0.75em;
+  margin: 1em;
   opacity: 0.35;
 }
 html, body{
   color: #333;
   font-family: 'Monaco', courier, monospace;
 }
+.glyphicon{
+  color: #000;
+  font-size: 1.5em;
+}
 #editor {
   height: 100%;
+  padding: 1em;
 }
 code {
   color: #f66;
