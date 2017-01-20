@@ -3,63 +3,51 @@
   <nav class="navbar navbar-fixed-top">
 
     <div class="left-nav">
-      <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-      <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
-      <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
     </div>
 
     <div class="title">
       <p v-if="this.user.authenticated"> {{ docData.currentDoc.name || 'New' }} </p>
     </div>
-<<<<<<< bfd1820bafbe9f93a844b575a4b9c05d1ae2646b
-      <!-- Authentication -->
-      <div class="auth-area" v-if="!this.user.authenticated">
-        <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
-        <div class="user-details" @click="showSignin()"> # </div>
-      </div>
-=======
-
-    <div class="auth-area" v-if="!this.user.authenticated">
-      <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
-      <div class="user-details" @click="showSignin()"> # </div>
-    </div>
-
->>>>>>> updated styling
-    <div class="right-nav" v-if="this.user.authenticated">
-        <div class="user-details" @click="showControls()"> {{ user.data.username[0] }} </div>
-      <!-- hidden control panel -->
-      <div class="user-stuff panel-body" v-if="this.showControl">
-        <!-- logout button -->
-        <div class="signout-container panel-heading">
-          <button class="control-buttons signout fixed-top" @click="logout()">Signout</button>
-          <button class="control-buttons" @click="showControls()">Close</button>
-        </div>
-        <!-- end logout button -->
-        <!-- saved documents list -->
-        <div class="saved">
-          <div class="saved-docs">
-              <button v-for="item in docData.docs" :id="item.id" @click="uploadDoc($event.target.id)">
-                {{ item.name }}
-              </button>
-          </div>
-          <!-- Save buttons -->
-          <div class="save" v-if="this.user.authenticated">
-            <button @click="swapSaveAs()" v-if="!savingAs">Save As</button>
-            <form v-if="savingAs" @submit.prevent="saveAs">
-              <input class="saving-as" type="input" name="save-as" v-model="docName" placeholder="Chapter-9">
-            </form>
-            <button @click="save()" v-if="docData.currentDoc.name">Save</button>
-            <button @click="deleteDoc()" v-if="docData.currentDoc.name">Delete</button>
-            <button @click="newDoc()">New</button>
-          </div>
-          <!-- end Save buttons -->
-          <!-- end saved documents list -->
-        </div>
-        <!-- end hidden control panel -->
-      </div>
-    </div>
-  </nav>
-</template>
+    <!-- Authentication -->
+         <div class="auth-area" v-if="!this.user.authenticated">
+           <Signin v-if="isLoginShowing" :show-none="showNone"></Signin>
+           <div class="user-details" @click="showSignin()"> # </div>
+         </div>
+       <div class="right-nav" v-if="this.user.authenticated">
+           <div class="user-details" @click="showControls()"> {{ user.data.username[0] }} </div>
+         <!-- hidden control panel -->
+         <div class="user-stuff panel-body" v-if="this.showControl">
+           <!-- logout button -->
+           <div class="signout-container panel-heading">
+             <button class="control-buttons signout fixed-top" @click="logout()">Signout</button>
+             <button class="control-buttons" @click="showControls()">Close</button>
+           </div>
+           <!-- end logout button -->
+           <!-- saved documents list -->
+           <div class="saved">
+             <div class="saved-docs">
+                 <button v-for="item in docData.docs" :id="item.id" @click="uploadDoc($event.target.id)">
+                   {{ item.name }}
+                 </button>
+             </div>
+             <!-- Save buttons -->
+             <div class="save" v-if="this.user.authenticated">
+               <button @click="swapSaveAs()" v-if="!savingAs">Save As</button>
+               <form v-if="savingAs" @submit.prevent="saveAs">
+                 <input class="saving-as" type="input" name="save-as" v-model="docName" placeholder="Chapter-9">
+               </form>
+               <button @click="save()" v-if="docData.currentDoc.name">Save</button>
+               <button @click="deleteDoc()" v-if="docData.currentDoc.name">Delete</button>
+               <button @click="newDoc()">New</button>
+             </div>
+             <!-- end Save buttons -->
+             <!-- end saved documents list -->
+           </div>
+           <!-- end hidden control panel -->
+         </div>
+       </div>
+     </nav>
+   </template>
 
 <script>
   import Methods from '../js/navbar.js'
@@ -85,6 +73,7 @@
       Signin,
       Signup
     },
+    props: ['stats'],
     // Methods are located in js directory
     methods: Methods
   }
