@@ -1,50 +1,37 @@
 module.exports = {
 
   start() {
-    this.startCollab();
+    this.wsrtc.send(JSON.stringify({'type':'join'}));
+    this.wsrtc.send(JSON.stringify({'type': 'joinUp'}))
     //this tells the getUserMedia what data to grab and set in the MediaStream object that the method produces,
     //which is then used in the success callback on the MediaStream object that contains the media stream
     navigator.mediaDevices.getUserMedia({ audio: {
       googAutoGainControl: false,
       echoCancellation: false
     }, video: true})
-      .then (stream => {
-        // set localStream equal to this stream
-        this.localStream = stream
-      })
-      .catch(e => { console.log('getUserMedia() error: ' + e.name);});
+    // set localStream equal to this stream
+    .then (stream => { this.localStream = stream })
+    // .then(this.gotStream)
+    .catch(e => { console.log('getUserMedia() error: ' + e.name);});
   },
 
-  startCollab() {
-    this.wsrtc.send(JSON.stringify({'type':'join'}));
-    this.wsrtc.send(JSON.stringify({'type': 'joinUp'}))
-  },
 
-  call() {
-    //call to create initial offer
-    this.pc.createOffer()
-      .then(offer => {
-        //set local description to own SDP offer
-        this.pc.setLocalDescription(offer);
-        //send offer over WS signaling server
-        this.wsrtc.send(JSON.stringify({'sdp': offer}))
-      })
-      .catch(e => { console.log('err offer setLocalDescription', e);})
-  },
 
   gotStream(stream) {
     //set button displays
     this.collaborate = false;
-    this.stopped = true;
+    this.end = true;
     //set source of localVideo element to the stream captures from getUserMedia;
     this.videos = document.getElementById('video-container');
     let localVideo = document.createElement('video')
-    this.videos.appendChild(localVideo);
+    if (document.getElementById('video-container').children.length < 1) {
+      this.videos.appendChild(localVideo);
+    }
+
     localVideo.src = URL.createObjectURL(this.localStream);
     localVideo.setAttribute("autoplay", true);
-    localVideo.setAttribute("muted", true);
+    // localVideo.setAttribute("muted", true);
     localVideo.setAttribute("id", this.localStream.id);
-    localVideo.setAttribute('width', '100%')
     // instantiate new peer connection
     this.pc = new RTCPeerConnection(this.peerConnectionConfig);
     // set methods on new peer connection object
@@ -52,18 +39,28 @@ module.exports = {
 
     this.pc.onaddstream = e => {
       //event handler for setRemoteDescription: adds remote stream src to DOM
-      if (!document.getElementById(e.stream.id)) {
-        let otherVideo = document.createElement('video');
-        //append remote video elements to video container
-        this.videos.appendChild(otherVideo);
+      // if (!document.getElementById(e.stream.id)) {
+         // this.videos = document.getElementById('video-container');
+        let otherVideo = document.createElement('video')
+        otherVideo.src = window.URL.createObjectURL(e.stream);
+        // otherVideo.src = window.URL.createObjectURL(e.stream);
+        if (document.getElementById('video-container').children.length < 2) {
+          this.videos.appendChild(otherVideo);
+          console.log('children are too few')
+        }
+
+
         otherVideo.src = URL.createObjectURL(e.stream);
         otherVideo.setAttribute("autoplay", true);
         otherVideo.muted = false;
         otherVideo.setAttribute("id", e.stream.id);
         //send connected signal
         this.connected = false;
+        this.end = true;
         this.wsrtc.send(JSON.stringify({'type': 'connected'}));
-      }
+      // } else {
+      //   console.log('not connecting')
+      // }
     }
     //on initial reception of icecandidates...
     this.pc.onicecandidate = e => {
@@ -71,8 +68,23 @@ module.exports = {
       if(e.candidate != null) {
         this.wsrtc.send(JSON.stringify({'ice': e.candidate}));
         this.connected = true;
+        this.end = true;
       }
     }
+  },
+
+    call() {
+    //call to create initial offer
+    this.pc.createOffer()
+      .then(offer => {
+        //set local description to own SDP offer
+        this.pc.setLocalDescription(offer);
+        //send offer over WS signaling server
+        console.log(offer)
+        this.wsrtc.send(JSON.stringify({'sdp': offer}))
+      })
+
+      .catch(e => { console.log('err offer setLocalDescription', e);})
   },
 
   //toggles own mute
@@ -87,11 +99,14 @@ module.exports = {
   },
 
   stop() {
+    console.log('stop1')
     this.wsrtc.send(JSON.stringify({'type':'stop', 'id': this.localStream.id}));
     //delete descriptions
+    this.collaborate = true;
+    // this.stop = true;
+    console.log('stop')
     delete this.pc.localDescription;
     delete this.pc.remoteDescription;
-    this.stopped = false;
   },
 
   signalHandler() {
@@ -100,8 +115,9 @@ module.exports = {
 
       let signal = JSON.parse(e.data);
 
-      if (signal.type === 'stop') {
+        if (signal.type === 'stop') {
         //remove video nodes
+        console.log('stopsignal')
         while (this.videos.firstChild) {
           this.videos.removeChild(this.videos.firstChild);
         };
@@ -130,16 +146,14 @@ module.exports = {
 
       if (signal.type === 'joinUp') {
         navigator.mediaDevices.getUserMedia({ audio: true, video: true})
-          .then (stream => {
-            // set localStream equal to this stream
-            this.localStream = stream
-            this.gotStream(this.localStream)
-          })
+          .then(this.gotStream)
+          .catch(e => {console.log('getUserMedia()err: ',  e.name);});
       };
 
       if (signal.type === 'connected') {
-        //removes connect button
-        this.connected = false;
+        //connect button remains
+        this.connected = true;
+        // this.collaborate = true;
         console.log('yeaa', this.connected)
       };
 
@@ -214,5 +228,8 @@ module.exports = {
     setTimeout(function() { URL.revokeObjectURL(url); }, 100);
   }
 
+}
+
+  }
 
 }
