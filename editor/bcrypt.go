@@ -3,12 +3,11 @@ package main
 import (
     //install with go get golang.org/x/crypto/bcrypt
     //https://godoc.org/golang.org/x/crypto/pbkdf2 this is faster but uses Sha
-    "golang.org/x/crypto/bcrypt"
     "errors"
+    "golang.org/x/crypto/bcrypt"
 )
 
 const (
-
     MinCost     int = 4  // the minimum allowable cost as passed in to GenerateFromPassword
     MedCost     int = 12 // the custom allowable cost as passed in to GenerateFromPassword
     MaxCost     int = 31 // the maximum allowable cost as passed in to GenerateFromPassword

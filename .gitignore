@@ -4,6 +4,9 @@
 
 node_modules/
 database/
+db
+test
+client/assets
 
 logs
 *.logs
@@ -20,9 +23,12 @@ client/dist/
 .flooignore
 
 .idea/*
+links.txt
 
 editor/editor
 
 cert.pem
 certMaker
 key.pem
+Joel.md
+Neville.md

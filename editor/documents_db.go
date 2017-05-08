@@ -1,18 +1,18 @@
 package main
 
 import (
-  "fmt"
-  "net/http"
   "encoding/json"
+  "fmt"
   "gopkg.in/mgo.v2"
   "gopkg.in/mgo.v2/bson"
+  "net/http"
 )
 
 type Documents struct {
-  Id bson.ObjectId `json:"id" bson:"id"`
-  UserName string `json:"username" bson:"username"`
-  Name string `json:"name" bson:"name"`
-  Doc string `json:"doc" bson:"doc"`
+  Id       bson.ObjectId `json:"id" bson:"id"`
+  UserName string        `json:"username" bson:"username"`
+  Name     string        `json:"name" bson:"name"`
+  Doc      string        `json:"doc" bson:"doc"`
 }
 
 // AddDoc adds a doc to the Documents table

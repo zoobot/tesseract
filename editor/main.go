@@ -2,23 +2,23 @@ package main
 
 import (
   "fmt"
-  "net/http"
-  "net/url"
-  "net/http/httputil"
-  "log"
   "github.com/gorilla/mux"
+  "log"
+  "net/http"
+  "net/http/httputil"
+  "net/url"
 )
 
 const (
-    PORTSSL       = ":8443"
-    PORTREG       = ":8000"
-    PUBLIC_KEY = "./cert.pem"
-    PRIV_KEY = "./key.pem"
+  PORTSSL    = ":8443"
+  PORTREG    = ":8000"
+  PUBLIC_KEY = "./cert.pem"
+  PRIV_KEY   = "./key.pem"
 )
 
 // func redirectToHttps(w http.ResponseWriter, r *http.Request) {
-//   // Redirect to https 127.0.0.1:8443 will only work locally
-//   http.Redirect(w,r, "https://127.0.0.1:"+PORTSSL+r.RequestURI, http.StatusMovedPermanently)
+//   // Redirect to https localhost:8443 will only work locally
+//   http.Redirect(w,r, "https://localhost:"+PORTSSL+r.RequestURI, http.StatusMovedPermanently)
 //
 
 // func hander(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +39,8 @@ func main() {
 
   // Because we're using http we can't connect directly to the node server.
   // The below sets up reverse proxies to allow http access to node.
+  // u, _ := url.Parse("https://98e168f1.ngrok.io")
+  // ngrok change
   u, _ := url.Parse("http://localhost:3000")
   r.Handle("/sentiment", httputil.NewSingleHostReverseProxy(u))
   r.Handle("/stats", httputil.NewSingleHostReverseProxy(u))
@@ -70,7 +72,7 @@ func main() {
 
   // start 'er up.
   log.Fatal(http.ListenAndServeTLS(PORTSSL, PUBLIC_KEY, PRIV_KEY, r))
-  log.Fatal(http.ListenAndServe(PORTREG, r))
+  // log.Fatal(http.ListenAndServe(PORTREG, r))
 }
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")

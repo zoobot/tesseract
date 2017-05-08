@@ -1,7 +1,10 @@
 import auth from './auth.js'
 import editor from '../js/editor.js'
 
-const USER_URL = 'https://127.0.0.1:8443';
+
+const PORT = 8443;
+const USER_URL = `https://${window.location.hostname}:${PORT}`;
+// const USER_URL = ' https://98e168f1.ngrok.io';
 
 export default {
   docData: {

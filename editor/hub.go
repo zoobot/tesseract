@@ -1,6 +1,6 @@
 package main
 
- import "fmt"
+import "fmt"
 
 // hub handles registering/unregistering of clients to channels
 // and broadcast of messages to all clients in each channel.
@@ -9,19 +9,19 @@ package main
 var contents = make(map[string]string)
 
 type message struct {
-  data []byte
+  data    []byte
   channel string
 }
 
 type subscription struct {
-  client *client
+  client  *client
   channel string
 }
 
 type hub struct {
-  channels map[string]map[*client]bool
-  broadcast chan message
-  register chan subscription
+  channels   map[string]map[*client]bool
+  broadcast  chan message
+  register   chan subscription
   unregister chan subscription
 }
 
@@ -29,14 +29,14 @@ var h = hub{
   broadcast:  make(chan message),
   register:   make(chan subscription),
   unregister: make(chan subscription),
-  channels:  make(map[string]map[*client]bool),
+  channels:   make(map[string]map[*client]bool),
 }
 
 // handles register/unregister/broadcast on channel by channel basis.
 func (h *hub) run() {
   for {
-    select{
-    case s := <- h.register:
+    select {
+    case s := <-h.register:
       // fmt.Println("wild client has appeared in the brush!")
       clients := h.channels[s.channel]
       if clients == nil {
@@ -46,10 +46,10 @@ func (h *hub) run() {
       h.channels[s.channel][s.client] = true
       //send the latest data for room (empty string if new room)
       //s.client.send <- []byte(contents[s.channel])
-    case s := <- h.unregister:
+    case s := <-h.unregister:
       clients := h.channels[s.channel]
       if clients != nil {
-        if _, ok := clients[s.client]; ok{
+        if _, ok := clients[s.client]; ok {
           delete(clients, s.client)
           close(s.client.send)
           if len(clients) == 0 {
@@ -61,14 +61,14 @@ func (h *hub) run() {
           }
         }
       }
-    case m := <- h.broadcast:
+    case m := <-h.broadcast:
       clients := h.channels[m.channel]
-       // fmt.Println("broadcasting message to ", clients, "data is: ", string(m.data))
+      // fmt.Println("broadcasting message to ", clients, "data is: ", string(m.data))
       for c := range clients {
         fmt.Println("broadcasting message to ", c, "data is: ", string(m.data))
         select {
         case c.send <- m.data:
-        contents[m.channel] = string(m.data)
+          contents[m.channel] = string(m.data)
         default:
           close(c.send)
           delete(clients, c)

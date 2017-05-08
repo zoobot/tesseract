@@ -1,20 +1,20 @@
-  package main
+package main
 
 import (
-  "fmt"
-  "net/http"
   "encoding/json"
+  "fmt"
   "gopkg.in/mgo.v2"
   "gopkg.in/mgo.v2/bson"
+  "net/http"
 )
 
 type People struct {
-  Id bson.ObjectId `json:"id" bson:"id,omitempty"`
-  UserName string `json:"username" bson:"username"`
-  Email string `json:"email" bson:"email"`
-  Password string `json:"password" bson:"password"`
-  Avatar string `json:"avatar" bson:"avatar"`
-  MemberSince int64 `json:"membersince" bson:"membersince"`
+  Id          bson.ObjectId `json:"id" bson:"id,omitempty"`
+  UserName    string        `json:"username" bson:"username"`
+  Email       string        `json:"email" bson:"email"`
+  Password    string        `json:"password" bson:"password"`
+  Avatar      string        `json:"avatar" bson:"avatar"`
+  MemberSince int64         `json:"membersince" bson:"membersince"`
 }
 
 // CreateUser creates a new user resource
@@ -92,18 +92,25 @@ func AuthUser(w http.ResponseWriter, r *http.Request) {
   } else {
     validate := decryptit(u.Password, pt)
 
-    fmt.Println(validate)
-    if validate == "Valid"{
+    fmt.Println("peopledb auth", validate)
+    if validate == "Valid" {
+      fmt.Println("peopledb if username Valid 200", u.UserName, u)
+      // uj, _ := json.Marshal(u)
+      // fmt.Fprintf(w, "%s", uj)
+      // w.Header().Set("Content-Type", "application/json")
       w.WriteHeader(200)
+
+      // w.Header().Set("Content-Type", "application/json")
     } else {
+      fmt.Println("peopledb if Valid 200", w, "%s")
       w.WriteHeader(404)
       return
     }
   }
 
   uj, _ := json.Marshal(u)
-  w.Header().Set("Content-Type", "application/json")
   fmt.Fprintf(w, "%s", uj)
+  w.Header().Set("Content-Type", "application/json")
 }
 
 // GetUser gets a user resource
@@ -133,7 +140,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "%s", uj)
     return
   } else if _, ok := r.Form["username"]; ok {
-  // Params -->  ?username=Sally123!
+    // Params -->  ?username=Sally123!
     err = c.Find(bson.M{"username": r.Form.Get("username")}).All(&results)
     if err != nil {
       w.WriteHeader(404)
@@ -145,7 +152,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "%s", uj)
     return
   } else {
-  // No params
+    // No params
     err = c.Find(bson.M{}).Sort("-timestamp").All(&results)
     if err != nil {
       w.WriteHeader(404)
@@ -210,13 +217,3 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Content-Type", "application/json")
   fmt.Fprintf(w, "%s", "User removed Successfully!")
 }
-
-
-
-
-
-
-
-
-
-

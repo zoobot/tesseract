@@ -4,24 +4,29 @@
     <!-- area to add live data as text is being added -->
     <div class="content">
       <div class="content-left">
-        <div class="cl-controls">
-          <span class="glyphicon glyphicon-file" aria-hidden="true" @click="stats = false"></span>
-          <span class="glyphicon glyphicon-stats" aria-hidden="true" @click="stats = true"></span>
-        </div>
+        <div class="content-left-top">
+          <div class="cl-controls">
+              <span class="glyphicon glyphicon-file" aria-hidden="true" @click="stats = false"></span>
+              <span class="glyphicon glyphicon-stats" aria-hidden="true" @click="stats = true"></span>
+          </div>
+          <div class="cl-content" :class="[stats ? 'start' : 'end']">
+            <statcomponent :quill="quill" v-show="stats"></statcomponent>
+          </div>
+          <audiocomponent id="audio" v-show="!stats"></audiocomponent>
 
-        <div class="cl-content" :class="[stats ? 'start' : 'end']">
-          <statcomponent :quill="quill" v-show="stats"></statcomponent>
-
-          <videocomponent id="video" :wsrtc="wsrtc" :uri="uri" v-show="!stats"></videocomponent>
           <div class="info-con" v-show="!stats">
-            <div class="doc-info">
-              <div>{{ count }} words</div>
-              <div>{{ time }} read</div>
-            </div>
-            <audiocomponent id="audio" ></audiocomponent>
+              <div class="doc-info">
+                <div>{{ count }} words</div>
+                <div>{{ time }} read</div>
+              </div>
           </div>
         </div>
+        <div class="content-left-bottom">
 
+
+          <videocomponent id="video" :wsrtc="wsrtc" :uri="uri" ></videocomponent>
+
+        </div>
       </div>
 
       <div class="content-right">
@@ -66,7 +71,9 @@
     },
     mounted() {
       sharedb.types.register(richText.type)
-      let socket = new WebSocket(`ws://${window.location.hostname}:3000/${this.uri}`)
+      // ngrok change
+      let socket = new WebSocket(`wss://${window.location.hostname}:8444/${this.uri}`)
+      // let socket = new WebSocket(`wss://${window.location.hostname}/${this.uri}`)
       const connection = new sharedb.Connection(socket)
       // console.log(socket, this.wsrtc)
       // console.log(socket, this.wsrtc)
@@ -76,7 +83,7 @@
         connection.close();
       }
       window.connect = function(uri) {
-        let socket = new WebSocket(`ws://${window.location.host}`);
+        let socket = new WebSocket(`wss://${window.location.host}`);
         connection.bindToSocket(socket);
       }
       // Storing doc inside editor for access in other components.
@@ -112,76 +119,3 @@
     methods: Methods
   }
 </script>
-
-<style scoped>
-.main-content{
-  width: 100vw;
-}
-.active{
-  background-color: rgb(24, 24, 24);
-  color: #FFF;
-}
-.disabled{
-  background-color: #333;
-  color: #FFF;
-}
-.content{
-  display: inline-flex;
-  height: 90vh;
-  width: 100vw;
-}
-.cl-controls{
-  display: inline-flex;
-  width: 100%;
-  height: 10%;
-}
-.cl-controls span{
-  display: flex;
-  width: 50%;
-  justify-content: center;
-  align-items: center;
-}
-.cl-content{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 90%;
-}
-.content-right{
-  width: 80%;
-}
-.content-left{
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.start{
-  justify-content: flex-start;
-}
-.end{
-  justify-content: flex-end;
-}
-.doc-info{
-  font-size: 0.95em;
-  font-weight: 600;
-  margin: 1em;
-  opacity: 0.35;
-}
-html, body{
-  color: #333;
-  font-family: 'Monaco', courier, monospace;
-}
-.glyphicon{
-  color: #000;
-  font-size: 1.5em;
-}
-#editor {
-  height: 100%;
-  padding: 1em;
-}
-code {
-  color: #f66;
-}
-</style>

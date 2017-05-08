@@ -1,19 +1,19 @@
 package main
 
 import (
-  "fmt"
-  "net/http"
   "encoding/json"
+  "fmt"
   "gopkg.in/mgo.v2"
   "gopkg.in/mgo.v2/bson"
+  "net/http"
 )
 
 type Sessions struct {
-  Id bson.ObjectId `json:"id" bson:"id,omitempty"`
-  UserId string `json:"userid" bson:"userid,omitempty"`
-  Id_Token string `json:"id_token" bson:"id_token"`
-  LoginTime int64 `bson: "logintime"`
-  LastSeenTime int64 `bson: "lastlogintime"`
+  Id           bson.ObjectId `json:"id" bson:"id,omitempty"`
+  UserId       string        `json:"userid" bson:"userid,omitempty"`
+  Id_Token     string        `json:"id_token" bson:"id_token"`
+  LoginTime    int64         `bson: "logintime"`
+  LastSeenTime int64         `bson: "lastlogintime"`
 }
 
 func CreateSession(w http.ResponseWriter, r *http.Request) {

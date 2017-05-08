@@ -17,7 +17,7 @@ module.exports = {
   // Function opens websocket with unique ID
   shareChannel(cb) {
     Utils.fetchChannel((response) => {
-      this.ws = new WebSocket('ws://' + window.location.host + '/ws/' + response.body);
+      this.ws = new WebSocket('wss://' + window.location.host + '/wss/' + response.body);
       // Whenever we receive a message, update textarea
       this.ws.onmessage = e => {
         // console.log('in this.ws.onmessage',e.data)

@@ -6,8 +6,8 @@
     <button @click="analyseSentiment('off')">Off</button>
   </div>
   <button style="padding-top: 0.5em" @click="getStats">Get Stats</button>
-    <canvas id="wordDist" height="250"></canvas>
-    <canvas id="wordFreq" height="275"></canvas>
+    <canvas id="wordDist" height="175"></canvas>
+    <canvas id="wordFreq" height="200"></canvas>
 </div>
 </template>
 
@@ -65,7 +65,7 @@
               lineTension: 0.25,
               backgroundColor: "#95a5a6",
               pointRadius: 2,
-              borderColor: "#EFD1C6"
+              borderColor: "black"
             }]
             wordFreqData.datasets[0].data = res.freq.wordLen.map(i=>i[1])
             var wordFreqChart = new Chart(wordFreqCTX, {
@@ -77,38 +77,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-button{
-  border: none;
-  outline: 0;
-  background-color: #FFF;
-  font-weight: 600;
-}
-.sentiment-title{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-}
-.sentiment-controls{
-  display: inline-flex;
-  padding-bottom: 0.5em;
-  border-bottom: 0.25em solid #333;
-}
-.sentiment-controls button{
-  width: 50%;
-}
-.stat-container{
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-.stat-container canvas{
-  width: 100%;
-}
-
-</style>

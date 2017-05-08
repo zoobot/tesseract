@@ -1,5 +1,5 @@
 <template>
-  <div class="panel panel-default">
+  <div class="panel">
     <div class="panel-body">
       <form @submit.prevent="onSubmit">
         <input type="text" class="form-control" placeholder="Username" v-model="credentials.username">
@@ -58,28 +58,3 @@
     props: ['showNone'] 
   }
 </script>
-
-<style>
-  .panel{
-    background-color: transparent;
-    z-index: 1;
-  }
-  .panel-body{
-    padding: 0;
-  }
-  .panel, .form-control{
-    border-radius: 0px;
-    margin: 0;
-  }
-  .submit, .email-password{
-    width: 50%;
-  }
-  input{
-    float: right;
-    background-color: rgb(0, 0, 0);
-  }
-  input[type="text"], input[type="password"], input[type="submit"]{
-    background-color: rgb(0, 0, 0);
-    color: rgb(246, 246, 246);
-  }
-</style>
