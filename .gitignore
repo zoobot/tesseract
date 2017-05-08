@@ -6,7 +6,6 @@ node_modules/
 database/
 db
 test
-client/assets
 
 logs
 *.logs
@@ -25,7 +24,6 @@ client/dist/
 .idea/*
 links.txt
 
-editor/editor
 
 cert.pem
 certMaker
