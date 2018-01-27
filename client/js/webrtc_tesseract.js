@@ -26,9 +26,6 @@ module.exports = {
   },
 
   gotStream(stream) {
-    //set button displays
-    this.collaborate = true;
-    this.end = true;
     //set source of localVideo element to the stream captures from getUserMedia;
     this.videos = document.getElementById('video-container');
     let localVideo = document.createElement('video')
@@ -40,6 +37,7 @@ module.exports = {
     localVideo.setAttribute("autoplay", true);
     // localVideo.setAttribute("muted", true);
     localVideo.setAttribute("id", this.localStream.id);
+    localVideo.setAttribute("class","local-video-start");
     // instantiate new peer connection
     this.pc = new RTCPeerConnection(this.peerConnectionConfig);
     // set methods on new peer connection object
@@ -59,6 +57,15 @@ module.exports = {
         otherVideo.setAttribute("autoplay", true);
         otherVideo.muted = false;
         otherVideo.setAttribute("id", e.stream.id);
+        // localVideo.className = localVideo.className.replace(/(?:^|\s)local-video-start(?=\s|$)/g,"");
+        // localVideo.setAttribute("class","local-video-connected");
+        var d = document..getElementsByClassName("local-video-start");
+        // d.className += " otherclass";
+        // localVideo.className += " connected";
+        d.setAttribute("class","local-video-connected");
+        // localVideo.setAttribute("style", "right: 20px;top: 28px;z-index: 13;width: 20%;");
+        otherVideo.setAttribute("class","remote-video-connected");
+
         //send connected signal
         this.connected = true;
         this.end = true;
