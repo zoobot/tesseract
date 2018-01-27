@@ -1,4 +1,0 @@
-- delete unused documents from contents map
-- assign users unique url unless they specify one
-- save doc to db
-- retrieve saved doc (if they visit old url? How? User account?)
