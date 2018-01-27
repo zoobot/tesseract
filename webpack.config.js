@@ -1,8 +1,6 @@
-/**
- * Created by charleen on 12/27/16.
- * Updated by Duncan on 12/28/16.
- * Updated by Rose on 12/29/16.
- */
+const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
+const webpack = require('webpack'); //to access built-in plugins
+const path = require('path');
 
 module.exports = {
   entry: {
@@ -10,40 +8,36 @@ module.exports = {
     entry: './client/main.js',
   },
   output: {
-    // To the `dist` folder
-    // path: './dist',
-    // publicPath: 'dist/',
-    path: './client/dist',
+    path: path.resolve('./client/dist'),
     publicPath: 'client/dist/',
     filename:'build.js',
   },
-  resolve: {
-    // NPM by default installs Runtime Only version, which will not compile html templates
-    alias: {
-      // this is the solution.
-      'vue$': 'vue/dist/vue.common.js'
-    }
-  },
+
   module: {
     loaders: [
       {
         // Ask webpack to check: If this file ends with .js, then apply some transforms
         test: /\.js$/,
         // Transform it with babel
-        loader: 'babel',
+        loader: 'babel-loader',
         // don't transform node_modules folder (which don't need to be compiled)
         exclude: /node_modules/
       },
       {
         // Looks for .vue files to complie into js, html, css
         test: /\.vue$/,
-        loader: 'vue'
+        loader: 'vue-loader'
       }
     ]
   },
-  vue: {
-    loaders: {
-      js: 'babel'
+  plugins: [
+       new webpack.ProvidePlugin({
+          Vue: ['vue/dist/vue.common.js', 'default']
+        })
+     ],
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.common.js'
     }
   }
 };

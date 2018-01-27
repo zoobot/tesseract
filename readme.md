@@ -1,5 +1,5 @@
-# Tesis #
-## A Collaborative Editor from the future! ##
+# Tesseract #
+## A WebRTC client and server based off Tesis ##
 
 * * *
 
@@ -14,8 +14,6 @@
 
 ### Global install requirements ###
 
-*  npm install karma-cli -g
-*  npm install jasmine -g
 *  npm install webpack -g
 
 * * *
@@ -50,12 +48,9 @@
 
 * * *
 
-### Servers ###
+### Server ###
 
-* Node server - used for running OT with shareDB
-  * npm start
-
-* Go server - used for webRTC, API, and editor stats
+* Go server - used for webRTC
   * from root
     * go run editor/*.go
 
