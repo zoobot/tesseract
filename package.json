@@ -1,7 +1,7 @@
 {
-  "name": "teseract",
+  "name": "tesseract",
   "version": "1.0.0",
-  "description": "A Video Conference app",
+  "description": "A Video Conference app based off Tesis",
   "main": "./client/client.js",
   "scripts": {
     "start": "node server/server.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zoobot/teseract.git"
+    "url": "https://github.com/zoobot/tesseract.git"
   },
   "author": "Rose Meyers",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zoobot/teseract/issues"
+    "url": "https://github.com/zoobot/tesseract/issues"
   },
-  "homepage": "https://github.com/zoobot/teseract#readme",
+  "homepage": "https://github.com/zoobot/tesseract#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
