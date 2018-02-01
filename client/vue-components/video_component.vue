@@ -4,7 +4,7 @@
       <span class="video-icons">
 
         <img :src="'/client/assets/images/video-start.svg'" @click="start()"  />
-        <img :src="'/client/assets/images/video-connected.svg'" @click="connect()"  />
+        <img :src="'/client/assets/images/video-connected.svg'" @click="connect()" />
         <img :src="'/client/assets/images/video-stop.svg'" @click="stop()"  />
         <img :src="'/client/assets/images/video-mute.svg'" @click="mute()"  />
         <img :src="'/client/assets/images/video-record.svg'" @click="record()"  />
@@ -12,7 +12,10 @@
       </span>
     </div>
 
-    <div id="video-container" class="video-container"></div>
+    <div class="video-container">
+    <video id="pc1" autoplay class="video-local-connected" v-bind:class="[this.isActive ? this.activeClass : '', errorClass]"></video>
+    <video id="pc2" autoplay class="video-remote-connected"></video>
+    </div>
   </div>
 </template>
 
@@ -33,32 +36,13 @@
 
     data() {
       return {
-        // icons: [
-        // {
-        //   id: 'start',
-        //   img:'/client/assets/images/video-start.svg',
-        //   toggler: this.start()
-        // }, {
-        //   id: 'connect',
-        //   img:'/client/assets/images/video-connected.svg',
-        //   toggler: this.connect()
-        // }, {
-        //   id: 'stop',
-        //   img:'/client/assets/images/videostop.svg',
-        //   toggler: this.stop()
-        // }, {
-        //  id: 'record',
-        //  img:'/client/assets/images/video-record.svg',
-        // toggler: this.record()
-        // }, {
-        //   id: 'mute',
-        //   img:'/client/assets/images/video-mute.svg',
-        //   toggler: this.mute()
-        // }],
+        isActive: '',
+        activeClass: 'active',
+        errorClass: 'text-danger',
         ourAudio: true,
         videos:'',
         collaborate: true,
-        connected: true,
+        connected: false,
         end: false,
         record: false,
         download: false,

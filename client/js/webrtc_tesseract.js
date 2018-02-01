@@ -26,75 +26,51 @@ module.exports = {
   },
 
   gotStream(stream) {
-    //set source of localVideo element to the stream captures from getUserMedia;
-    this.videos = document.getElementById('video-container');
-    let localVideo = document.createElement('video')
-    if (document.getElementById('video-container').children.length < 1) {
-      this.videos.appendChild(localVideo);
-    }
+    const pc1 = document.getElementById('pc1')
+    pc1.src = URL.createObjectURL(this.localStream)
+    pc1.setAttribute("class","local-video-start")
 
-    localVideo.src = URL.createObjectURL(this.localStream);
-    localVideo.setAttribute("autoplay", true);
-    // localVideo.setAttribute("muted", true);
-    localVideo.setAttribute("id", this.localStream.id);
-    localVideo.setAttribute("class","local-video-start");
+
     // instantiate new peer connection
-    this.pc = new RTCPeerConnection(this.peerConnectionConfig);
+    this.pc = new RTCPeerConnection(this.peerConnectionConfig)
     // set methods on new peer connection object
     this.pc.addStream(this.localStream)
-
     this.pc.onaddstream = e => {
         //event handler for setRemoteDescription: adds remote stream src to DOM
-        let otherVideo = document.createElement('video')
-        otherVideo.src = window.URL.createObjectURL(e.stream);
-        if (document.getElementById('video-container').children.length < 2) {
-          this.videos.appendChild(otherVideo);
-          console.log('children are too few')
-        }
 
-
-        otherVideo.src = URL.createObjectURL(e.stream);
-        otherVideo.setAttribute("autoplay", true);
-        otherVideo.muted = false;
-        otherVideo.setAttribute("id", e.stream.id);
-        // localVideo.className = localVideo.className.replace(/(?:^|\s)local-video-start(?=\s|$)/g,"");
-        // localVideo.setAttribute("class","local-video-connected");
-        var d = document..getElementsByClassName("local-video-start");
-        // d.className += " otherclass";
-        // localVideo.className += " connected";
-        d.setAttribute("class","local-video-connected");
-        // localVideo.setAttribute("style", "right: 20px;top: 28px;z-index: 13;width: 20%;");
-        otherVideo.setAttribute("class","remote-video-connected");
-
+        const pc2 = document.getElementById('pc2')
+        pc2.src = URL.createObjectURL(e.stream)
+        pc2.setAttribute("class","remote-video-connected")
+        pc1.setAttribute("class","local-video-connected")
         //send connected signal
-        this.connected = true;
-        this.end = true;
-        this.wsrtc.send(JSON.stringify({ 'type': 'connected' }));
+        this.connected = true
+        // this.end = true
+        this.wsrtc.send(JSON.stringify({ 'type': 'connected' }))
 
       }
       //on initial reception of icecandidates...
     this.pc.onicecandidate = e => {
       //send ice candidates over WS signaling server
       if (e.candidate != null) {
-        this.wsrtc.send(JSON.stringify({ 'ice': e.candidate }));
-        this.connected = true;
-        this.end = true;
+        this.wsrtc.send(JSON.stringify({ 'ice': e.candidate }))
+        this.connected = true
+        // this.end = true
       }
     }
   },
 
-  connect() {
+  async connect() {
     //call to create initial offer
-    this.pc.createOffer()
-      .then(offer => {
-        //set local description to own SDP offer
-        this.pc.setLocalDescription(offer);
-        //send offer over WS signaling server
-        console.log(offer)
-        this.wsrtc.send(JSON.stringify({ 'sdp': offer }))
-      })
-
-    .catch(e => { console.log('err offer setLocalDescription', e); })
+    try {
+      const offer = this.pc.createOffer()
+      //set local description to own SDP offer
+      this.pc.setLocalDescription(await offer)
+      //send offer over WS signaling server
+      console.log(offer)
+      this.wsrtc.send(JSON.stringify({ 'sdp': await offer }))
+    } catch(error) {
+      console.log('err offer setLocalDescription', error)
+    }
   },
 
   //toggles own mute
@@ -114,6 +90,28 @@ module.exports = {
     this.collaborate = true;
     delete this.pc.localDescription;
     delete this.pc.remoteDescription;
+  },
+
+  async offer(signal) {
+    try {
+      //if signal is offer and we are the callee, set SDP offer as remote description
+      this.pc.setRemoteDescription(await signal.sdp)
+        //attach our local stream to the peerConnection object
+      const streamAdded = this.pc.addStream(await this.localStream)
+      this.answer(await signal.sdp)
+    } catch(e) { console.log('err at offer', e) }
+  },
+
+  async answer(signal) {
+    try {
+      //create answer
+      const answer = await this.pc.createAnswer()
+        //set this answer as our local description
+      this.ourAnswer = await answer
+      this.pc.setLocalDescription(await answer)
+        //send this answer along with our local stream data over WS signaling server
+      this.wsrtc.send(JSON.stringify({ 'sdp': await this.ourAnswer }))
+    } catch(e) { console.log('err at offer', e) }
   },
 
 
@@ -166,20 +164,21 @@ module.exports = {
 
       if (signal.sdp && signal.sdp.type === 'offer' && signal.sdp !== this.pc.localDescription) {
         //if signal is offer and we are the callee, set SDP offer as remote description
-        this.pc.setRemoteDescription(signal.sdp)
-          //attach our local stream to the peerConnection object
-          .then(() => this.pc.addStream(this.localStream))
-          //create answer
-          .then(() => this.pc.createAnswer())
-          //set this answer as our local description
-          .then(answer => { this.ourAnswer = answer;
-            this.pc.setLocalDescription(answer) })
-          //send this answer along with our local stream data over WS signaling server
-          .then(() => {
-            this.wsrtc.send(JSON.stringify({ 'sdp': this.ourAnswer }));
-          })
-          .catch(e => { console.log('err at offer', e); })
-
+        // this.pc.setRemoteDescription(signal.sdp)
+        //   //attach our local stream to the peerConnection object
+        //   .then(() => this.pc.addStream(this.localStream))
+        //   //create answer
+        //   .then(() => this.pc.createAnswer())
+        //   //set this answer as our local description
+        //   .then(answer => { this.ourAnswer = answer;
+        //     this.pc.setLocalDescription(answer) })
+        //   //send this answer along with our local stream data over WS signaling server
+        //   .then(() => {
+        //     this.wsrtc.send(JSON.stringify({ 'sdp': this.ourAnswer }));
+        //   })
+        //   .catch(e => { console.log('err at offer', e); })
+        console.log('sdp.type offer', signal.sdp.type)
+        this.offer(signal)
       };
 
       if (signal.ice) {

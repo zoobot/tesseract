@@ -27,7 +27,7 @@ const (
 
 // handles routing
 func main() {
-  fmt.Println("Go server, go! (8k)")
+  fmt.Println("Go server, go! https://192.168.55.103:8443")
   // run the hub to start websockets
   go h.run()
 
