@@ -16,14 +16,16 @@ const (
   PRIV_KEY   = "./key.pem"
 )
 
-// func redirectToHttps(w http.ResponseWriter, r *http.Request) {
-//   // Redirect to https localhost:8443 will only work locally
-//   http.Redirect(w,r, "https://localhost:"+PORTSSL+r.RequestURI, http.StatusMovedPermanently)
-//
+func redirectTLS(w http.ResponseWriter, r *http.Request) {
+  http.Redirect(w, r, "https://"+r.Host+r.RequestURI, http.StatusMovedPermanently)
+  fmt.Fprintf(w, "moving http to http as required")
+}
 
-// func hander(w http.ResponseWriter, r *http.Request) {
-//   fmt.Fprintf(w, "Hi there mover and shaker!")
-// }
+// go func() {
+//     if err := http.ListenAndServe(":80", http.HandlerFunc(redirectTLS)); err != nil {
+//         log.Fatalf("ListenAndServe error: %v", err)
+//     }
+// }()
 
 // handles routing
 func main() {
@@ -39,7 +41,6 @@ func main() {
 
   /* ======>API<====== */
   // Sessions table
-
   /* <======end API======> */
 
   // Serve static files (make sure index has /client at start, so paths match)
@@ -50,10 +51,15 @@ func main() {
   r.HandleFunc("/", serveIndex)
   r.NotFoundHandler = http.HandlerFunc(serveIndex)
 
+  // if err := http.ListenAndServe(":80", http.HandlerFunc(redirectTLS)); err != nil {
+  //   log.Fatalf("ListenAndServe error: %v", err)
+  // }
   // start 'er up.
   log.Fatal(http.ListenAndServeTLS(PORTSSL, PUBLIC_KEY, PRIV_KEY, r))
+  log.Fatal(http.ListenAndServe(PORTREG, http.HandlerFunc(redirectTLS)))
   // log.Fatal(http.ListenAndServe(PORTREG, r))
 }
+
 func serveIndex(w http.ResponseWriter, r *http.Request) {
   http.ServeFile(w, r, "client/index.html")
 }
