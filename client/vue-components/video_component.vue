@@ -3,12 +3,12 @@
     <div class="nav" >
       <span class="video-icons">
 
-        <img :src="'/client/assets/images/video-start.svg'" @click="start()"  />
-        <img :src="'/client/assets/images/video-connected.svg'" @click="connect()" />
-        <img :src="'/client/assets/images/video-stop.svg'" @click="stop()"  />
-        <img :src="'/client/assets/images/video-mute.svg'" @click="mute()"  />
-        <img :src="'/client/assets/images/video-record.svg'" @click="record()"  />
-        <img :src="'/client/assets/images/video-download.svg'" @click="download()"  />
+        <img :src="'/client/assets/images/video-start.svg'" @click="start()"  class="video-icon"/>
+        <img :src="'/client/assets/images/video-connected.svg'" @click="connect()" class="video-icon"/>
+        <img :src="'/client/assets/images/video-stop.svg'" @click="stop()"  class="video-icon"/>
+        <img :src="'/client/assets/images/video-mute.svg'" @click="mute()"  class="video-icon"/>
+        <img :src="'/client/assets/images/video-record.svg'" @click="record()"  class="video-icon"/>
+        <img :src="'/client/assets/images/video-download.svg'" @click="download()"  class="video-icon"/>
       </span>
     </div>
 
@@ -27,8 +27,8 @@
   export default {
 
     mounted() {
-      // this.start()
-      this.signalHandler();
+      this.signalHandler()
+      // this.starter();
 
     },
 
@@ -36,6 +36,8 @@
 
     data() {
       return {
+        pc1:null,
+        pc2:null,
         isActive: '',
         activeClass: 'active',
         errorClass: 'text-danger',
@@ -46,7 +48,9 @@
         end: false,
         record: false,
         download: false,
-        ourAnswer:'',
+        newOffer:'',
+        newAnswer:'',
+        // newOfferAnswer:'',
         otherSDP:'',
         iceCandidates:[],
         pc: null,

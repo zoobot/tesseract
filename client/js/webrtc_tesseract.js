@@ -5,7 +5,7 @@ module.exports = {
       await this.wsrtc.send(JSON.stringify({'type': 'join' }))
       await this.wsrtc.send(JSON.stringify({'type': 'joinUp' }))
     } catch (error) {
-      console.log('getUserMedia() error: ' + error.name)
+      console.log('start error: ' + error.name)
     }
   },
 
@@ -62,18 +62,40 @@ module.exports = {
   async connect() {
     //call to create initial offer
     try {
-      const offer = this.pc.createOffer()
+      const newOffer = await this.pc.createOffer()
+      this.newOffer = await newOffer
       //set local description to own SDP offer
-      this.pc.setLocalDescription(await offer)
+      this.pc.setLocalDescription(await this.newOffer)
       //send offer over WS signaling server
-      console.log(offer)
-      this.wsrtc.send(JSON.stringify({ 'sdp': await offer }))
+      this.wsrtc.send(JSON.stringify({ 'sdp': await this.newOffer }))
     } catch(error) {
       console.log('err offer setLocalDescription', error)
     }
   },
 
-  //toggles own mute
+  async offer(signal) {
+    try {
+      //if signal is offer and we are the callee, set SDP offer as remote description
+      this.pc.setRemoteDescription(await signal.sdp)
+        //attach our local stream to the peerConnection object
+      const streamAdded = this.pc.addStream(await this.localStream)
+      this.answer()
+    } catch(e) { console.log('err at offer', e) }
+  },
+
+  async answer() {
+    try {
+      //create answer
+      const newAnswer = await this.pc.createAnswer()
+        //set this answer as our local description
+      this.newAnswer = await newAnswer
+      this.pc.setLocalDescription(await this.newAnswer)
+        //send this answer along with our local stream data over WS signaling server
+      this.wsrtc.send(JSON.stringify({ 'sdp': await this.newAnswer }))
+    } catch(e) { console.log('err at offer', e) }
+  },
+
+    //toggles own mute
   toggleMute() {
     this.ourAudio = !this.ourAudio;
     let id = this.localStream.id;
@@ -88,30 +110,9 @@ module.exports = {
     this.wsrtc.send(JSON.stringify({ 'type': 'stop', 'id': this.localStream.id }));
     //delete descriptions
     this.collaborate = true;
+    this.connected = false;
     delete this.pc.localDescription;
     delete this.pc.remoteDescription;
-  },
-
-  async offer(signal) {
-    try {
-      //if signal is offer and we are the callee, set SDP offer as remote description
-      this.pc.setRemoteDescription(await signal.sdp)
-        //attach our local stream to the peerConnection object
-      const streamAdded = this.pc.addStream(await this.localStream)
-      this.answer(await signal.sdp)
-    } catch(e) { console.log('err at offer', e) }
-  },
-
-  async answer(signal) {
-    try {
-      //create answer
-      const answer = await this.pc.createAnswer()
-        //set this answer as our local description
-      this.ourAnswer = await answer
-      this.pc.setLocalDescription(await answer)
-        //send this answer along with our local stream data over WS signaling server
-      this.wsrtc.send(JSON.stringify({ 'sdp': await this.ourAnswer }))
-    } catch(e) { console.log('err at offer', e) }
   },
 
 
@@ -163,20 +164,6 @@ module.exports = {
       };
 
       if (signal.sdp && signal.sdp.type === 'offer' && signal.sdp !== this.pc.localDescription) {
-        //if signal is offer and we are the callee, set SDP offer as remote description
-        // this.pc.setRemoteDescription(signal.sdp)
-        //   //attach our local stream to the peerConnection object
-        //   .then(() => this.pc.addStream(this.localStream))
-        //   //create answer
-        //   .then(() => this.pc.createAnswer())
-        //   //set this answer as our local description
-        //   .then(answer => { this.ourAnswer = answer;
-        //     this.pc.setLocalDescription(answer) })
-        //   //send this answer along with our local stream data over WS signaling server
-        //   .then(() => {
-        //     this.wsrtc.send(JSON.stringify({ 'sdp': this.ourAnswer }));
-        //   })
-        //   .catch(e => { console.log('err at offer', e); })
         console.log('sdp.type offer', signal.sdp.type)
         this.offer(signal)
       };
