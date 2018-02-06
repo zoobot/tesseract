@@ -1,3 +1,72 @@
+html,
+body {
+  background-color: grey;
+  font-family: Arial, sans-serif, "PT Sans";
+  color: black;
+  background: url(../assets/images/tesseract-background2.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+@font-face {
+  /*The name you are going to use for the font in the rest of the css*/
+  font-family: customfont;
+  /*The actual path to the font you just named above*/
+  /*src: url('../assets/fonts/FiraSans-Black.ttf');*/
+  src: url('../assets/fonts/Dosis-Bold.ttf');
+  /*src: url('../assets/fonts/block.otf');*/
+}
+
+/*AlegreyaSansSC-Black.ttf
+Dosis-ExtraBold.ttf
+Lato-Black.ttf
+Roboto-Bold.ttf
+Dosis-Bold.ttf
+FiraSans-Black.ttf
+Roboto-Black.ttf*/
+
+
+
+img.bg {
+  /* Set rules to fill background */
+  z-index:-100;
+  min-height: 100%;
+  min-width: 1024px;
+
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+
+  /* Set up positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+@media screen and (max-width: 1024px) { /* Specific to this particular image */
+  img.bg {
+    left: 50%;
+    margin-left: -512px;   /* 50% */
+  }
+}
+
+
+
+/*font-family: 'Nova Square', cursive;
+font-family: 'Roboto', sans-serif;
+font-family: 'Fira Sans', sans-serif;
+font-family: 'Julius Sans One', sans-serif;
+font-family: 'Alegreya Sans SC', sans-serif;
+font-family: 'Kanit', sans-serif;
+font-family: 'Scada', sans-serif;
+font-family: 'Rubik Mono One', sans-serif;
+font-family: 'Days One', sans-serif;
+font-family: 'Montserrat Subrayada', sans-serif;
+font-family: 'Meera Inimai', sans-serif;
+*/
+
 .container {
   display: flex;
   justify-content:space-between;
@@ -13,6 +82,18 @@
   overfill:auto;*/
 }
 
+.headline {
+  /*Using the imported font*/
+  position: fixed;
+  top: 15px;
+  left: 80px;
+  font-size: 2em;
+  font-family: customfont;
+  color: black;
+  line-height: .75em;
+  z-index:200;
+}
+
 .tesseract-icon{
   position: absolute;
   top:5px;
@@ -24,7 +105,7 @@
 .video-icons {
   position: absolute;
   top:18px;
-  left:100px;
+  left:135px;
   z-index:100;
   cursor: pointer;
   white-space: nowrap;

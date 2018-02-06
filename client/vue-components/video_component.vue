@@ -9,10 +9,12 @@
         <img :src="'/client/assets/images/video-mute.svg'" @click="mute()"  class="video-icon"/>
         <img :src="'/client/assets/images/video-record.svg'" @click="record()"  class="video-icon"/>
         <img :src="'/client/assets/images/video-download.svg'" @click="download()"  class="video-icon"/>
+
       </span>
     </div>
 
     <div class="video-container">
+
     <video id="pc1" autoplay class="video-local-connected" v-bind:class="[this.isActive ? this.activeClass : '', errorClass]"></video>
     <video id="pc2" autoplay class="video-remote-connected"></video>
     </div>

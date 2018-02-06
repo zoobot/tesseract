@@ -10,8 +10,10 @@ import (
 )
 
 const (
-  PORTSSL    = ":8443"
-  PORTREG    = ":8000"
+  // PORTSSL = ":8443"
+  // PORTREG = ":8000"
+  PORTSSL    = ":443"
+  PORTREG    = ":80"
   PUBLIC_KEY = "./cert.pem"
   PRIV_KEY   = "./key.pem"
 )
@@ -29,7 +31,7 @@ func redirectTLS(w http.ResponseWriter, r *http.Request) {
 
 // handles routing
 func main() {
-  fmt.Println("Go server, go! https://192.168.55.103:8443")
+  fmt.Println("Go server, go! https://localhost:8443")
   // run the hub to start websockets
   go h.run()
 

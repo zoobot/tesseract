@@ -189,4 +189,45 @@ module.exports = {
     }
   },
 
+  record() {
+    //create new mediarecorder from local stream
+    try {
+      MediaRecorder = new MediaRecorder(this.localStream, { mimeType: "video/webm" });
+    } catch (e) { console.log('Recording issues', e);
+      return }
+
+    this.theRecorder = MediaRecorder;
+    MediaRecorder.ondataavailable = e => { this.recordedChuck.push(e.data); }
+    MediaRecorder.start(100);
+  },
+
+  screen() {
+    console.log('in screen')
+    var receiver = null;
+  },
+
+  download() {
+    //show collaborate button and stop button
+    this.collaborate = true;
+    this.end = true;
+    //stop recording
+    this.theRecorder.stop();
+    //stop streams
+    this.localStream.getTracks().forEach(track => { track.stop(); });
+    //create new blob
+    var blob = new Blob(this.recordedChuck, { type: "video/mp4" });
+    //get url from dom for blob for download name
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = url;
+    //add padd of 4
+    var rand = ('0000' + Math.floor((Math.random() * 1000))).slice(-4);
+    a.download = this.uri + rand + '.mp4';
+    a.click();
+    // setTimeout() here is needed for Firefox.
+    setTimeout(function() { URL.revokeObjectURL(url); }, 100);
+  }
+
 }
