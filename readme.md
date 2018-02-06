@@ -36,8 +36,9 @@
 
 * From root
   * go build certMaker.go (builds a self signed cert for https)
+  * certbot certbot certonly --standalone --email user@email.com -d domain.com
 
-* From inside tesis/editor
+* From inside tesseract/server
   * go build .
 
 * * *
@@ -52,6 +53,6 @@
 
 * Go server - used for webRTC
   * from root
-    * go run editor/*.go
+    * go run server/*.go
 
 * * *
