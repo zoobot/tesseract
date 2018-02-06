@@ -36,7 +36,7 @@
 
 * From root
   * go build certMaker.go (builds a self signed cert for https)
-  * certbot certbot certonly --standalone --email user@email.com -d domain.com
+  * /usr/bin/certbot certonly --standalone --email user@email.com -d domain.com
 
 * From inside tesseract/server
   * go build .
