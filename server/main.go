@@ -14,8 +14,8 @@ const (
   // PORTSSL = ":8443"
   // PORTREG = ":8000"
   // certMaker.go
-  PUBLIC_KEY = "./cert.pem"
-  PRIV_KEY   = "./key.pem"
+  // PUBLIC_KEY = "./cert.pem"
+  // PRIV_KEY   = "./key.pem"
   // deploy
   PORTSSL = ":443"
   PORTREG = ":80"
