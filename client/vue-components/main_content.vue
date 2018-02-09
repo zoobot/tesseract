@@ -1,13 +1,11 @@
 <template>
   <!-- <img src="../assets/images/tesseract-background.jpg" /> -->
   <div class="container">
-
-
     <div class="nav">
-      <div class="headline" v-bind:class="[this.isActive ? !this.activeClass : '', errorClass]">talk<br>talk</div>
-       <span class="tesseract-icon">
+      <div class="headline">talk<br>talk</div>
+        <span class="tesseract-icon" v-bind:class="[this.isActive ? !this.activeClass : '', errorClass]">
           <img :src="'/client/assets/images/tesseract.svg'"  />
-    </span>
+        </span>
     </div>
 
     <videocomponent id="video" :wsrtc="wsrtc" :uri="uri" ></videocomponent>
