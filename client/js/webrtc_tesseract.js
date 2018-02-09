@@ -97,8 +97,8 @@ module.exports = {
 
     //toggles own mute
   toggleMute() {
-    this.ourAudio = !this.ourAudio;
-    let id = this.localStream.id;
+    this.ourAudio = !this.ourAudio
+    let id = this.localStream.id
     this.wsrtc.send(JSON.stringify({
       'type': 'toggleMute',
       'id': id
@@ -107,12 +107,12 @@ module.exports = {
 
   stop() {
     console.log('stop1')
-    this.wsrtc.send(JSON.stringify({ 'type': 'stop', 'id': this.localStream.id }));
+    this.wsrtc.send(JSON.stringify({ 'type': 'stop', 'id': this.localStream.id }))
     //delete descriptions
-    this.collaborate = true;
-    this.connected = false;
-    delete this.pc.localDescription;
-    delete this.pc.remoteDescription;
+    this.collaborate = true
+    this.connected = false
+    delete this.pc.localDescription
+    delete this.pc.remoteDescription
   },
 
 
@@ -121,57 +121,57 @@ module.exports = {
 
     this.wsrtc.onmessage = e => {
 
-      let signal = JSON.parse(e.data);
+      let signal = JSON.parse(e.data)
 
       if (signal.type === 'stop') {
         //remove video nodes
         console.log('stopsignal')
         while (this.videos.firstChild) {
-          this.videos.removeChild(this.videos.firstChild);
-        };
+          this.videos.removeChild(this.videos.firstChild)
+        }
         //stop local media stream
         this.localStream.getTracks().forEach(track => {
-          track.stop();
+          track.stop()
         })
-        this.connected = false;
-        this.collaborate = true;
+        this.connected = false
+        this.collaborate = true
         //delete descriptions
-        delete this.pc.localDescription;
-        delete this.pc.remoteDescription;
-      };
+        delete this.pc.localDescription
+        delete this.pc.remoteDescription
+      }
 
       if (signal.type === 'toggleMute' && signal.id !== this.localStream.id) {
-        var r = document.getElementById(signal.id);
+        var r = document.getElementById(signal.id)
         //toggle mute
         r.muted = !r.muted
         console.log(r, r.muted)
-      };
+      }
 
       if (signal.type === 'join') {
-        this.collaborate = true;
-        this.connected = true;
-      };
+        this.collaborate = true
+        this.connected = true
+      }
 
       if (signal.type === 'joinUp') {
         console.log('joined',signal.type)
         this.joinUp()
-      };
+      }
 
       if (signal.type === 'connected') {
         //connect button remains
-        this.connected = true;
+        this.connected = true
         console.log('yeaa', this.connected)
-      };
+      }
 
       if (signal.sdp && signal.sdp.type === 'offer' && signal.sdp !== this.pc.localDescription) {
         console.log('sdp.type offer', signal.sdp.type)
         this.offer(signal)
-      };
+      }
 
       if (signal.ice) {
         //add ice candidates to iceCandidates array in data
         this.iceCandidates.push(signal.ice)
-      };
+      }
 
       if (signal.sdp && signal.sdp.type === 'answer' && signal.sdp !== this.pc.localDescription) {
         //on reception of answer as caller, set SDP answer as remote description
@@ -179,7 +179,7 @@ module.exports = {
           .then(() => {
             if (this.pc.remoteDescription && this.iceCandidates.length > 0)
             //if the local and remote description has been set and ice candidates exist
-              for (var i = 0; i < this.iceCandidates.length; i++) {
+              for (var i = 0 i < this.iceCandidates.length i++) {
               //add ice candidates to peerConnection
               this.pc.addIceCandidate(this.iceCandidates[i])
             }
@@ -192,42 +192,42 @@ module.exports = {
   record() {
     //create new mediarecorder from local stream
     try {
-      MediaRecorder = new MediaRecorder(this.localStream, { mimeType: "video/webm" });
-    } catch (e) { console.log('Recording issues', e);
+      MediaRecorder = new MediaRecorder(this.localStream, { mimeType: "video/webm" })
+    } catch (e) { console.log('Recording issues', e)
       return }
 
-    this.theRecorder = MediaRecorder;
-    MediaRecorder.ondataavailable = e => { this.recordedChuck.push(e.data); }
-    MediaRecorder.start(100);
+    this.theRecorder = MediaRecorder
+    MediaRecorder.ondataavailable = e => { this.recordedChuck.push(e.data) }
+    MediaRecorder.start(100)
   },
 
   screen() {
     console.log('in screen')
-    var receiver = null;
+    let receiver = null
   },
 
   download() {
     //show collaborate button and stop button
-    this.collaborate = true;
-    this.end = true;
+    this.collaborate = true
+    this.end = true
     //stop recording
-    this.theRecorder.stop();
+    this.theRecorder.stop()
     //stop streams
-    this.localStream.getTracks().forEach(track => { track.stop(); });
+    this.localStream.getTracks().forEach(track => { track.stop() })
     //create new blob
-    var blob = new Blob(this.recordedChuck, { type: "video/mp4" });
+    const blob = new Blob(this.recordedChuck, { type: "video/mp4" })
     //get url from dom for blob for download name
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    a.href = url;
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    document.body.appendChild(a)
+    a.style = "display: none"
+    a.href = url
     //add padd of 4
-    var rand = ('0000' + Math.floor((Math.random() * 1000))).slice(-4);
-    a.download = this.uri + rand + '.mp4';
-    a.click();
+    const rand = ('0000' + Math.floor((Math.random() * 1000))).slice(-4)
+    a.download = this.uri + rand + '.mp4'
+    a.click()
     // setTimeout() here is needed for Firefox.
-    setTimeout(function() { URL.revokeObjectURL(url); }, 100);
+    setTimeout(function() { URL.revokeObjectURL(url) }, 100)
   }
 
 }
