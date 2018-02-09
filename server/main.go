@@ -10,12 +10,18 @@ import (
 )
 
 const (
+  // local
   // PORTSSL = ":8443"
   // PORTREG = ":8000"
-  PORTSSL    = ":443"
-  PORTREG    = ":80"
+  // certMaker.go
   PUBLIC_KEY = "./cert.pem"
   PRIV_KEY   = "./key.pem"
+  // deploy
+  PORTSSL = ":443"
+  PORTREG = ":80"
+  // certbot
+  PUBLIC_KEY = "./fullchain.pem"
+  PRIV_KEY   = "./privkey.pem"
 )
 
 func redirectTLS(w http.ResponseWriter, r *http.Request) {
