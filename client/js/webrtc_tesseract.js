@@ -179,7 +179,7 @@ module.exports = {
           .then(() => {
             if (this.pc.remoteDescription && this.iceCandidates.length > 0)
             //if the local and remote description has been set and ice candidates exist
-              for (var i = 0 i < this.iceCandidates.length i++) {
+              for (var i = 0; i < this.iceCandidates.length; i++) {
               //add ice candidates to peerConnection
               this.pc.addIceCandidate(this.iceCandidates[i])
             }
@@ -228,6 +228,12 @@ module.exports = {
     a.click()
     // setTimeout() here is needed for Firefox.
     setTimeout(function() { URL.revokeObjectURL(url) }, 100)
+  },
+
+  changeVideoSize() {
+
+    this.isBig = !this.isBig
+    this.isSmall = !this.isSmall
   }
 
 }

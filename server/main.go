@@ -11,15 +11,12 @@ import (
 
 const (
   // local
-  // PORTSSL = ":8443"
-  // PORTREG = ":8000"
-  // certMaker.go
-  // PUBLIC_KEY = "./cert.pem"
-  // PRIV_KEY   = "./key.pem"
+  PORTSSL = ":8443"
+  PORTREG = ":8000"
   // deploy
-  PORTSSL = ":443"
-  PORTREG = ":80"
-  // certbot
+  // PORTSSL = ":443"
+  // PORTREG = ":80"
+  // certs
   PUBLIC_KEY = "./fullchain.pem"
   PRIV_KEY   = "./privkey.pem"
 )

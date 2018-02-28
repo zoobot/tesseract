@@ -3,11 +3,13 @@ body {
   background-color: grey;
   font-family: Arial, sans-serif, "PT Sans";
   color: black;
-  background: url(../assets/images/tesseract-background2.jpg) no-repeat center center fixed;
+  /*background: url(../assets/images/tesseract-background2.jpg) no-repeat center center fixed;*/
+  background: #000 url(../assets/images/static2.gif) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  /*margin: 0;*/
 }
 
 @font-face {
@@ -158,3 +160,21 @@ font-family: 'Meera Inimai', sans-serif;
     width: 20%;
 }
 
+.isBig {
+  position: absolute;
+  top:0px;
+  bottom:0px;
+  right: 0px;
+  left: 0px;
+  width:100%;
+  z-index:10;
+}
+
+
+.isSmall {
+  position: absolute;
+    right: 20px;
+    top: 28px;
+    z-index: 13;
+    width: 20%;
+}
