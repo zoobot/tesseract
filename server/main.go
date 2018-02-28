@@ -11,11 +11,11 @@ import (
 
 const (
   // local
-  PORTSSL = ":8443"
-  PORTREG = ":8000"
+  // PORTSSL = ":8443"
+  // PORTREG = ":8000"
   // deploy
-  // PORTSSL = ":443"
-  // PORTREG = ":80"
+  PORTSSL = ":443"
+  PORTREG = ":80"
   // certs
   PUBLIC_KEY = "./fullchain.pem"
   PRIV_KEY   = "./privkey.pem"
