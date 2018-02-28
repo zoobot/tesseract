@@ -15,7 +15,7 @@
 
     <div class="video-container">
 
-    <video id="pc1" autoplay class="video-local-connected" v-bind:class="[this.isActive ? this.activeClass : '', errorClass]"></video>
+    <video id="pc1" autoplay class="video-local-connected" v-bind:class="[this.isActive ? this.activeClass : '', this.errorClass]"></video>
     <video id="pc2" autoplay class="video-remote-connected"></video>
     </div>
   </div>
@@ -40,7 +40,9 @@
       return {
         pc1:null,
         pc2:null,
-        isActive: '',
+        isBig: true,
+        isSmall: false,
+        isActive: false,
         activeClass: 'active',
         errorClass: 'text-danger',
         ourAudio: true,
@@ -48,11 +50,8 @@
         collaborate: true,
         connected: false,
         end: false,
-        // record: false,
-        // download: false,
         newOffer:'',
         newAnswer:'',
-        // newOfferAnswer:'',
         otherSDP:'',
         iceCandidates:[],
         pc: null,

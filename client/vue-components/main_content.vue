@@ -14,7 +14,6 @@
 </template>
 
 <script>
-  // import Methods from '../js/main_content.js'
   import Videocomponent from './video_component.vue'
   import Chance from 'chance'
 
